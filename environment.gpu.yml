@@ -243,4 +243,3 @@ dependencies:
   - zeromq=4.3.4=h9c3ff4c_1
   - zipp=3.11.0=pyhd8ed1ab_0
   - zstd=1.5.2=h6239696_4
-prefix: /home/david/mambaforge/envs/ML
