@@ -1,0 +1,4 @@
+name: ML
+channels:
+  - conda-forge
+prefix: /home/davide/mambaforge/envs/ML
