@@ -29,8 +29,6 @@ dependencies:
   - comm=0.1.2=pyhd8ed1ab_0
   - contourpy=1.0.6=py310hbf28c38_0
   - cryptography=38.0.4=py310h600f1e7_0
-  - cudatoolkit=11.8.0=h37601d7_11
-  - cudnn=8.4.1.50=hed8a83a_0
   - cycler=0.11.0=pyhd8ed1ab_0
   - dbus=1.13.6=h5008d03_3
   - debugpy=1.6.4=py310hd8f1fbe_0
@@ -135,7 +133,6 @@ dependencies:
   - llvm-openmp=15.0.6=he0ac6c6_0
   - llvmlite=0.39.1=py310h58363a5_1
   - lz4-c=1.9.3=h9c3ff4c_1
-  - magma=2.6.2=hc72dce7_0
   - markupsafe=2.1.1=py310h5764c6d_2
   - matplotlib=3.6.2=py310hff52083_0
   - matplotlib-base=3.6.2=py310h8d5ebf3_0
@@ -152,7 +149,6 @@ dependencies:
   - nbconvert-core=7.2.7=pyhd8ed1ab_0
   - nbconvert-pandoc=7.2.7=pyhd8ed1ab_0
   - nbformat=5.7.1=pyhd8ed1ab_0
-  - nccl=2.14.3.1=h0800d71_0
   - ncurses=6.3=h27087fc_1
   - nest-asyncio=1.5.6=pyhd8ed1ab_0
   - ninja=1.11.0=h924138e_0
@@ -197,7 +193,7 @@ dependencies:
   - python-fastjsonschema=2.16.2=pyhd8ed1ab_0
   - python-json-logger=2.0.4=pyhd8ed1ab_0
   - python_abi=3.10=3_cp310
-  - pytorch=1.13.0=cuda112py310he33e0d6_200
+  - pytorch=1.13.0=cpu_py310h02c325b_0
   - pytz=2022.7=pyhd8ed1ab_0
   - pyyaml=6.0=py310h5764c6d_5
   - pyzmq=24.0.1=py310h330234f_1
@@ -241,4 +237,4 @@ dependencies:
   - zeromq=4.3.4=h9c3ff4c_1
   - zipp=3.11.0=pyhd8ed1ab_0
   - zstd=1.5.2=h6239696_4
-prefix: /home/david/mambaforge/envs/ML
+prefix: /home/davide/mambaforge/envs/ML
