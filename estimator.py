@@ -1,3 +1,9 @@
+#python libraries
+import numpy as np
+#local libraries
+from loss import LossFunction
+from optimizer import Optimizer
+
 class Estimator:
     def __init__(self, nn, *,
         loss=LossFunction(), optimizer=Optimizer(),

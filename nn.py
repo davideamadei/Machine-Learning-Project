@@ -3,7 +3,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 # external libraries
 import numpy as np
-
+#local libraries
+from optimizer import Optimizer
 
 # DATACLASSES
 @dataclass
@@ -135,46 +136,6 @@ class LinearLayer(UpdatableLayer):
     def update(self, deltas: Parameter):
         self._params += deltas
         self._delta = deltas
-
-
-# LOSS FUNCTIONS
-class LossFunction:
-    def __init__(self, fname="MSE"):
-        self._foward, self._backward = LossFunction.get_functions(fname)
-        self._buffer = None
-        
-    def foward(self, pred, label):
-        if self._buffer is not None:
-            print("No call to backward after previous foward call.")
-        self._buffer = (pred, label)
-        return self._foward(pred, label)
-    
-    def backward(self):
-        delta = self._backward(*self._buffer)
-        self._buffer = None
-        return delta
-        
-    @staticmethod
-    def get_functions(fname):
-        if fname == "MSE":
-            return (
-                lambda o, y: np.sum((o - y)**2) / (2*o.shape[0]), # function
-                lambda o, y: (o - y) / o.shape[0]                 # gradient
-            )
-        else:
-            raise ValueError(f"Invalid Activation Function: {fname}")
-
-
-# OPTIMIZER
-class Optimizer:
-    def __init__(self, eta=1e-3, l2_coeff=0.01, alpha=0.3):
-        # TODO fix momentum for iteration #0 with trainer class
-        def optimize(old: Parameter, grad: Parameter, old_delta: Parameter)-> Parameter:
-            return Parameter(
-                -eta*grad.weights + alpha*old_delta.weights - 2*l2_coeff*old.weights,
-                -eta*grad.bias    + alpha*old_delta.bias    - 2*l2_coeff*old.bias
-            )
-        self.optimize = optimize
         
 
 # NEURAL NETWORK CLASS (handles method chaining)
