@@ -6,9 +6,9 @@ import pandas as pd
 
 @dataclass
 class Dataset:
-    ids: np.ndarray
-    labels: Optional[np.ndarray]
-    data: np.ndarray
+    ids: np.array
+    labels: Optional[np.array]
+    data: np.array
     @property
     def shape(self):
         if self.labels is None:
@@ -18,6 +18,30 @@ class Dataset:
         else:
             labels_shape = self.labels.shape[1]
         return (self.data.shape[0], [self.data.shape[1], labels_shape])
+    
+
+def train_valid_test_split(dataset : Dataset, splits=(.5, .2, .3), seed=123, keep_original=False)-> (Dataset, Dataset, Dataset):
+    if len(splits) != 3 or (1-1e-2 >= sum(splits) or sum(splits) >= 1+1e-2):
+        raise ValueError(f"Invalid splits: {splits}")
+
+    total_size = dataset.shape[0]
+    rng = np.random.default_rng(seed)
+    permutation = rng.permutation(total_size)
+    
+    offsets = np.cumsum([int(splits[0]*total_size), int(splits[1]*total_size)])
+    
+    train_ids = permutation[:offsets[0]]
+    valid_ids = permutation[offsets[0]:offsets[1]]
+    test_ids  = permutation[offsets[1]:]
+    
+    # arrays generated are copies (due to advanced indexing)
+    train_dataset = Dataset(ids=dataset.ids[train_ids], labels=dataset.labels[train_ids], data=dataset.data[train_ids])
+    valid_dataset = Dataset(ids=dataset.ids[valid_ids], labels=dataset.labels[valid_ids], data=dataset.data[valid_ids])
+    test_dataset  = Dataset(ids=dataset.ids[test_ids], labels=dataset.labels[test_ids], data=dataset.data[test_ids])
+    
+    if not keep_original:
+        del dataset
+    return train_dataset, valid_dataset, test_dataset
     
     
 def read_ML_cup(dname, basedir="./ML_cup"):
