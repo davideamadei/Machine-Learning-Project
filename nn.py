@@ -5,19 +5,8 @@ from dataclasses import dataclass
 import numpy as np
 #local libraries
 from optimizer import Optimizer
+from util_classes import Parameter
 
-# DATACLASSES
-@dataclass
-class Parameter:
-    weights: np.array
-    bias: np.array
-    def __iadd__(self, other): # += operator
-        self.weights += other.weights
-        self.bias += other.bias
-        return self
-    def randomize(self, rng: np.random.Generator):
-        self.weights[:] = rng.random(self.weights.shape)
-        self.bias[:] = rng.random(self.bias.shape)
 # TODO: split into parameter, gradient, ...
 # Gradient = Parameter
 

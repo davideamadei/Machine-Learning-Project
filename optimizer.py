@@ -1,7 +1,7 @@
 #python libraries
 import numpy as np
 #local libraries
-from nn import Parameter
+from util_classes import Parameter
 
 class Optimizer:
     def __init__(self, eta=1e-3, l2_coeff=0.01, alpha=0.3):
