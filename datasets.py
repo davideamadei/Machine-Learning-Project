@@ -5,6 +5,28 @@ import pandas as pd
 from util_classes import Dataset
 
 
+def train_valid_split(dataset : Dataset, splits=(.7, .3), seed=123, keep_original=False)-> tuple[Dataset, Dataset]:
+    if len(splits) != 2 or (1-1e-2 >= sum(splits) or sum(splits) >= 1+1e-2):
+        raise ValueError(f"Invalid splits: {splits}")
+
+    total_size = dataset.shape[0]
+    rng = np.random.default_rng(seed)
+    permutation = rng.permutation(total_size)
+    
+    offset = int(splits[0]*total_size)
+    
+    train_ids = permutation[:offset]
+    valid_ids = permutation[offset:]
+    
+    # arrays generated are copies (due to advanced indexing)
+    train_dataset = Dataset(ids=dataset.ids[train_ids], labels=dataset.labels[train_ids], data=dataset.data[train_ids])
+    valid_dataset = Dataset(ids=dataset.ids[valid_ids], labels=dataset.labels[valid_ids], data=dataset.data[valid_ids])
+    
+    if not keep_original:
+        del dataset
+    return train_dataset, valid_dataset
+
+
 def train_valid_test_split(dataset : Dataset, splits=(.5, .2, .3), seed=123, keep_original=False)-> tuple[Dataset, Dataset, Dataset]:
     if len(splits) != 3 or (1-1e-2 >= sum(splits) or sum(splits) >= 1+1e-2):
         raise ValueError(f"Invalid splits: {splits}")
