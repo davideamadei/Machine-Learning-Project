@@ -8,20 +8,20 @@ data.py : contains interface to Datasets
 
 loss.py : contains loss functions
 - [class] LossFunction: defines generic loss function behavioud
--- corrently implements: MSE
+  - corrently implements: MSE
 
 estimator.py : contains model logic (esp. training utilities)
 - [class] Estimator: defines a trainable model
--- uses a LossFunction, Optimizer, NeuralNetwork
+  - uses a LossFunction, Optimizer, NeuralNetwork
 
 nn.py : contains neural network layers
 - [dataclass] Parameter: holder of weights and biases
--- currently overloaded also holdes gradients and deltas
+  - currently overloaded also holdes gradients and deltas
 - [abstract class] Layer: defines functions a Layer should implement
--- a concrete implementation is: ActivationFunction, (Dropout)
+  - a concrete implementation is: ActivationFunction, (Dropout)
 - [abstract class] UpdatableLayer: defines functions a Layer with parameters should implement
--- a concrete implementation is: LinearLayer, (ConvolutionalLayer)
+  - a concrete implementation is: LinearLayer, (ConvolutionalLayer)
 - [class] ActivationFunction: defines a generic activation function behaviour
--- currently implements: ReLU
+  - currently implements: ReLU
 - [class] LinearLayer: defines a linear layer
 - [class] NeuralNetwork: defines a NeuralNetwork (sequence of layers)
