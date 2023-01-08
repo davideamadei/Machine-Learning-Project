@@ -5,7 +5,30 @@ import pandas as pd
 from util_classes import Dataset
 
 
-def train_valid_split(dataset : Dataset, splits=(.7, .3), seed=123, keep_original=False)-> tuple[Dataset, Dataset]:
+def train_valid_split(dataset : Dataset, splits:tuple[int,int]=(.7, .3), seed=123, keep_original=False)-> tuple[Dataset, Dataset]:
+    """Splits dataset into training and validation.
+
+    Parameters
+    ----------
+    dataset : Dataset
+        dataset to partition
+    splits : tuple, optional
+        split proportions, by default (.7, .3)
+    seed : int, optional
+        to permuting the data, by default 123
+    keep_original : bool, optional
+        if False the original dataset is deleted, by default False
+
+    Returns
+    -------
+    tuple[Dataset, Dataset]
+        training, validation
+
+    Raises
+    ------
+    ValueError
+        in case splits is not a valid 2-partition
+    """
     if len(splits) != 2 or (1-1e-2 >= sum(splits) or sum(splits) >= 1+1e-2):
         raise ValueError(f"Invalid splits: {splits}")
 
@@ -27,7 +50,30 @@ def train_valid_split(dataset : Dataset, splits=(.7, .3), seed=123, keep_origina
     return train_dataset, valid_dataset
 
 
-def train_valid_test_split(dataset : Dataset, splits=(.5, .2, .3), seed=123, keep_original=False)-> tuple[Dataset, Dataset, Dataset]:
+def train_valid_test_split(dataset:Dataset, splits:tuple[int,int,int]=(.5, .2, .3), seed=123, keep_original=False)-> tuple[Dataset, Dataset, Dataset]:
+    """Splits dataset into training, validation and testing.
+
+    Parameters
+    ----------
+    dataset : Dataset
+        dataset to partition
+    splits : tuple, optional
+        split proportions, by default (.5, .2, .3)
+    seed : int, optional
+        to permuting the data, by default 123
+    keep_original : bool, optional
+        if False the original dataset is deleted, by default False
+
+    Returns
+    -------
+    tuple[Dataset, Dataset, Dataset]
+        training, validation, testing
+
+    Raises
+    ------
+    ValueError
+        if splits is not a valid 3-partition
+    """
     if len(splits) != 3 or (1-1e-2 >= sum(splits) or sum(splits) >= 1+1e-2):
         raise ValueError(f"Invalid splits: {splits}")
 
@@ -51,7 +97,27 @@ def train_valid_test_split(dataset : Dataset, splits=(.5, .2, .3), seed=123, kee
     return train_dataset, valid_dataset, test_dataset
     
     
-def read_ML_cup(dname, basedir="./ML_cup"):
+def read_ML_cup(dname: str, basedir="./ML_cup") -> Dataset:
+    """Loads ML cup dataset and generates a Dataset class.
+
+    Parameters
+    ----------
+    dname : str
+        Either "train" to load the training dataset, or "test"
+        to load the testing dataset (without labels)
+    basedir : str, optional
+        path to ML cup directory, by default "./ML_cup"
+
+    Returns
+    -------
+    Dataset
+        dataset containing ids, data and labels (if available)
+
+    Raises
+    ------
+    ValueError
+        if dname is invalid
+    """
     basedir = basedir if basedir[-1] != "/" else basedir[:-1]
     TRAIN_PATH = f"{basedir}/ML-CUP22-TR.csv"
     TEST_PATH  = f"{basedir}/ML-CUP22-TS.csv"
@@ -75,7 +141,31 @@ def read_ML_cup(dname, basedir="./ML_cup"):
         raise ValueError(f"Invalid Dataset Name: {dname}")
     return dataset
 
-def read_monks(number, dname, basedir="./monks"):
+def read_monks(number: int, dname: str, basedir="./monks")-> Dataset:
+    """Loads monks dataset and generates a Dataset class.
+
+    Parameters
+    ----------
+    number : int
+        which monk dataset, either 1, 2 or 3
+    dname : str
+        which type of dataset, either "train" or "test"
+    basedir : str, optional
+        path to monk directory, by default "./monks"
+
+    Returns
+    -------
+    Dataset
+        dataset containing ids, data and labels (if available)
+
+    Raises
+    ------
+    ValueError
+        if number is invalid (not in [1,2,3])
+    ValueError
+        if dname is invalid (not in ["train", "test"])
+    """
+
     basedir = basedir if basedir[-1] != "/" else basedir[:-1]
     if number not in (1,2,3):
         raise ValueError(f"Invalid Dataset Number: {number}")

@@ -1,6 +1,6 @@
 # python libraries
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from typing import Callable, Iterable
 # external libraries
 import numpy as np
 #local libraries
@@ -14,54 +14,167 @@ from util_classes import Parameter
 class Layer(ABC):
     """Layer without parameters"""
     @abstractmethod
-    def foward(self, data):
+    def foward(self, data:np.ndarray)->np.ndarray:
+        """Foward call of a Layer.
+
+        Parameters
+        ----------
+        data : np.ndarray
+            Layer input
+
+        Returns
+        -------
+        np.ndarray
+            Layer output
+        """
         pass
     @abstractmethod
-    def backward(self, grad):
+    def backward(self, grad:np.ndarray)->np.ndarray:
+        """Backward call of a Layer.
+
+        Parameters
+        ----------
+        grad : np.ndarray
+            gradient with respect to the output.
+
+        Returns
+        -------
+        np.ndarray
+            gradient with respect to the input
+        """
         pass
     
 class UpdatableLayer(Layer):
     """Layer with parameters"""
     @property
     @abstractmethod
-    def rng(self, rng):
+    def rng(self, rng:np.random.Generator)->None:
+        """Property that manages randomness. Property should be set only.
+        And setting this property should cause all weights to be reset.
+
+        Parameters
+        ----------
+        rng : np.random.Generator
+            random number generator used to initialize weights.
+        """
         pass
     @property
     @abstractmethod
     def gradients(self)-> Parameter:
+        """Gradients with respect to the Layer Parameters. Property should be get only.
+
+        Returns
+        -------
+        Parameter
+            gradients with respect to weights and biases
+        """
         pass
     @property
     @abstractmethod
     def deltas(self)-> Parameter:
+        """Deltas of the Layer Parameters (previous update to said Parameters).
+        Property should be get only.
+
+        Returns
+        -------
+        Parameter
+            last change of weights and biases
+        """
         pass
     @property
     @abstractmethod
     def parameters(self)-> Parameter:
+        """Parameters of a Layer. Property should be get only.
+
+        Returns
+        -------
+        Parameter
+            weights and biases
+        """
         pass
     @abstractmethod
     def update(self, deltas: Parameter)-> None:
+        """Function that should update current Parameters with new delta.
+        update should follow the formula: 
+        new = old + delta
+
+        Parameters
+        ----------
+        deltas : Parameter
+            update quantities of weights and biases
+        """
         pass
     
 
 # ACTIVATION FUNCTIONS (Layer with no parameters)
 class ActivationFunction(Layer):
+    """Defines a generic activation function (Layer).
+    """
     def __init__(self, fname="ReLU"):
+        """Initializes a new instance.
+
+        Parameters
+        ----------
+        fname : str, optional
+            name describing an activation function, by default "ReLU"
+        """
         self._foward, self._backward = ActivationFunction.get_functions(fname)
         self._buffer = None
     
-    def foward(self, data):
+    def foward(self, data:np.ndarray)-> np.ndarray:
+        """Foward call of the Layer
+
+        Parameters
+        ----------
+        data : np.ndarray
+            Layer input
+
+        Returns
+        -------
+        np.ndarray
+            Layer output
+        """
         if self._buffer is not None:
             print("No call to backward after previous foward call.")
         self._buffer = data
         return self._foward(data)
     
-    def backward(self, grad):
+    def backward(self, grad:np.ndarray)-> np.ndarray:
+        """Backward call of a Layer.
+
+        Parameters
+        ----------
+        grad : np.ndarray
+            gradient with respect to the output.
+
+        Returns
+        -------
+        np.ndarray
+            gradient with respect to the input
+        """
         delta = grad * self._backward(self._buffer)
         self._buffer = None
         return delta
     
     @staticmethod
-    def get_functions(fname):
+    def get_functions(fname:str)->tuple[Callable[[np.ndarray], np.ndarray], Callable[[np.ndarray], np.ndarray]]:
+        """Given a name identifing a function. Returns said function and its derivative.
+
+        Parameters
+        ----------
+        fname : str
+            Name of a supported fuction. Currently: ReLU.
+
+        Returns
+        -------
+        tuple[Callable[[np.ndarray], np.ndarray], Callable[[np.ndarray], np.ndarray]]
+            function and its derivative
+
+        Raises
+        ------
+        ValueError
+            if fname is not supported
+        """
         if fname == "ReLU":
             return (
                 lambda x: x*(x>0), # function
@@ -73,7 +186,18 @@ class ActivationFunction(Layer):
 
 # LAYERS: LINEAR (Layer with parameters)
 class LinearLayer(UpdatableLayer):
-    def __init__(self, shape, seed=None):     
+    """Defines a linear layer.
+    """
+    def __init__(self, shape:tuple[int,int], seed:int=None):
+        """Intializes a new linear layer.
+
+        Parameters
+        ----------
+        shape : tuple[int,int]
+            Layer input and output dimension.
+        seed : int or None, optional
+            seed used to initialize weights, by default None
+        """
         self._params = Parameter(
             weights= np.empty(shape[::-1]), 
             bias   = np.empty(shape[1])
@@ -94,28 +218,64 @@ class LinearLayer(UpdatableLayer):
         self.rng = np.random.default_rng(seed)
 
     # set-only property
-    def _set_rng(self, rng):
+    def _set_rng(self, rng:np.random.Generator):
+        """Sets a new random number generator and reinitalizes all weights and biases.
+
+        Parameters
+        ----------
+        rng : np.random.Generator
+            new random number generator
+        """
         self._rng = rng
         self._params.randomize(self._rng)
     rng = property(fset=_set_rng)
+
     @property
     def gradients(self)-> Parameter:
         return self._grad
+
     @property
     def deltas(self)-> Parameter:
         return self._delta
+        
     @property
     def parameters(self)-> Parameter:
         return self._params
         
-    def foward(self, data):
+    def foward(self, data:np.ndarray)-> np.ndarray:
+        """Foward call of this Layer.
+        x -> Wx+b, where W are the weights and b the biases.
+
+        Parameters
+        ----------
+        data : np.ndarray
+            input
+
+        Returns
+        -------
+        np.ndarray
+            output
+        """
         if self._buffer is not None:
             print("No call to backward after previous foward call.")
         self._buffer = data
         output = data @ self._params.weights.T + self._params.bias.T
         return output
     
-    def backward(self, output_gradient):
+    def backward(self, output_gradient:np.ndarray)->np.ndarray:
+        """Backward call of this Layer.
+        Internally also computes gradients with respect to weights and biases.
+
+        Parameters
+        ----------
+        output_gradient : np.ndarray
+            gradient with respect to the output.
+
+        Returns
+        -------
+        np.ndarray
+            gradient with respect to the input
+        """
         self._grad.bias[:] = output_gradient.sum(axis=0)
         self._grad.weights[:] = (output_gradient.T @ self._buffer).sum(axis=0)
         self._buffer = None
@@ -129,13 +289,37 @@ class LinearLayer(UpdatableLayer):
 
 # NEURAL NETWORK CLASS (handles method chaining)
 class NeuralNetwork:
-    def __init__(self, net, seed=None):
+    """NeuralNetwork
+    """
+    def __init__(self, net:Iterable[Layer], seed:int=None):
+        """Intializes a new NeuralNetwork.
+
+        Parameters
+        ----------
+        net : Iterable[Layer]
+            a sequence of layer, in the order in which they should be applied.
+        seed : int or None, optional
+            seed to initialize weights in all UpdatableLayer, by default None
+
+        Raises
+        ------
+        ValueError
+            in case net has bad structure.
+        """
         NeuralNetwork.check_network(net)
         self.net = net
         self._buffer = None
         self._rng = np.random.default_rng(seed)
 
-    def _set_rng(self, rng):
+    def _set_rng(self, rng:np.random.Generator):
+        """Sets a new random number generator and reinitalizes all weights and biases.
+        The new rng is also propagated on all instances of UpdatableLayer.
+
+        Parameters
+        ----------
+        rng : np.random.Generator
+            new random number generator
+        """
         self._rng = rng
         for layer in self.net:
             if isinstance(layer, UpdatableLayer):
@@ -143,7 +327,20 @@ class NeuralNetwork:
                 layer.rng = self._rng
     rng = property(fset=_set_rng)
             
-    def foward(self, data):
+    def foward(self, data:np.ndarray)->np.ndarray:
+        """Foward call of the network. Propagates outputs of each layer as inputs
+        to the next.
+
+        Parameters
+        ----------
+        data : np.ndarray
+            input
+
+        Returns
+        -------
+        np.ndarray
+            output
+        """
         if self._buffer is not None:
             print("No call to backward after previous foward call.") 
         out = data
@@ -151,12 +348,33 @@ class NeuralNetwork:
             out = layer.foward(out)
         return out
     
-    def backward(self, grad):
+    def backward(self, grad:np.ndarray)->np.ndarray:
+        """Backward call of the network. Propagates gradient with respect to
+        the output layer across all layes and returns gradient with respect to inputs.
+
+        Parameters
+        ----------
+        grad : np.ndarray
+            _description_
+
+        Returns
+        -------
+        np.ndarray
+            _description_
+        """
         for layer in self.net[::-1]:
             grad = layer.backward(grad)
         return grad
     
     def optimize(self, optimizer: Optimizer):
+        """updates all layers using the given optimizer. Gradients
+        have to be computed before this call.
+
+        Parameters
+        ----------
+        optimizer : Optimizer
+            an optimizer that selects how weights and biases are updated
+        """
         for layer in self.net:
             if isinstance(layer, UpdatableLayer):
                 layer.update(optimizer.optimize(
@@ -165,6 +383,19 @@ class NeuralNetwork:
 
     @staticmethod
     def check_network(net):
+        """(WIP) function that check whenever layers follow a structure that makes sense.
+        Currently checks that net consists of the alternating of UpdatableLayer and ActivationFunction.
+
+        Parameters
+        ----------
+        net : _type_
+            _description_
+
+        Raises
+        ------
+        ValueError
+            _description_
+        """
         expected_layer_type = UpdatableLayer
         for i, layer in enumerate(net):
             if not isinstance(layer, expected_layer_type):

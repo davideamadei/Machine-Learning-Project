@@ -1,16 +1,36 @@
 #python libraries
 import numpy as np
+from typing import Iterator, Callable
 #local libraries
 from loss import LossFunction
 from optimizer import Optimizer
+from nn import NeuralNetwork
+from util_classes import Dataset
 
 class Estimator:
-    def __init__(self, net, *,
-        loss=LossFunction(), optimizer=Optimizer(),
-        batchsize=1, start_it=0, seed=None
+    """Utility class defining generic training behaviour.
+    """
+    def __init__(self, net:NeuralNetwork, *,
+        loss:LossFunction= LossFunction(), optimizer:Optimizer= Optimizer(),
+        batchsize:int= 1, seed:int= None
     ):
+        """Initializes a new Estimator.
+
+        Parameters
+        ----------
+        net : NeuralNetwork
+            NeuralNetwork to train.
+        loss : LossFunction, optional
+            loss function used during training, by default LossFunction()
+        optimizer : Optimizer, optional
+            optimizer used to update weights and biases, by default Optimizer()
+        batchsize : int, optional
+            batch size used during training, by default 1
+        seed : int or None, optional
+            seed used to initialize weights of the NeuralNetwork, by default None
+        """
         self.net = net
-        self.t = start_it
+        self.t = 0
         self.loss = loss
         self.optimizer = optimizer
         self.batchsize = batchsize
@@ -19,7 +39,25 @@ class Estimator:
             # re-randomize all layers with new rng
             self.net.rng = self.rng
     
-    def update_params(net=None, loss=None, optimizer=None, batchsize=None, seed=None):
+    def update_params(self, net:NeuralNetwork=None, loss:LossFunction=None,
+        optimizer:Optimizer=None, batchsize:int=None, seed:int=None
+    )-> None:
+        """Updates current Estimator with new parameters. This is equivalent to creating a
+        new estimator. In case the net is not modified the same memory will be used.
+
+        Parameters
+        ----------
+        net : NeuralNetwork or None, optional
+            If not None the net will be updated (weights will be reset according to seed), by default None
+        loss : LossFunction or None, optional
+            If not None the loss will be updated, by default None
+        optimizer : Optimizer or None, optional
+            If not None the optimizer will be updated, by default None
+        batchsize : int or None, optional
+            If not None the batch size will be updated, by default None
+        seed : int or None, optional
+            If not None the seed will be changed (and net updated), by default None
+        """
         self.t = 0
         if seed is not None:
             self.rng = np.random.default_rng(seed)
@@ -34,7 +72,23 @@ class Estimator:
             self.batchsize = batchsize
     
     @staticmethod
-    def get_minibatches(x, y, batchsize):
+    def get_minibatches(x:np.ndarray, y:np.ndarray, batchsize:int)-> Iterator[tuple[np.ndarray,np.ndarray]]:
+        """Returns minibatches of given size over (x, y).
+
+        Parameters
+        ----------
+        x : np.ndarray
+            data array
+        y : np.ndarray
+            label array
+        batchsize : int
+            batch size of yielded minibatches
+
+        Yields
+        ------
+        Iterator[tuple[np.ndarray,np.ndarray]]
+            iterator over minibatches
+        """
         size = x.shape[0]
         batchtotal, remainder = divmod(size, batchsize)
         for i in range(batchtotal):
@@ -47,7 +101,22 @@ class Estimator:
                 y[batchtotal*batchsize:]
             )
         
-    def train(self, dataset, *, n_epochs=1, callback=print, mb_callback=None):
+    def train(self, dataset:Dataset, *, n_epochs:int=1, 
+        callback:Callable[[dict],None]=print, mb_callback:Callable[[dict],None]=None
+    )-> None:
+        """Trains the net with passed dataset.
+
+        Parameters
+        ----------
+        dataset : Dataset
+            dataset to train on
+        n_epochs : int, optional
+            number of epoch the training should continue, by default 1
+        callback : Callable[[dict],None], optional
+            callback after an epoch has finished, by default print
+        mb_callback : Callable[[dict],None], optional
+            callback after a minibatch has finihed, by default None
+        """
         for i in range(n_epochs):
             # permute dataset
             permutation = self.rng.permutation(dataset.shape[0])
