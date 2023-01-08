@@ -11,14 +11,16 @@ class Parameter:
     - hold gradients with respect to weights and biases
     - hold updates that should (or have been applied) to weights and biases
     """
+
     weights: np.array
     bias: np.array
-    def __iadd__(self, other): # += operator
-        """support for += operator
-        """
+
+    def __iadd__(self, other):  # += operator
+        """support for += operator"""
         self.weights += other.weights
         self.bias += other.bias
         return self
+
     def randomize(self, rng: np.random.Generator):
         """random initialization of weights and biases
 
@@ -30,6 +32,7 @@ class Parameter:
         self.weights[:] = rng.random(self.weights.shape)
         self.bias[:] = rng.random(self.bias.shape)
 
+
 @dataclass
 class Dataset:
     """A simple dataclass holding a dataset.
@@ -39,16 +42,18 @@ class Dataset:
     - ids: unique identifies of data and labels.
     All three of these should have same 0-dimension.
     """
+
     ids: np.array
     labels: Optional[np.array]
     data: np.array
+
     @property
-    def shape(self)-> tuple[int,List[int,Optional[int]]]:
+    def shape(self) -> tuple[int, tuple[int, Optional[int]]]:
         """Returns the shape of the dataset.
 
         Returns
         -------
-        tuple[int,List[int,Optional[int]]]
+        tuple[int,tuple[int,Optional[int]]]
             (#samples, [#features, dim(labels)])
         """
         if self.labels is None:
@@ -57,4 +62,4 @@ class Dataset:
             labels_shape = 1
         else:
             labels_shape = self.labels.shape[1]
-        return (self.data.shape[0], [self.data.shape[1], labels_shape])
+        return (self.data.shape[0], (self.data.shape[1], labels_shape))

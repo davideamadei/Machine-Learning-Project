@@ -1,9 +1,11 @@
 # python libraries
 from abc import ABC, abstractmethod
-from typing import Callable, Iterable
+from typing import Callable, List
+
 # external libraries
 import numpy as np
-#local libraries
+
+# local libraries
 from optimizer import Optimizer
 from util_classes import Parameter
 
@@ -13,8 +15,9 @@ from util_classes import Parameter
 # ABSTRACT BASE CLASSES (INTERFACES)
 class Layer(ABC):
     """Layer without parameters"""
+
     @abstractmethod
-    def foward(self, data:np.ndarray)->np.ndarray:
+    def foward(self, data: np.ndarray) -> np.ndarray:
         """Foward call of a Layer.
 
         Parameters
@@ -28,8 +31,9 @@ class Layer(ABC):
             Layer output
         """
         pass
+
     @abstractmethod
-    def backward(self, grad:np.ndarray)->np.ndarray:
+    def backward(self, grad: np.ndarray) -> np.ndarray:
         """Backward call of a Layer.
 
         Parameters
@@ -43,24 +47,27 @@ class Layer(ABC):
             gradient with respect to the input
         """
         pass
-    
+
+
 class UpdatableLayer(Layer):
     """Layer with parameters"""
-    @property
-    @abstractmethod
-    def rng(self, rng:np.random.Generator)->None:
+
+    def _set_rng(self, anrng: np.random.Generator) -> None:
         """Property that manages randomness. Property should be set only.
         And setting this property should cause all weights to be reset.
 
         Parameters
         ----------
-        rng : np.random.Generator
+        anrng : np.random.Generator
             random number generator used to initialize weights.
         """
         pass
+
+    rng = property(fset=abstractmethod(_set_rng))
+
     @property
     @abstractmethod
-    def gradients(self)-> Parameter:
+    def gradients(self) -> Parameter:
         """Gradients with respect to the Layer Parameters. Property should be get only.
 
         Returns
@@ -69,9 +76,10 @@ class UpdatableLayer(Layer):
             gradients with respect to weights and biases
         """
         pass
+
     @property
     @abstractmethod
-    def deltas(self)-> Parameter:
+    def deltas(self) -> Parameter:
         """Deltas of the Layer Parameters (previous update to said Parameters).
         Property should be get only.
 
@@ -81,9 +89,10 @@ class UpdatableLayer(Layer):
             last change of weights and biases
         """
         pass
+
     @property
     @abstractmethod
-    def parameters(self)-> Parameter:
+    def parameters(self) -> Parameter:
         """Parameters of a Layer. Property should be get only.
 
         Returns
@@ -92,10 +101,11 @@ class UpdatableLayer(Layer):
             weights and biases
         """
         pass
+
     @abstractmethod
-    def update(self, deltas: Parameter)-> None:
+    def update(self, deltas: Parameter) -> None:
         """Function that should update current Parameters with new delta.
-        update should follow the formula: 
+        update should follow the formula:
         new = old + delta
 
         Parameters
@@ -104,12 +114,12 @@ class UpdatableLayer(Layer):
             update quantities of weights and biases
         """
         pass
-    
+
 
 # ACTIVATION FUNCTIONS (Layer with no parameters)
 class ActivationFunction(Layer):
-    """Defines a generic activation function (Layer).
-    """
+    """Defines a generic activation function (Layer)."""
+
     def __init__(self, fname="ReLU"):
         """Initializes a new instance.
 
@@ -120,8 +130,8 @@ class ActivationFunction(Layer):
         """
         self._foward, self._backward = ActivationFunction.get_functions(fname)
         self._buffer = None
-    
-    def foward(self, data:np.ndarray)-> np.ndarray:
+
+    def foward(self, data: np.ndarray) -> np.ndarray:
         """Foward call of the Layer
 
         Parameters
@@ -138,8 +148,8 @@ class ActivationFunction(Layer):
             print("No call to backward after previous foward call.")
         self._buffer = data
         return self._foward(data)
-    
-    def backward(self, grad:np.ndarray)-> np.ndarray:
+
+    def backward(self, grad: np.ndarray) -> np.ndarray:
         """Backward call of a Layer.
 
         Parameters
@@ -155,9 +165,11 @@ class ActivationFunction(Layer):
         delta = grad * self._backward(self._buffer)
         self._buffer = None
         return delta
-    
+
     @staticmethod
-    def get_functions(fname:str)->tuple[Callable[[np.ndarray], np.ndarray], Callable[[np.ndarray], np.ndarray]]:
+    def get_functions(
+        fname: str,
+    ) -> tuple[Callable[[np.ndarray], np.ndarray], Callable[[np.ndarray], np.ndarray]]:
         """Given a name identifing a function. Returns said function and its derivative.
 
         Parameters
@@ -177,8 +189,8 @@ class ActivationFunction(Layer):
         """
         if fname == "ReLU":
             return (
-                lambda x: x*(x>0), # function
-                lambda x: 1*(x>0)  # gradient
+                lambda x: x * (x > 0),  # function
+                lambda x: 1 * (x > 0),  # gradient
             )
         else:
             raise ValueError(f"Invalid Activation Function: {fname}")
@@ -186,9 +198,9 @@ class ActivationFunction(Layer):
 
 # LAYERS: LINEAR (Layer with parameters)
 class LinearLayer(UpdatableLayer):
-    """Defines a linear layer.
-    """
-    def __init__(self, shape:tuple[int,int], seed:int=None):
+    """Defines a linear layer."""
+
+    def __init__(self, shape: tuple[int, int], seed: int = None):
         """Intializes a new linear layer.
 
         Parameters
@@ -198,27 +210,18 @@ class LinearLayer(UpdatableLayer):
         seed : int or None, optional
             seed used to initialize weights, by default None
         """
-        self._params = Parameter(
-            weights= np.empty(shape[::-1]), 
-            bias   = np.empty(shape[1])
-        )
+        self._params = Parameter(weights=np.empty(shape[::-1]), bias=np.empty(shape[1]))
         # gradient
-        self._grad = Parameter(
-            weights= np.empty(shape[::-1]), 
-            bias   = np.empty(shape[1])
-        )
+        self._grad = Parameter(weights=np.empty(shape[::-1]), bias=np.empty(shape[1]))
         # old weight delta (used in momentum)
-        self._delta = Parameter(
-            weights= np.zeros(shape[::-1]),
-            bias   = np.zeros(shape[1])
-        )
+        self._delta = Parameter(weights=np.zeros(shape[::-1]), bias=np.zeros(shape[1]))
         # input buffer (used for backprop)
         self._buffer = None
         # set rng and initialize weights
         self.rng = np.random.default_rng(seed)
 
     # set-only property
-    def _set_rng(self, rng:np.random.Generator):
+    def _set_rng(self, rng: np.random.Generator):
         """Sets a new random number generator and reinitalizes all weights and biases.
 
         Parameters
@@ -228,21 +231,22 @@ class LinearLayer(UpdatableLayer):
         """
         self._rng = rng
         self._params.randomize(self._rng)
+
     rng = property(fset=_set_rng)
 
     @property
-    def gradients(self)-> Parameter:
+    def gradients(self) -> Parameter:
         return self._grad
 
     @property
-    def deltas(self)-> Parameter:
+    def deltas(self) -> Parameter:
         return self._delta
-        
+
     @property
-    def parameters(self)-> Parameter:
+    def parameters(self) -> Parameter:
         return self._params
-        
-    def foward(self, data:np.ndarray)-> np.ndarray:
+
+    def foward(self, data: np.ndarray) -> np.ndarray:
         """Foward call of this Layer.
         x -> Wx+b, where W are the weights and b the biases.
 
@@ -261,8 +265,8 @@ class LinearLayer(UpdatableLayer):
         self._buffer = data
         output = data @ self._params.weights.T + self._params.bias.T
         return output
-    
-    def backward(self, output_gradient:np.ndarray)->np.ndarray:
+
+    def backward(self, output_gradient: np.ndarray) -> np.ndarray:
         """Backward call of this Layer.
         Internally also computes gradients with respect to weights and biases.
 
@@ -279,24 +283,24 @@ class LinearLayer(UpdatableLayer):
         self._grad.bias[:] = output_gradient.sum(axis=0)
         self._grad.weights[:] = (output_gradient.T @ self._buffer).sum(axis=0)
         self._buffer = None
-        input_gradient = (output_gradient @ self._params.weights)
+        input_gradient = output_gradient @ self._params.weights
         return input_gradient
-        
+
     def update(self, deltas: Parameter):
         self._params += deltas
         self._delta = deltas
-        
+
 
 # NEURAL NETWORK CLASS (handles method chaining)
 class NeuralNetwork:
-    """NeuralNetwork
-    """
-    def __init__(self, net:Iterable[Layer], seed:int=None):
+    """NeuralNetwork"""
+
+    def __init__(self, net: List[Layer], seed: int = None):
         """Intializes a new NeuralNetwork.
 
         Parameters
         ----------
-        net : Iterable[Layer]
+        net : List[Layer]
             a sequence of layer, in the order in which they should be applied.
         seed : int or None, optional
             seed to initialize weights in all UpdatableLayer, by default None
@@ -311,7 +315,7 @@ class NeuralNetwork:
         self._buffer = None
         self._rng = np.random.default_rng(seed)
 
-    def _set_rng(self, rng:np.random.Generator):
+    def _set_rng(self, rng: np.random.Generator):
         """Sets a new random number generator and reinitalizes all weights and biases.
         The new rng is also propagated on all instances of UpdatableLayer.
 
@@ -325,9 +329,10 @@ class NeuralNetwork:
             if isinstance(layer, UpdatableLayer):
                 # rng is a property hence all layers are regenerated
                 layer.rng = self._rng
+
     rng = property(fset=_set_rng)
-            
-    def foward(self, data:np.ndarray)->np.ndarray:
+
+    def foward(self, data: np.ndarray) -> np.ndarray:
         """Foward call of the network. Propagates outputs of each layer as inputs
         to the next.
 
@@ -342,13 +347,13 @@ class NeuralNetwork:
             output
         """
         if self._buffer is not None:
-            print("No call to backward after previous foward call.") 
+            print("No call to backward after previous foward call.")
         out = data
         for layer in self.net:
             out = layer.foward(out)
         return out
-    
-    def backward(self, grad:np.ndarray)->np.ndarray:
+
+    def backward(self, grad: np.ndarray) -> np.ndarray:
         """Backward call of the network. Propagates gradient with respect to
         the output layer across all layes and returns gradient with respect to inputs.
 
@@ -365,7 +370,7 @@ class NeuralNetwork:
         for layer in self.net[::-1]:
             grad = layer.backward(grad)
         return grad
-    
+
     def optimize(self, optimizer: Optimizer):
         """updates all layers using the given optimizer. Gradients
         have to be computed before this call.
@@ -377,9 +382,9 @@ class NeuralNetwork:
         """
         for layer in self.net:
             if isinstance(layer, UpdatableLayer):
-                layer.update(optimizer.optimize(
-                    layer.parameters, layer.gradients, layer.deltas
-                ))
+                layer.update(
+                    optimizer.optimize(layer.parameters, layer.gradients, layer.deltas)
+                )
 
     @staticmethod
     def check_network(net):
@@ -388,16 +393,22 @@ class NeuralNetwork:
 
         Parameters
         ----------
-        net : _type_
-            _description_
+        net : List[Layer]
+            a sequence of layer
 
         Raises
         ------
         ValueError
-            _description_
+            in case net has bad structure.
         """
         expected_layer_type = UpdatableLayer
         for i, layer in enumerate(net):
             if not isinstance(layer, expected_layer_type):
-                raise ValueError(f"layer #{i} is of type {type(layer)} expected type is {expected_layer_type}")
-            expected_layer_type = ActivationFunction if expected_layer_type == UpdatableLayer else UpdatableLayer
+                raise ValueError(
+                    f"layer #{i} is of type {type(layer)} expected type is {expected_layer_type}"
+                )
+            expected_layer_type = (
+                ActivationFunction
+                if expected_layer_type == UpdatableLayer
+                else UpdatableLayer
+            )

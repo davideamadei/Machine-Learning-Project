@@ -1,18 +1,25 @@
-#python libraries
+# python libraries
 import numpy as np
 from typing import Iterator, Callable
-#local libraries
+
+# local libraries
 from loss import LossFunction
 from optimizer import Optimizer
 from nn import NeuralNetwork
 from util_classes import Dataset
 
+
 class Estimator:
-    """Utility class defining generic training behaviour.
-    """
-    def __init__(self, net:NeuralNetwork, *,
-        loss:LossFunction= LossFunction(), optimizer:Optimizer= Optimizer(),
-        batchsize:int= 1, seed:int= None
+    """Utility class defining generic training behaviour."""
+
+    def __init__(
+        self,
+        net: NeuralNetwork,
+        *,
+        loss: LossFunction = LossFunction(),
+        optimizer: Optimizer = Optimizer(),
+        batchsize: int = 1,
+        seed: int = None
     ):
         """Initializes a new Estimator.
 
@@ -38,10 +45,15 @@ class Estimator:
         if seed != None:
             # re-randomize all layers with new rng
             self.net.rng = self.rng
-    
-    def update_params(self, net:NeuralNetwork=None, loss:LossFunction=None,
-        optimizer:Optimizer=None, batchsize:int=None, seed:int=None
-    )-> None:
+
+    def update_params(
+        self,
+        net: NeuralNetwork = None,
+        loss: LossFunction = None,
+        optimizer: Optimizer = None,
+        batchsize: int = None,
+        seed: int = None,
+    ) -> None:
         """Updates current Estimator with new parameters. This is equivalent to creating a
         new estimator. In case the net is not modified the same memory will be used.
 
@@ -70,9 +82,11 @@ class Estimator:
             self.optimizer = optimizer
         if batchsize is not None:
             self.batchsize = batchsize
-    
+
     @staticmethod
-    def get_minibatches(x:np.ndarray, y:np.ndarray, batchsize:int)-> Iterator[tuple[np.ndarray,np.ndarray]]:
+    def get_minibatches(
+        x: np.ndarray, y: np.ndarray, batchsize: int
+    ) -> Iterator[tuple[np.ndarray, np.ndarray]]:
         """Returns minibatches of given size over (x, y).
 
         Parameters
@@ -92,18 +106,20 @@ class Estimator:
         size = x.shape[0]
         batchtotal, remainder = divmod(size, batchsize)
         for i in range(batchtotal):
-            mini_x = x[i*batchsize:(i+1)*batchsize]
-            mini_y = y[i*batchsize:(i+1)*batchsize]
+            mini_x = x[i * batchsize : (i + 1) * batchsize]
+            mini_y = y[i * batchsize : (i + 1) * batchsize]
             yield mini_x, mini_y
         if remainder > 0:
-            yield (
-                x[batchtotal*batchsize:],
-                y[batchtotal*batchsize:]
-            )
-        
-    def train(self, dataset:Dataset, *, n_epochs:int=1, 
-        callback:Callable[[dict],None]=print, mb_callback:Callable[[dict],None]=None
-    )-> None:
+            yield (x[batchtotal * batchsize :], y[batchtotal * batchsize :])
+
+    def train(
+        self,
+        dataset: Dataset,
+        *,
+        n_epochs: int = 1,
+        callback: Callable[[dict], None] = print,
+        mb_callback: Callable[[dict], None] = None
+    ) -> None:
         """Trains the net with passed dataset.
 
         Parameters
@@ -123,8 +139,10 @@ class Estimator:
             x = dataset.data[permutation]
             y = dataset.labels[permutation]
             # iterate minibatches
-            avg_loss, batchcount = 0., np.ceil(x.shape[0] / self.batchsize)
-            for b, (mini_x, mini_y) in enumerate(Estimator.get_minibatches(x, y, self.batchsize)):
+            avg_loss, batchcount = 0.0, np.ceil(x.shape[0] / self.batchsize)
+            for b, (mini_x, mini_y) in enumerate(
+                Estimator.get_minibatches(x, y, self.batchsize)
+            ):
                 pred = self.net.foward(mini_x)
                 loss = self.loss.foward(pred, mini_y)
                 if mb_callback is not None:

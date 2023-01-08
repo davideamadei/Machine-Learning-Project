@@ -1,12 +1,12 @@
-#python libraries
+# python libraries
 import numpy as np
 from typing import Callable
 
 # LOSS FUNCTIONS
 class LossFunction:
-    """Defines a generic loss function.
-    """
-    def __init__(self, fname:str="MSE"):
+    """Defines a generic loss function."""
+
+    def __init__(self, fname: str = "MSE"):
         """Initializes a new instance.
 
         Parameters
@@ -17,8 +17,8 @@ class LossFunction:
         """
         self._foward, self._backward = LossFunction.get_functions(fname)
         self._buffer = None
-        
-    def foward(self, pred:np.ndarray, label:np.ndarray)->np.ndarray:
+
+    def foward(self, pred: np.ndarray, label: np.ndarray) -> np.ndarray:
         """Returns loss of predictions and labels.
 
         Parameters
@@ -37,8 +37,8 @@ class LossFunction:
             print("No call to backward after previous foward call.")
         self._buffer = (pred, label)
         return self._foward(pred, label)
-    
-    def backward(self)-> np.ndarray:
+
+    def backward(self) -> np.ndarray:
         """Returns gradients of the loss with respects to the predictions.
 
         Returns
@@ -49,9 +49,14 @@ class LossFunction:
         delta = self._backward(*self._buffer)
         self._buffer = None
         return delta
-        
+
     @staticmethod
-    def get_functions(fname:str)->tuple[Callable[[np.ndarray, np.ndarray], float], Callable[[np.ndarray, np.ndarray], np.ndarray]]:
+    def get_functions(
+        fname: str,
+    ) -> tuple[
+        Callable[[np.ndarray, np.ndarray], float],
+        Callable[[np.ndarray, np.ndarray], np.ndarray],
+    ]:
         """Given a name identifing a function. Returns said function and its derivative.
 
         Parameters
@@ -71,8 +76,8 @@ class LossFunction:
         """
         if fname == "MSE":
             return (
-                lambda o, y: np.sum((o - y)**2) / (2*o.shape[0]), # function
-                lambda o, y: (o - y) / o.shape[0]                 # gradient
+                lambda o, y: np.sum((o - y) ** 2) / (2 * o.shape[0]),  # function
+                lambda o, y: (o - y) / o.shape[0],  # gradient
             )
         else:
             raise ValueError(f"Invalid Activation Function: {fname}")
