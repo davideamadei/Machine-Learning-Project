@@ -1,5 +1,10 @@
 # Machine-Learning-Project
 
+General conventions:
+- documentation generated with ([vscode-plugin](https://marketplace.visualstudio.com/items?itemName=njpwerner.autodocstring)).
+  - set the plugin to numpy mode (with typing)
+- [maybe] we could use a code formatter [black](https://github.com/psf/black)
+
 Current Code Structure is as follows:
 
 data.py : contains interface to Datasets
