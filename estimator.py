@@ -46,6 +46,10 @@ class Estimator:
             # re-randomize all layers with new rng
             self.net.rng = self.rng
 
+    def reset(self):
+        self.t = 0
+        self.net.rng = self.rng
+
     def update_params(
         self,
         net: NeuralNetwork = None,
@@ -82,8 +86,7 @@ class Estimator:
         if batchsize is not None:
             self.batchsize = batchsize
         # reset state
-        self.t = 0
-        self.net.rng = self.rng
+        self.reset()
 
     @staticmethod
     def get_minibatches(
