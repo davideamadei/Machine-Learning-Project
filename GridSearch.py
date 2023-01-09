@@ -1,6 +1,6 @@
 # external libraries
 import numpy as np
-from typing import Iterator
+from typing import Iterator, Callable
 import itertools
 
 # local libraries
@@ -61,14 +61,17 @@ class GridSearch:
         self._hyper_grid = new_grid
 
     # returns a list of data folds through indexes
-    def _generate_folds(self) -> Iterator[tuple[Dataset, Dataset]]:
-        n_folds = self._n_folds
-        dataset = self._dataset
+    def _generate_folds(
+        self, dataset: Dataset, n_folds: int
+    ) -> Iterator[tuple[Dataset, Dataset]]:
+    
         data_size = dataset.ids.shape[0]
         indices = np.arange(data_size)
 
         # TODO maybe shuffle not needed if we assume dataset has already been shuffled
         np.random.shuffle(indices)
+
+        folds = []
 
         for index_lists in np.array_split(indices, n_folds):
             # make mask to split test and training set indices
@@ -87,19 +90,43 @@ class GridSearch:
                 labels=dataset.labels[train_indices],
                 data=dataset.data[train_indices],
             )
-            yield (train_set, test_set)
+            folds.append((train_set, test_set))
+        return folds
+
+    def _create_estimator_params(self, combination: dict, input_dim: int) -> dict:
+        # filter parameters for various classes
+        loss_params = {key: combination[key] for key in self._loss_keys}
+        estimator_params = {key: combination[key] for key in self._estimator_keys}
+        optimizer_params = {key: combination[key] for key in self._optimizer_keys}
+        net_params = {key: combination[key] for key in self._net_keys}
+
+        # create dictionary of params to pass to constructors
+        estimator_params["loss"] = LossFunction(**loss_params)
+        estimator_params["optimizer"] = Optimizer(**optimizer_params)
+
+        # create list of layers to create NN
+        old_units = input_dim
+        layer_list = []
+        for layer in net_params["layers"][:-1]:
+            layer_list.append(LinearLayer((old_units, layer[0])))
+            # TODO maybe linear layers can be removed
+            layer_list.append(ActivationFunction(fname=layer[1]))
+            old_units = layer[0]
+        last_layer = net_params["layers"][-1]
+        layer_list.append(LinearLayer((old_units, last_layer[0])))
+        if last_layer[1] != "linear":
+            layer_list.append(ActivationFunction(fname=layer_list[1]))
+        estimator_params["net"] = NeuralNetwork(layer_list)
+        return estimator_params
 
     # returns the best set of hyperparameters
-    def k_fold(self, dataset: Dataset, n_folds: int, n_epochs: int):
-        if isinstance(dataset, Dataset):
-            self._dataset = dataset
-        else:
-            raise TypeError
-
-        if type(n_folds) == int:
-            self._n_folds = n_folds
-        else:
-            raise TypeError
+    def k_fold(
+        self,
+        dataset: Dataset,
+        n_folds: int,
+        n_epochs: int,
+        callback: Callable[[dict], None] = print,
+    ) -> dict:
 
         data_size = dataset.ids.shape[0]
         if n_folds > data_size:
@@ -117,6 +144,8 @@ class GridSearch:
                     "Number of units in last layer must be equal to the output dimension of the data"
                 )
 
+        folds = self._generate_folds(dataset=dataset, n_folds=n_folds)
+
         # generates all combinations of hyperparameters
         keys, values = zip(*hyper_grid.items())
         param_combinations = [dict(zip(keys, v)) for v in itertools.product(*values)]
@@ -125,49 +154,71 @@ class GridSearch:
 
         # iterates all combinations of hyperparameters
         for combination in param_combinations:
-            # filter parameters for various classes
-            loss_params = {key: combination[key] for key in self._loss_keys}
-            estimator_params = {key: combination[key] for key in self._estimator_keys}
-            optimizer_params = {key: combination[key] for key in self._optimizer_keys}
-            net_params = {key: combination[key] for key in self._net_keys}
 
-            # create dictionary of params to pass to constructors
-            estimator_params["loss"] = LossFunction(**loss_params)
-            estimator_params["optimizer"] = Optimizer(**optimizer_params)
-
-            # create list of layers to create NN
-            old_units = input_dim
-            layer_list = []
-            for layer in net_params["layers"][:-1]:
-                layer_list.append(LinearLayer((old_units, layer[0])))
-                # TODO maybe linear layers can be removed
-                layer_list.append(ActivationFunction(fname=layer[1]))
-                old_units = layer[0]
-            last_layer = net_params["layers"][-1]
-            layer_list.append(LinearLayer((old_units, last_layer[0])))
-            if last_layer[1] != "linear":
-                layer_list.append(ActivationFunction(fname=layer_list[1]))
-            estimator_params["net"] = NeuralNetwork(layer_list)
-
-            print(estimator_params)
+            estimator_params = self._create_estimator_params(combination, input_dim)
             estimator.update_params(**estimator_params)
 
             test_loss_list = []
 
+            print(combination)
+
             # iterates folds of dataset
-            for train_set, test_set in self._generate_folds():
-                estimator.train(dataset=train_set, n_epochs=n_epochs)
-                estimator.reset()
+            for train_set, test_set in folds:
+                estimator.train(dataset=train_set, n_epochs=n_epochs, callback=callback)
                 test_loss_list.append(estimator.evaluate(test_set))
+                estimator.reset()
 
             test_loss_avg = sum(test_loss_list) / n_folds
             test_loss_std = np.std(test_loss_list)
 
-            combination_loss_list.append((combination, test_loss_avg, test_loss_std))
+            combination_loss_list.append(
+                {
+                    "parameters": combination,
+                    "test_loss_avg": test_loss_avg,
+                    "test_loss_std": test_loss_std,
+                }
+            )
 
-        combination_loss_list.sort(key=lambda x: x[1])
+        combination_loss_list.sort(key=lambda x: x["test_loss_avg"])
         return combination_loss_list
 
-    # returns an estimation of the risk for the model, average +- variance
-    def nested_k_fold(dataset: Dataset, inner_n_folds: int, outer_n_folds: int):
-        print("hello")
+    # returns an estimation of the risk for the model, average +- standard deviation
+    def nested_k_fold(
+        self,
+        dataset: Dataset,
+        inner_n_folds: int,
+        outer_n_folds: int,
+        n_epochs: int,
+        inner_callback: Callable[[dict], None] = print,
+        outer_callback: Callable[[dict], None] = print,
+    ) -> dict:
+
+        estimator = self._estimator
+        folds = self._generate_folds(dataset=dataset, n_folds=outer_n_folds)
+        input_dim = dataset.shape[1][0]
+        test_loss_list = []
+
+        for train_set, test_set in folds:
+            train_results = self.k_fold(
+                dataset=train_set,
+                n_folds=inner_n_folds,
+                n_epochs=n_epochs,
+                callback=inner_callback,
+            )
+            params = train_results[0]["parameters"]
+            estimator_params = self._create_estimator_params(params, input_dim)
+            estimator.update_params(**estimator_params)
+            estimator.train(
+                dataset=train_set, n_epochs=n_epochs, callback=outer_callback
+            )
+            test_loss_list.append(estimator.evaluate(test_set))
+
+        test_loss_avg = sum(test_loss_list) / outer_n_folds
+        test_loss_std = np.std(test_loss_list)
+
+        results = {
+            "test_loss_list": test_loss_list,
+            "test_loss_avg": test_loss_avg,
+            "test_loss_std": test_loss_std,
+        }
+        return results
