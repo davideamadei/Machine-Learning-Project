@@ -47,8 +47,7 @@ class Estimator:
             self.net.rng = self.rng
 
     def reset(self):
-        """Resets the model to its initial conditions.
-        """
+        """Resets the model to its initial conditions."""
         self.t = 0
         self.net.rng = self.rng
 
