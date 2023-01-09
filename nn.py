@@ -144,8 +144,6 @@ class ActivationFunction(Layer):
         np.ndarray
             Layer output
         """
-        if self._buffer is not None:
-            print("No call to backward after previous foward call.")
         self._buffer = data
         return self._foward(data)
 
@@ -260,8 +258,6 @@ class LinearLayer(UpdatableLayer):
         np.ndarray
             output
         """
-        if self._buffer is not None:
-            print("No call to backward after previous foward call.")
         self._buffer = data
         output = data @ self._params.weights.T + self._params.bias.T
         return output
@@ -346,8 +342,6 @@ class NeuralNetwork:
         np.ndarray
             output
         """
-        if self._buffer is not None:
-            print("No call to backward after previous foward call.")
         out = data
         for layer in self.net:
             out = layer.foward(out)

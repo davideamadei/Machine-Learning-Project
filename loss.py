@@ -36,9 +36,7 @@ class LossFunction:
         # one dimensional labels cause issues
         if len(label.shape) == 1:
             label = label.reshape(label.shape[0], 1)
-        
-        if self._buffer is not None:
-            print("No call to backward after previous foward call.")
+
         self._buffer = (pred, label)
         return self._foward(pred, label)
 

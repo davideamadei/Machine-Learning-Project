@@ -47,6 +47,8 @@ class Estimator:
             self.net.rng = self.rng
 
     def reset(self):
+        """Resets the model to its initial conditions.
+        """
         self.t = 0
         self.net.rng = self.rng
 
@@ -161,3 +163,19 @@ class Estimator:
             self.t += 1
             record = {"epoch": self.t, "loss": avg_loss}
             callback(record)
+
+    def evaluate(self, dataset: Dataset) -> float:
+        """Evaluates the current model on a dataset.
+
+        Parameters
+        ----------
+        dataset : Dataset
+            dataset to evaluate on
+
+        Returns
+        -------
+        float
+            loss(predictions, labels)
+        """
+        pred = self.net.foward(dataset.data)
+        return self.loss.foward(pred, dataset.labels)
