@@ -70,18 +70,20 @@ class Estimator:
         seed : int or None, optional
             If not None the seed will be changed (and net updated), by default None
         """
-        self.t = 0
+        # update parameters
         if seed is not None:
             self.rng = np.random.default_rng(seed)
         if net is not None:
             self.net = net
-            self.net.rng = self.rng
         if loss is not None:
             self.loss = loss
         if optimizer is not None:
             self.optimizer = optimizer
         if batchsize is not None:
             self.batchsize = batchsize
+        # reset state
+        self.t = 0
+        self.net.rng = self.rng
 
     @staticmethod
     def get_minibatches(
