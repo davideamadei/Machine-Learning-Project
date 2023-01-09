@@ -6,7 +6,7 @@
 
   <head>
     
-    <title>Machine-Learning-Project.nn.ActivationFunction</title>
+    <title>Machine-Learning-Project.nn.Layer</title>
     <meta name="generator" content="pydoctor 22.9.1"> 
         
     </meta>
@@ -142,7 +142,7 @@
 
       <div class="thingTitle">
         <span>Class</span>
-        <code class="thisobject"><a href="Machine-Learning-Project.nn.ActivationFunction.html" class="internal-link" title="This class"><wbr></wbr>Activation<wbr></wbr>Function</a></code> 
+        <code class="thisobject"><a href="Machine-Learning-Project.nn.Layer.html" class="internal-link" title="This class"><wbr></wbr>Layer</a></code> 
       </div>
       
       <div>
@@ -163,7 +163,7 @@
         
 
         
-            <div class="itemName"><code><a href="#get_functions" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction.get_functions">get<wbr></wbr>_functions</a></code>
+            <div class="itemName"><code><a href="#backward" class="internal-link" title="Machine-Learning-Project.nn.Layer.backward">backward</a></code>
             </div>
         
 
@@ -173,27 +173,7 @@
         
 
         
-            <div class="itemName"><code><a href="#__init__" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction.__init__">__init__</a></code>
-            </div>
-        
-
-    </li><li class="">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="#backward" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction.backward">backward</a></code>
-            </div>
-        
-
-    </li><li class="">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="#foward" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction.foward">foward</a></code>
+            <div class="itemName"><code><a href="#foward" class="internal-link" title="Machine-Learning-Project.nn.Layer.foward">foward</a></code>
             </div>
         
 
@@ -203,41 +183,8 @@
         
          
 
-        <div class="childrenKindTitle">Attributes</div>
-        <ul>
-    
-    <li class="private">
         
-        
-        
-
-        
-            <div class="itemName"><code><a href="#_backward" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction._backward">_backward</a></code>
-            </div>
-        
-
-    </li><li class="private">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="#_buffer" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction._buffer">_buffer</a></code>
-            </div>
-        
-
-    </li><li class="private">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="#_foward" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction._foward">_foward</a></code>
-            </div>
-        
-
-    </li>
-</ul> 
+         
 
         
          
@@ -259,7 +206,7 @@
         <div class="childrenKindTitle">Classes</div>
         <ul>
     
-    <li class=" thisobject">
+    <li class="">
         
         
         
@@ -269,7 +216,7 @@
             </div>
         
 
-    </li><li class="">
+    </li><li class=" thisobject">
         
         
         
@@ -343,7 +290,7 @@
         
 
         <div class="page-header">
-          <h1 class="class"><code><code><a href="index.html" class="internal-link">Machine-Learning-Project</a></code><wbr></wbr>.<code><a href="Machine-Learning-Project.nn.html" class="internal-link" title="Machine-Learning-Project.nn">nn</a></code><wbr></wbr>.<code><a href="Machine-Learning-Project.nn.ActivationFunction.html" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction">ActivationFunction</a></code></code></h1>
+          <h1 class="class"><code><code><a href="index.html" class="internal-link">Machine-Learning-Project</a></code><wbr></wbr>.<code><a href="Machine-Learning-Project.nn.html" class="internal-link" title="Machine-Learning-Project.nn">nn</a></code><wbr></wbr>.<code><a href="Machine-Learning-Project.nn.Layer.html" class="internal-link" title="Machine-Learning-Project.nn.Layer">Layer</a></code></code></h1>
           <div id="showPrivate">
             <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
           </div>
@@ -354,54 +301,29 @@
         </div>
 
         <div class="extrasDocstring">
-          <p><code><span class="py-keyword">class</span> <span class="py-defname">ActivationFunction</span>(<a href="Machine-Learning-Project.nn.Layer.html" class="internal-link" title="Machine-Learning-Project.nn.Layer">Layer</a>):</code></p>
-          <p><a href="classIndex.html#Machine-Learning-Project.nn.ActivationFunction">View In Hierarchy</a></p>
+          <p><code><span class="py-keyword">class</span> <span class="py-defname">Layer</span>(<a href="https://docs.python.org/3/library/abc.html#abc.ABC" class="intersphinx-link">ABC</a>):</code></p><p>Known subclasses: <code><a href="Machine-Learning-Project.nn.ActivationFunction.html" class="internal-link">Machine-Learning-Project.nn.ActivationFunction</a></code>, <code><a href="Machine-Learning-Project.nn.UpdatableLayer.html" class="internal-link">Machine-Learning-Project.nn.UpdatableLayer</a></code></p>
+          <p><a href="classIndex.html#Machine-Learning-Project.nn.Layer">View In Hierarchy</a></p>
         </div>
 
         <div class="moduleDocstring">
-          <div><p>Defines a generic activation function (Layer).</p>
+          <div><p>Layer without parameters</p>
 </div>
         </div>
 
         <div id="splitTables">
-          <table class="children sortable" id="id11">
+          <table class="children sortable" id="id8">
   
   
-  <tr class="staticmethod">
-    
-    <td>Static Method</td>
-    <td><code><a href="#get_functions" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction.get_functions">get<wbr></wbr>_functions</a></code></td>
-    <td>Given a name identifing a function. Returns said function and its derivative.</td>
-  </tr><tr class="method">
+  <tr class="method">
     
     <td>Method</td>
-    <td><code><a href="#__init__" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction.__init__">__init__</a></code></td>
-    <td>Initializes a new instance.</td>
-  </tr><tr class="method">
-    
-    <td>Method</td>
-    <td><code><a href="#backward" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction.backward">backward</a></code></td>
+    <td><code><a href="#backward" class="internal-link" title="Machine-Learning-Project.nn.Layer.backward">backward</a></code></td>
     <td>Backward call of a Layer.</td>
   </tr><tr class="method">
     
     <td>Method</td>
-    <td><code><a href="#foward" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction.foward">foward</a></code></td>
-    <td>Foward call of the Layer</td>
-  </tr><tr class="instancevariable private">
-    
-    <td>Instance Variable</td>
-    <td><code><a href="#_backward" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction._backward">_backward</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
-  </tr><tr class="instancevariable private">
-    
-    <td>Instance Variable</td>
-    <td><code><a href="#_buffer" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction._buffer">_buffer</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
-  </tr><tr class="instancevariable private">
-    
-    <td>Instance Variable</td>
-    <td><code><a href="#_foward" class="internal-link" title="Machine-Learning-Project.nn.ActivationFunction._foward">_foward</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td><code><a href="#foward" class="internal-link" title="Machine-Learning-Project.nn.Layer.foward">foward</a></code></td>
+    <td>Foward call of a Layer.</td>
   </tr>
 </table>
           
@@ -410,173 +332,53 @@
         </div>
 
         <div id="childList">
-          <div class="basestaticmethod">
+          <div class="basemethod">
   
   
-  <a name="Machine-Learning-Project.nn.ActivationFunction.get_functions">
-    
-  </a>
-  <a name="get_functions">
-    
-  </a>
-  <div class="functionHeader">
-    @<a href="https://docs.python.org/3/library/functions.html#staticmethod" class="intersphinx-link">staticmethod</a><br />
-    <span class="py-keyword">def</span> <span class="py-defname">get_functions</span>(fname):
-    
-    <a class="headerLink" href="#get_functions" title="Machine-Learning-Project.nn.ActivationFunction.get_functions">
-      
-      
-      ¶
-    </a>
-  </div>
-  <div class="docstring functionBody">
-    
-    <div><p>Given a name identifing a function. Returns said function and its derivative.</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">fname:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a></code></td><td class="fieldArgDesc">Name of a supported fuction. Currently: ReLU.</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/stdtypes.html#tuple" class="intersphinx-link">tuple</a>[<a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="intersphinx-link">Callable</a>[[np.ndarray]</code>, <code>np.ndarray]</code>, <code><a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="intersphinx-link">Callable</a>[[np.ndarray]</code>, <code>np.ndarray]]</code></td><td class="fieldArgDesc">function and its derivative</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Raises</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#ValueError" class="intersphinx-link">ValueError</a></code></td><td>if fname is not supported</td></tr></table></div>
-  </div>
-</div><div class="basemethod">
-  
-  
-  <a name="Machine-Learning-Project.nn.ActivationFunction.__init__">
-    
-  </a>
-  <a name="__init__">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-keyword">def</span> <span class="py-defname">__init__</span>(self, fname=<span class="rst-variable-quote">'</span><span class="rst-variable-string">ReLU</span><span class="rst-variable-quote">'</span>):
-    
-    <a class="headerLink" href="#__init__" title="Machine-Learning-Project.nn.ActivationFunction.__init__">
-      
-      
-      ¶
-    </a>
-  </div>
-  <div class="docstring functionBody">
-    
-    <div><p>Initializes a new instance.</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">fname:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a></code>, <em>optional</em></td><td class="fieldArgDesc">name describing an activation function, by default "ReLU"</td></tr></table></div>
-  </div>
-</div><div class="basemethod">
-  
-  
-  <a name="Machine-Learning-Project.nn.ActivationFunction.backward">
+  <a name="Machine-Learning-Project.nn.Layer.backward">
     
   </a>
   <a name="backward">
     
   </a>
   <div class="functionHeader">
-    
+    @<a href="https://docs.python.org/3/library/abc.html#abc.abstractmethod" class="intersphinx-link">abstractmethod</a><br />
     <span class="py-keyword">def</span> <span class="py-defname">backward</span>(self, grad):
     
-    <a class="headerLink" href="#backward" title="Machine-Learning-Project.nn.ActivationFunction.backward">
+    <a class="headerLink" href="#backward" title="Machine-Learning-Project.nn.Layer.backward">
       
       
       ¶
     </a>
   </div>
   <div class="docstring functionBody">
-    <div class="interfaceinfo">overrides <code><a href="Machine-Learning-Project.nn.Layer.html#backward" class="internal-link">Machine-Learning-Project.nn.Layer.backward</a></code></div>
+    <div class="interfaceinfo">overridden in <code><a href="Machine-Learning-Project.nn.ActivationFunction.html" class="internal-link">Machine-Learning-Project.nn.ActivationFunction</a></code>, <code><a href="Machine-Learning-Project.nn.LinearLayer.html" class="internal-link">Machine-Learning-Project.nn.LinearLayer</a></code></div>
     <div><p>Backward call of a Layer.</p>
 <table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">grad:</span><code>np.ndarray</code></td><td class="fieldArgDesc">gradient with respect to the output.</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code>np.ndarray</code></td><td class="fieldArgDesc">gradient with respect to the input</td></tr></table></div>
   </div>
 </div><div class="basemethod">
   
   
-  <a name="Machine-Learning-Project.nn.ActivationFunction.foward">
+  <a name="Machine-Learning-Project.nn.Layer.foward">
     
   </a>
   <a name="foward">
     
   </a>
   <div class="functionHeader">
-    
+    @<a href="https://docs.python.org/3/library/abc.html#abc.abstractmethod" class="intersphinx-link">abstractmethod</a><br />
     <span class="py-keyword">def</span> <span class="py-defname">foward</span>(self, data):
     
-    <a class="headerLink" href="#foward" title="Machine-Learning-Project.nn.ActivationFunction.foward">
+    <a class="headerLink" href="#foward" title="Machine-Learning-Project.nn.Layer.foward">
       
       
       ¶
     </a>
   </div>
   <div class="docstring functionBody">
-    <div class="interfaceinfo">overrides <code><a href="Machine-Learning-Project.nn.Layer.html#foward" class="internal-link">Machine-Learning-Project.nn.Layer.foward</a></code></div>
-    <div><p>Foward call of the Layer</p>
+    <div class="interfaceinfo">overridden in <code><a href="Machine-Learning-Project.nn.ActivationFunction.html" class="internal-link">Machine-Learning-Project.nn.ActivationFunction</a></code>, <code><a href="Machine-Learning-Project.nn.LinearLayer.html" class="internal-link">Machine-Learning-Project.nn.LinearLayer</a></code></div>
+    <div><p>Foward call of a Layer.</p>
 <table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">data:</span><code>np.ndarray</code></td><td class="fieldArgDesc">Layer input</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code>np.ndarray</code></td><td class="fieldArgDesc">Layer output</td></tr></table></div>
-  </div>
-</div><div class="baseinstancevariable private">
-  
-  
-  <a name="Machine-Learning-Project.nn.ActivationFunction._backward">
-    
-  </a>
-  <a name="_backward">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-defname">_backward</span> =
-    
-    <a class="headerLink" href="#_backward" title="Machine-Learning-Project.nn.ActivationFunction._backward">
-      
-      
-      ¶
-    </a>
-  </div>
-  <div class="functionBody">
-    
-    <div><p class="undocumented">Undocumented</p></div>
-    
-  </div>
-</div><div class="baseinstancevariable private">
-  
-  
-  <a name="Machine-Learning-Project.nn.ActivationFunction._buffer">
-    
-  </a>
-  <a name="_buffer">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-defname">_buffer</span> =
-    
-    <a class="headerLink" href="#_buffer" title="Machine-Learning-Project.nn.ActivationFunction._buffer">
-      
-      
-      ¶
-    </a>
-  </div>
-  <div class="functionBody">
-    
-    <div><p class="undocumented">Undocumented</p></div>
-    
-  </div>
-</div><div class="baseinstancevariable private">
-  
-  
-  <a name="Machine-Learning-Project.nn.ActivationFunction._foward">
-    
-  </a>
-  <a name="_foward">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-defname">_foward</span> =
-    
-    <a class="headerLink" href="#_foward" title="Machine-Learning-Project.nn.ActivationFunction._foward">
-      
-      
-      ¶
-    </a>
-  </div>
-  <div class="functionBody">
-    
-    <div><p class="undocumented">Undocumented</p></div>
-    
   </div>
 </div>
         </div>
@@ -590,7 +392,7 @@
   <div class="container">
     <a href="index.html">API Documentation</a> for <a href="https://github.com/davideamadei/Machine-Learning-Project/" class="projecthome">Machine-Learning-Project</a>,
   generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-    22.9.1 at 2023-01-09 00:09:47.
+    22.9.1 at 2023-01-09 01:17:50.
   </div>
 
   <!-- Search related scripts needs to be loaded at the end of HTML 

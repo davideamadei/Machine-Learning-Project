@@ -6,7 +6,7 @@
 
   <head>
     
-    <title>Machine-Learning-Project.util_classes.Dataset</title>
+    <title>Machine-Learning-Project.optimizer.Optimizer</title>
     <meta name="generator" content="pydoctor 22.9.1"> 
         
     </meta>
@@ -142,7 +142,7 @@
 
       <div class="thingTitle">
         <span>Class</span>
-        <code class="thisobject"><a href="Machine-Learning-Project.util_classes.Dataset.html" class="internal-link" title="This class"><wbr></wbr>Dataset</a></code> 
+        <code class="thisobject"><a href="Machine-Learning-Project.optimizer.Optimizer.html" class="internal-link" title="This class"><wbr></wbr>Optimizer</a></code> 
       </div>
       
       <div>
@@ -154,8 +154,21 @@
         
         
 
+        <div class="childrenKindTitle">Methods</div>
+        <ul>
+    
+    <li class="">
         
-         
+        
+        
+
+        
+            <div class="itemName"><code><a href="#__init__" class="internal-link" title="Machine-Learning-Project.optimizer.Optimizer.__init__">__init__</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
 
         
          
@@ -169,37 +182,7 @@
         
 
         
-            <div class="itemName"><code><a href="#data" class="internal-link" title="Machine-Learning-Project.util_classes.Dataset.data">data</a></code>
-            </div>
-        
-
-    </li><li class="">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="#ids" class="internal-link" title="Machine-Learning-Project.util_classes.Dataset.ids">ids</a></code>
-            </div>
-        
-
-    </li><li class="">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="#labels" class="internal-link" title="Machine-Learning-Project.util_classes.Dataset.labels">labels</a></code>
-            </div>
-        
-
-    </li><li class="">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="#shape" class="internal-link" title="Machine-Learning-Project.util_classes.Dataset.shape">shape</a></code>
+            <div class="itemName"><code><a href="#optimize" class="internal-link" title="Machine-Learning-Project.optimizer.Optimizer.optimize">optimize</a></code>
             </div>
         
 
@@ -214,7 +197,7 @@
 
       <div class="thingTitle">
         <span>Module</span>
-        <code><a href="Machine-Learning-Project.util_classes.html" class="internal-link" title="The parent of this class">util<wbr></wbr>_classes</a></code> 
+        <code><a href="Machine-Learning-Project.optimizer.html" class="internal-link" title="The parent of this class">optimizer</a></code> 
       </div>
       
       <div>
@@ -232,17 +215,7 @@
         
 
         
-            <div class="itemName"><code><a href="Machine-Learning-Project.util_classes.Dataset.html" class="internal-link" title="Machine-Learning-Project.util_classes.Dataset"><wbr></wbr>Dataset</a></code>
-            </div>
-        
-
-    </li><li class="">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="Machine-Learning-Project.util_classes.Parameter.html" class="internal-link" title="Machine-Learning-Project.util_classes.Parameter"><wbr></wbr>Parameter</a></code>
+            <div class="itemName"><code><a href="Machine-Learning-Project.optimizer.Optimizer.html" class="internal-link" title="Machine-Learning-Project.optimizer.Optimizer"><wbr></wbr>Optimizer</a></code>
             </div>
         
 
@@ -280,7 +253,7 @@
         
 
         <div class="page-header">
-          <h1 class="class"><code><code><a href="index.html" class="internal-link">Machine-Learning-Project</a></code><wbr></wbr>.<code><a href="Machine-Learning-Project.util_classes.html" class="internal-link" title="Machine-Learning-Project.util_classes">util_classes</a></code><wbr></wbr>.<code><a href="Machine-Learning-Project.util_classes.Dataset.html" class="internal-link" title="Machine-Learning-Project.util_classes.Dataset">Dataset</a></code></code></h1>
+          <h1 class="class"><code><code><a href="index.html" class="internal-link">Machine-Learning-Project</a></code><wbr></wbr>.<code><a href="Machine-Learning-Project.optimizer.html" class="internal-link" title="Machine-Learning-Project.optimizer">optimizer</a></code><wbr></wbr>.<code><a href="Machine-Learning-Project.optimizer.Optimizer.html" class="internal-link" title="Machine-Learning-Project.optimizer.Optimizer">Optimizer</a></code></code></h1>
           <div id="showPrivate">
             <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
           </div>
@@ -291,44 +264,29 @@
         </div>
 
         <div class="extrasDocstring">
-          <p><code><span class="py-keyword">class</span> <span class="py-defname">Dataset</span>:</code></p>
-          <p><a href="classIndex.html#Machine-Learning-Project.util_classes.Dataset">View In Hierarchy</a></p>
+          <p><code><span class="py-keyword">class</span> <span class="py-defname">Optimizer</span>:</code></p>
+          <p><a href="classIndex.html#Machine-Learning-Project.optimizer.Optimizer">View In Hierarchy</a></p>
         </div>
 
         <div class="moduleDocstring">
-          <div><p>A simple dataclass holding a dataset.
-A dataset is composed of:
-- data: also denoted as X
-- Optional[labels]: also denoted as y
-- ids: unique identifies of data and labels.
-All three of these should have same 0-dimension.</p>
+          <div><p>Class defining weight updates. Currently WIP.</p>
 </div>
         </div>
 
         <div id="splitTables">
-          <table class="children sortable" id="id18">
+          <table class="children sortable" id="id15">
   
   
-  <tr class="classvariable">
+  <tr class="method">
     
-    <td>Class Variable</td>
-    <td><code><a href="#data" class="internal-link" title="Machine-Learning-Project.util_classes.Dataset.data">data</a></code></td>
+    <td>Method</td>
+    <td><code><a href="#__init__" class="internal-link" title="Machine-Learning-Project.optimizer.Optimizer.__init__">__init__</a></code></td>
+    <td>Returns a new instance of an optimizer</td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#optimize" class="internal-link" title="Machine-Learning-Project.optimizer.Optimizer.optimize">optimize</a></code></td>
     <td><span class="undocumented">Undocumented</span></td>
-  </tr><tr class="classvariable">
-    
-    <td>Class Variable</td>
-    <td><code><a href="#ids" class="internal-link" title="Machine-Learning-Project.util_classes.Dataset.ids">ids</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
-  </tr><tr class="classvariable">
-    
-    <td>Class Variable</td>
-    <td><code><a href="#labels" class="internal-link" title="Machine-Learning-Project.util_classes.Dataset.labels">labels</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
-  </tr><tr class="property">
-    
-    <td>Property</td>
-    <td><code><a href="#shape" class="internal-link" title="Machine-Learning-Project.util_classes.Dataset.shape">shape</a></code></td>
-    <td>Returns the shape of the dataset.</td>
   </tr>
 </table>
           
@@ -337,20 +295,44 @@ All three of these should have same 0-dimension.</p>
         </div>
 
         <div id="childList">
-          <div class="baseclassvariable">
+          <div class="basemethod">
   
   
-  <a name="Machine-Learning-Project.util_classes.Dataset.data">
+  <a name="Machine-Learning-Project.optimizer.Optimizer.__init__">
     
   </a>
-  <a name="data">
+  <a name="__init__">
     
   </a>
   <div class="functionHeader">
     
-    <span class="py-defname">data</span>: <code>np.array</code> =
+    <span class="py-keyword">def</span> <span class="py-defname">__init__</span>(self, eta=0.001, l2_coeff=0.01, alpha=0.3):
     
-    <a class="headerLink" href="#data" title="Machine-Learning-Project.util_classes.Dataset.data">
+    <a class="headerLink" href="#__init__" title="Machine-Learning-Project.optimizer.Optimizer.__init__">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>Returns a new instance of an optimizer</p>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">eta:</span><code><a href="https://docs.python.org/3/library/functions.html#float" class="intersphinx-link">float</a></code>, <em>optional</em></td><td class="fieldArgDesc">learning rate, by default 1e-3</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">l2<wbr></wbr>_coeff:</span><code><a href="https://docs.python.org/3/library/functions.html#float" class="intersphinx-link">float</a></code>, <em>optional</em></td><td class="fieldArgDesc">L2 regression constant, by default 0.01</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">alpha:</span><code><a href="https://docs.python.org/3/library/functions.html#float" class="intersphinx-link">float</a></code>, <em>optional</em></td><td class="fieldArgDesc">momentum constant, by default 0.3</td></tr></table></div>
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="Machine-Learning-Project.optimizer.Optimizer.optimize">
+    
+  </a>
+  <a name="optimize">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">optimize</span> =
+    
+    <a class="headerLink" href="#optimize" title="Machine-Learning-Project.optimizer.Optimizer.optimize">
       
       
       ¶
@@ -359,79 +341,6 @@ All three of these should have same 0-dimension.</p>
   <div class="functionBody">
     
     <div><p class="undocumented">Undocumented</p></div>
-    
-  </div>
-</div><div class="baseclassvariable">
-  
-  
-  <a name="Machine-Learning-Project.util_classes.Dataset.ids">
-    
-  </a>
-  <a name="ids">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-defname">ids</span>: <code>np.array</code> =
-    
-    <a class="headerLink" href="#ids" title="Machine-Learning-Project.util_classes.Dataset.ids">
-      
-      
-      ¶
-    </a>
-  </div>
-  <div class="functionBody">
-    
-    <div><p class="undocumented">Undocumented</p></div>
-    
-  </div>
-</div><div class="baseclassvariable">
-  
-  
-  <a name="Machine-Learning-Project.util_classes.Dataset.labels">
-    
-  </a>
-  <a name="labels">
-    
-  </a>
-  <div class="functionHeader">
-    
-    <span class="py-defname">labels</span>: <code><a href="https://docs.python.org/3/library/typing.html#typing.Optional" class="intersphinx-link">Optional</a>[<wbr></wbr>np.array]</code> =
-    
-    <a class="headerLink" href="#labels" title="Machine-Learning-Project.util_classes.Dataset.labels">
-      
-      
-      ¶
-    </a>
-  </div>
-  <div class="functionBody">
-    
-    <div><p class="undocumented">Undocumented</p></div>
-    
-  </div>
-</div><div class="baseproperty">
-  
-  
-  <a name="Machine-Learning-Project.util_classes.Dataset.shape">
-    
-  </a>
-  <a name="shape">
-    
-  </a>
-  <div class="functionHeader">
-    @<a href="https://docs.python.org/3/library/functions.html#property" class="intersphinx-link">property</a><br />
-    <span class="py-defname">shape</span>: <code><a href="https://docs.python.org/3/library/stdtypes.html#tuple" class="intersphinx-link">tuple</a>[<wbr></wbr><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a>, <wbr></wbr><a href="https://docs.python.org/3/library/stdtypes.html#tuple" class="intersphinx-link">tuple</a>[<wbr></wbr><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a>, <wbr></wbr><a href="https://docs.python.org/3/library/typing.html#typing.Optional" class="intersphinx-link">Optional</a>[<wbr></wbr><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a>]]]</code> =
-    
-    <a class="headerLink" href="#shape" title="Machine-Learning-Project.util_classes.Dataset.shape">
-      
-      
-      ¶
-    </a>
-  </div>
-  <div class="functionBody">
-    
-    <div><p>Returns the shape of the dataset.</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/stdtypes.html#tuple" class="intersphinx-link">tuple</a>[<a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code>, <code><a href="https://docs.python.org/3/library/stdtypes.html#tuple" class="intersphinx-link">tuple</a>[<a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code>, <code><a href="https://docs.python.org/3/library/typing.html#typing.Optional" class="intersphinx-link">Optional</a>[<a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a>]]]</code></td><td class="fieldArgDesc">(#samples, [#features, dim(labels)])</td></tr></table></div>
     
   </div>
 </div>
@@ -446,7 +355,7 @@ All three of these should have same 0-dimension.</p>
   <div class="container">
     <a href="index.html">API Documentation</a> for <a href="https://github.com/davideamadei/Machine-Learning-Project/" class="projecthome">Machine-Learning-Project</a>,
   generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-    22.9.1 at 2023-01-09 00:09:47.
+    22.9.1 at 2023-01-09 01:17:50.
   </div>
 
   <!-- Search related scripts needs to be loaded at the end of HTML 

@@ -8,7 +8,7 @@ docs:
 	--project-version=$(VERSION) \
 	--project-url=https://github.com/davideamadei/Machine-Learning-Project/ \
 	--make-html \
-	--html-output=docs/api \
+	--html-output=docs \
 	--project-base-dir="." \
 	--docformat=numpy \
 	--intersphinx=https://docs.python.org/3/objects.inv \
