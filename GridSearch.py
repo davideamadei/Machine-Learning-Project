@@ -1,7 +1,8 @@
-# external libraries
+# python libraries
 import numpy as np
 from typing import Iterator, Callable
 import itertools
+from numbers import Number
 
 # local libraries
 from estimator import Estimator
@@ -36,10 +37,97 @@ class GridSearch:
         "batchsize": "batchsize",
     }
 
-    # check param_grid and remove invalid values
-    # TODO implement
+    # check param_grid validity
     @staticmethod
-    def _check_param_grid(hyper_grid) -> bool:
+    def _check_param_grid(param_dict, hyper_grid) -> bool:
+
+        activation_functions = ["ReLU", "linear"]
+        loss_functions = ["MSE"]
+
+        for key in param_dict.keys():
+            if not key in hyper_grid.keys():
+                raise ValueError(
+                    (
+                        "All the following parameters must be present in the"
+                        " hyperparameter grid: "
+                    ),
+                    list(param_dict.keys()),
+                )
+            if not isinstance(hyper_grid[key], list) or len(hyper_grid[key]) == 0:
+                raise ValueError(
+                    "Each parameter must have an associated not empty list of"
+                    " parameters"
+                )
+
+        # check layers
+        for net in hyper_grid["layers"]:
+            for layer in net:
+                if (
+                    not isinstance(layer, tuple)
+                    or not len(layer) == 2
+                    or not isinstance(layer[0], int)
+                    or not isinstance(layer[1], str)
+                ):
+                    raise TypeError(
+                        "The layers parameter accepts a list of tuples of length 2 with"
+                        " the first element being an integer that is the number of"
+                        " units in that layer, and the second element is a string"
+                        " containing the name of the activation function for that layer"
+                    )
+                if layer[0] <= 0:
+                    raise ValueError("The number of units must be greater than 0")
+                if not layer[1] in activation_functions:
+                    raise ValueError(
+                        (
+                            "Only the following values are accepted for activation"
+                            " function: "
+                        ),
+                        activation_functions,
+                    )
+
+        # check l2
+        for l2_coeff in hyper_grid["l2"]:
+            if not isinstance(l2_coeff, Number):
+                raise TypeError("The L2 coefficient must be a number")
+            if l2_coeff < 0:
+                raise ValueError("The L2 coefficient must be at least 0")
+
+        # check momentum
+        for momentum in hyper_grid["momentum"]:
+            if not isinstance(momentum, Number):
+                raise TypeError("The momentum parameter must be a number")
+            if momentum < 0:
+                raise ValueError("The momentum parameter must be at least 0")
+
+        # check eta
+        for eta in hyper_grid["eta"]:
+            if not isinstance(eta, Number):
+                raise TypeError("The learning rate must be a number")
+            if eta <= 0:
+                raise ValueError("The learning rate must be greater than 0")
+
+        # check loss functions
+        for loss in hyper_grid["loss"]:
+            if not isinstance(loss, str):
+                raise TypeError(
+                    "The loss must be a string corresponding to the required loss"
+                )
+            if loss not in loss_functions:
+                raise ValueError(
+                    "Only the following values are accepted for the loss: ",
+                    loss_functions,
+                )
+
+        # check batchsize
+        for batchsize in hyper_grid["batchsize"]:
+            if not isinstance(batchsize, int):
+                raise TypeError("The batch size must be an integer")
+            if batchsize <= 0 and batchsize != -1:
+                raise ValueError(
+                    "The batch size must be greater than 0. If -1 is passed as a value"
+                    " the size of the dataset will be used"
+                )
+
         return True
 
     def __init__(self, estimator: Estimator, hyper_grid: dict):
@@ -50,8 +138,7 @@ class GridSearch:
             raise TypeError
 
         # check for wrong values
-        if not GridSearch._check_param_grid(hyper_grid):
-            raise ValueError
+        GridSearch._check_param_grid(self._param_name_translations, hyper_grid)
 
         # translate names of parameters and sort by key for better efficiency
         new_grid = {}
@@ -64,7 +151,7 @@ class GridSearch:
     def _generate_folds(
         self, dataset: Dataset, n_folds: int
     ) -> Iterator[tuple[Dataset, Dataset]]:
-    
+
         data_size = dataset.ids.shape[0]
         indices = np.arange(data_size)
 
@@ -128,20 +215,31 @@ class GridSearch:
         callback: Callable[[dict], None] = print,
     ) -> dict:
 
-        data_size = dataset.ids.shape[0]
-        if n_folds > data_size:
-            raise ValueError
-
         hyper_grid = self._hyper_grid
         estimator = self._estimator
+
+        data_size = dataset.shape[0]
         input_dim = dataset.shape[1][0]
         output_dim = dataset.shape[1][1]
 
+        # check n_folds value
+        if n_folds > data_size:
+            raise ValueError(
+                "The number of folds cannot be greater than the number of samples in"
+                " the dataset"
+            )
         # check if output layer is correct for all combinations
         for layers in hyper_grid["layers"]:
             if layers[-1][0] != output_dim:
                 raise ValueError(
-                    "Number of units in last layer must be equal to the output dimension of the data"
+                    "Number of units in last layer must be equal to the output"
+                    " dimension of the data"
+                )
+        # check values for batchsize
+        for batchsize in hyper_grid["batchsize"]:
+            if batchsize > data_size:
+                raise ValueError(
+                    "The batchsize cannot be greater than the number of samples"
                 )
 
         folds = self._generate_folds(dataset=dataset, n_folds=n_folds)
@@ -156,6 +254,8 @@ class GridSearch:
         for combination in param_combinations:
 
             estimator_params = self._create_estimator_params(combination, input_dim)
+            if estimator_params["batchsize"] == -1:
+                estimator_params["batchsize"] = data_size
             estimator.update_params(**estimator_params)
 
             test_loss_list = []
@@ -194,8 +294,17 @@ class GridSearch:
     ) -> dict:
 
         estimator = self._estimator
+        data_size = dataset.shape[0]
         folds = self._generate_folds(dataset=dataset, n_folds=outer_n_folds)
         input_dim = dataset.shape[1][0]
+
+        # check outer_n_folds value
+        if outer_n_folds > data_size:
+            raise ValueError(
+                "The number of folds cannot be greater than the number of samples in"
+                " the dataset"
+            )
+
         test_loss_list = []
 
         for train_set, test_set in folds:
@@ -207,6 +316,9 @@ class GridSearch:
             )
             params = train_results[0]["parameters"]
             estimator_params = self._create_estimator_params(params, input_dim)
+            if estimator_params["batchsize"] == -1:
+                estimator_params["batchsize"] = data_size
+
             estimator.update_params(**estimator_params)
             estimator.train(
                 dataset=train_set, n_epochs=n_epochs, callback=outer_callback
