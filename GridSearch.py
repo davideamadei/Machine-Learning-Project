@@ -39,7 +39,27 @@ class GridSearch:
 
     # check param_grid validity
     @staticmethod
-    def _check_param_grid(param_dict, hyper_grid) -> bool:
+    def _check_param_grid(param_dict: dict, hyper_grid: dict) -> None:
+        """Checks that the given grid of hyperparameters is correct
+
+        Parameters
+        ----------
+        param_dict : dict
+            dictionary of accepted hyperparameters
+        hyper_grid : dict
+            dictionary containing the grid of hyperparameters on which to perform the validity check
+
+        Returns
+        -------
+        None
+
+        Raises
+        ------
+        ValueError
+            when an hyperparameter is missing or one of its possible values is not valid
+        TypeError
+            when an hyperparameter has a value with the wrong type or is not a list of values
+        """
 
         activation_functions = ["ReLU", "linear"]
         loss_functions = ["MSE"]
@@ -128,9 +148,21 @@ class GridSearch:
                     " the size of the dataset will be used"
                 )
 
-        return True
-
     def __init__(self, estimator: Estimator, hyper_grid: dict):
+        """Initializes a new instance
+
+        Parameters
+        ----------
+        estimator : Estimator
+            the estimator to use for training and evaluation
+        hyper_grid : dict
+            grid of hyperparameters
+
+        Raises
+        ------
+        TypeError
+            when parameter types are incorrect
+        """
         if estimator == None or type(estimator) != Estimator:
             raise TypeError
         self._estimator = estimator
@@ -150,7 +182,22 @@ class GridSearch:
     # returns a list of data folds through indexes
     def _generate_folds(
         self, dataset: Dataset, n_folds: int
-    ) -> Iterator[tuple[Dataset, Dataset]]:
+    ) -> list[tuple[Dataset, Dataset]]:
+        """function to generate the folds to use during grid search
+
+        Parameters
+        ----------
+        dataset : Dataset
+            dataset to split in folds
+        n_folds : int
+            number of folds
+
+        Returns
+        -------
+        list(tuple[Dataset, Dataset])
+            returns a list containing tuples of Dataset classes. Each tuple is of the form (Training set, Test set)
+
+        """
 
         data_size = dataset.ids.shape[0]
         indices = np.arange(data_size)
@@ -181,6 +228,20 @@ class GridSearch:
         return folds
 
     def _create_estimator_params(self, combination: dict, input_dim: int) -> dict:
+        """function to create the dictionary to pass to estimator for update
+
+        Parameters
+        ----------
+        combination : dict
+            combination of hyperparameters to use
+        input_dim : int
+            number of features of dataset
+
+        Returns
+        -------
+        dict
+            a dictionary to pass to the estimator's update function
+        """
         # filter parameters for various classes
         loss_params = {key: combination[key] for key in self._loss_keys}
         estimator_params = {key: combination[key] for key in self._estimator_keys}
@@ -213,7 +274,32 @@ class GridSearch:
         n_folds: int,
         n_epochs: int,
         callback: Callable[[dict], None] = print,
-    ) -> dict:
+    ) -> list:
+        """function to execute a k-fold cross-validation on the given dataset
+
+        Parameters
+        ----------
+        dataset : Dataset
+            dataset to use for k-fold cross-validation
+        n_folds : int
+            number of folds to use in cross-validation
+        n_epochs : int
+            number of epochs to run training
+        callback : Callable[[dict], None], optional
+            callback function to use during training, by default print
+
+        Returns
+        -------
+        list
+            list containing results of the cross-validation ordered by increasing average loss on the test set.
+            Every element is a list of dictionaries containing the
+            combination of hyperparameters, the average of the test loss and the standard deviation on the test loss
+
+        Raises
+        ------
+        ValueError
+            when values of some parameters are incorrect
+        """
 
         hyper_grid = self._hyper_grid
         estimator = self._estimator
@@ -292,6 +378,35 @@ class GridSearch:
         inner_callback: Callable[[dict], None] = print,
         outer_callback: Callable[[dict], None] = print,
     ) -> dict:
+        """function implementing nested k-fold cross validation
+
+        Parameters
+        ----------
+        dataset : Dataset
+            dataset to run cross validation on
+        inner_n_folds : int
+            number of folds for the inner cross validation
+        outer_n_folds : int
+            number of folds for the outer cross validation
+        n_epochs : int
+            number of epochs to run training for
+        inner_callback : Callable[[dict], None], optional
+            callback function to use during training for the inner cross validation, by default print
+        outer_callback : Callable[[dict], None], optional
+            callback function to use during training for the outer cross validation, by default print
+
+        Returns
+        -------
+        dict
+            a dictionary containing a list of tuples each containing the best combination of hyperparameters
+            on that fold and the corresponding loss on the test set for that fold, the average loss on the test sets across the folds
+            and their standard deviation
+
+        Raises
+        ------
+        ValueError
+            when values are incorrect
+        """
 
         estimator = self._estimator
         data_size = dataset.shape[0]
@@ -305,7 +420,15 @@ class GridSearch:
                 " the dataset"
             )
 
+        # check inner_n_folds value
+        if inner_n_folds > data_size:
+            raise ValueError(
+                "The number of folds cannot be greater than the number of samples in"
+                " the dataset"
+            )
+
         test_loss_list = []
+        param_combination_list = []
 
         for train_set, test_set in folds:
             train_results = self.k_fold(
@@ -324,12 +447,13 @@ class GridSearch:
                 dataset=train_set, n_epochs=n_epochs, callback=outer_callback
             )
             test_loss_list.append(estimator.evaluate(test_set))
+            param_combination_list.append(params)
 
         test_loss_avg = sum(test_loss_list) / outer_n_folds
         test_loss_std = np.std(test_loss_list)
 
         results = {
-            "test_loss_list": test_loss_list,
+            "test_loss_list": list(zip(param_combination_list, test_loss_list)),
             "test_loss_avg": test_loss_avg,
             "test_loss_std": test_loss_std,
         }
