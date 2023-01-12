@@ -1,6 +1,6 @@
 # python libraries
 import numpy as np
-from typing import Iterator, Callable
+from typing import Iterator, Callable, List, Dict
 
 # local libraries
 from loss import LossFunction
@@ -163,18 +163,23 @@ class Estimator:
             record = {"epoch": self.t, "loss": avg_loss}
             callback(record)
 
-    def evaluate(self, dataset: Dataset) -> float:
-        """Evaluates the current model on a dataset.
+    def evaluate(self, losses:List[str], dataset: Dataset) -> Dict[str, float]:
+        """Evaluate current model on dataset with given list of losses.
 
         Parameters
         ----------
+        losses : List[str]
+            list of valid loss names
         dataset : Dataset
             dataset to evaluate on
 
         Returns
         -------
-        float
-            loss(predictions, labels)
+        Dict[str, float]
+            for each loss value of result
         """
-        pred = self.net.foward(dataset.data)
-        return self.loss.foward(pred, dataset.labels)
+        res = {}
+        for loss in losses:
+            loss_fn = LossFunction(loss)
+            res[loss] = loss_fn.foward(dataset.data, dataset.labels)
+        return res

@@ -190,6 +190,22 @@ class ActivationFunction(Layer):
                 lambda x: x * (x > 0),  # function
                 lambda x: 1 * (x > 0),  # gradient
             )
+        if fname == "logistic":
+            def logistic_func(x):
+                return 1 / (1 + np.exp(-x))
+            def logistic_grad(x):
+                y = logistic_func(x)
+                return y * (1 - y)
+            return (logistic_func, logistic_grad)
+        if fname == "tanh":
+            def tanh_func(x):
+                y = np.exp(x)
+                z = np.exp(-x)
+                return (y - z) / (y + z)
+            def tanh_grad(x):
+                y = tanh_func(x)
+                return 1 - (y*y)
+            return (tanh_func, tanh_grad)
         else:
             raise ValueError(f"Invalid Activation Function: {fname}")
 
