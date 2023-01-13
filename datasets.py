@@ -1,6 +1,7 @@
 # python libraries
 import numpy as np
 import pandas as pd
+from typing import List
 
 # local libraries
 from util_classes import Dataset
@@ -207,4 +208,58 @@ def read_monks(number: int, dname: str, basedir="./monks") -> Dataset:
         labels=raw[1].to_numpy(),
         data=raw[[2, 3, 4, 5, 6, 7]].to_numpy(),
     )
+    return dataset
+
+
+
+def onehot_encoding(data: Dataset, is_categorical:List[int] = None, transform_label:bool=False) -> Dataset:
+    """Encode a dataset with onehot encoding. Columns can be select with is_categorical.
+    label can also be transformed.
+
+    Parameters
+    ----------
+    data : Dataset
+        dataset to encode
+    is_categorical : List[int], optional
+        boolean map encoding which column to transform, by default None
+    transform_label : bool, optional
+        encodes label if True, by default False
+
+    Returns
+    -------
+    _type_
+        _description_
+
+    Raises
+    -------
+    ValueError
+        if is_categorical is invalid
+    """
+    if is_categorical is None:
+        is_categorical = np.full(data.data.shape[1], True)
+    elif len(is_categorical) != data.data.shape[1]:
+        raise ValueError(f"shape of is_categorical does not match: {is_categorical.shape}!={data.data.shape[1]}")
+    elif not all(isinstance(x, bool) for x in is_categorical):
+        raise ValueError(f"is_categorical is not a bitmap")
+
+    def onehot(column):
+        min, max = column.min(axis=0), column.max(axis=0)
+        onehot = np.empty((max-min+1, column.size))
+        for i in range(onehot.shape[0]):
+            onehot[i] = 1*(column == i+min)
+        return onehot.T
+    
+    out = []
+    for transform, column in zip(is_categorical, data.data.T):
+        if transform:
+            out.append(onehot(column))
+        else:
+            out.append(column.reshape(column.size, 1))
+
+    dataset = Dataset(
+        ids=data.ids,
+        data=np.concatenate(out, axis=1),
+        labels=onehot(data.labels) if transform_label else data.labels
+    )
+    
     return dataset
