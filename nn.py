@@ -293,7 +293,7 @@ class LinearLayer(UpdatableLayer):
             gradient with respect to the input
         """
         self._grad.bias[:] = output_gradient.sum(axis=0)
-        self._grad.weights[:] = (output_gradient.T @ self._buffer).sum(axis=0)
+        self._grad.weights[:] = output_gradient.T @ self._buffer
         self._buffer = None
         input_gradient = output_gradient @ self._params.weights
         return input_gradient
