@@ -85,7 +85,7 @@ class LossFunction:
             def accuracy_func(o, y):
                 if len(o.shape) > 1:
                     raise ValueError("output not one-dimensional")
-                return (np.round(o) == y).sum() / y.size
+                return (np.round(o).astype(int) == y.astype(int)).sum() / y.size
             def accuracy_grad(o, y):
                 raise NotImplementedError()
             return (
