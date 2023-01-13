@@ -1,3 +1,5 @@
+#TODO maybe change ValueError exceptions to show wrong value
+
 # python libraries
 import numpy as np
 from typing import Iterator, Callable
@@ -61,7 +63,7 @@ class GridSearch:
             when an hyperparameter has a value with the wrong type or is not a list of values
         """
 
-        activation_functions = ["ReLU", "linear"]
+        activation_functions = ["ReLU", 'logistic', 'tanh', "linear"]
         loss_functions = ["MSE"]
 
         for key in param_dict.keys():
@@ -263,7 +265,7 @@ class GridSearch:
         last_layer = net_params["layers"][-1]
         layer_list.append(LinearLayer((old_units, last_layer[0])))
         if last_layer[1] != "linear":
-            layer_list.append(ActivationFunction(fname=layer_list[1]))
+            layer_list.append(ActivationFunction(fname=last_layer[1]))
         estimator_params["net"] = NeuralNetwork(layer_list)
         return estimator_params
 
@@ -274,6 +276,7 @@ class GridSearch:
         n_folds: int,
         n_epochs: int,
         callback: Callable[[dict], None] = print,
+        loss_list: list[str] = ['MSE']
     ) -> list:
         """function to execute a k-fold cross-validation on the given dataset
 
@@ -287,6 +290,8 @@ class GridSearch:
             number of epochs to run training
         callback : Callable[[dict], None], optional
             callback function to use during training, by default print
+        loss_list: list[str]
+            list of loss to functions to apply to test set
 
         Returns
         -------
@@ -351,11 +356,16 @@ class GridSearch:
             # iterates folds of dataset
             for train_set, test_set in folds:
                 estimator.train(dataset=train_set, n_epochs=n_epochs, callback=callback)
-                test_loss_list.append(estimator.evaluate(test_set))
+                test_loss_list.append(estimator.evaluate(losses = loss_list, dataset = test_set))
                 estimator.reset()
+            test_loss_avg = {}
+            test_loss_std = {}
+            for loss in loss_list:
+                test_loss_avg[loss] = sum(d[loss] for d in test_loss_list) / len(test_loss_list)
+                test_loss_std[loss] = np.std([d[loss] for d in test_loss_list])
 
-            test_loss_avg = sum(test_loss_list) / n_folds
-            test_loss_std = np.std(test_loss_list)
+            # test_loss_avg = sum(test_loss_list) / n_folds
+            # test_loss_std = np.std(test_loss_list)
 
             combination_loss_list.append(
                 {
@@ -364,8 +374,11 @@ class GridSearch:
                     "test_loss_std": test_loss_std,
                 }
             )
-
-        combination_loss_list.sort(key=lambda x: x["test_loss_avg"])
+            print(combination_loss_list)
+        if(loss_list[0] == 'binary_accuracy'):
+            combination_loss_list.sort(key=lambda x: x["test_loss_avg"][loss_list[0]], reverse = True)
+        else:
+            combination_loss_list.sort(key=lambda x: x["test_loss_avg"][loss_list[0]])
         return combination_loss_list
 
     # returns an estimation of the risk for the model, average +- standard deviation

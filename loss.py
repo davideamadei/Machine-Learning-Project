@@ -83,7 +83,7 @@ class LossFunction:
             )
         if fname == "binary_accuracy":
             def accuracy_func(o, y):
-                if len(o.shape) > 1:
+                if len(o.squeeze().shape) > 1:
                     raise ValueError("output not one-dimensional")
                 return (np.round(o).astype(int) == y.astype(int)).sum() / y.size
             def accuracy_grad(o, y):
