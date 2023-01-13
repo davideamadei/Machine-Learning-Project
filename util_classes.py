@@ -29,8 +29,8 @@ class Parameter:
         rng : np.random.Generator
             random number generator used.
         """
-        self.weights[:] = rng.random(self.weights.shape)
-        self.bias[:] = rng.random(self.bias.shape)
+        self.weights[:] = 2*(rng.random(self.weights.shape) - 0.5)
+        self.bias[:] = 2*(rng.random(self.bias.shape) - 0.5)
 
 
 @dataclass

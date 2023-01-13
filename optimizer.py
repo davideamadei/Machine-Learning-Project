@@ -28,7 +28,7 @@ class Optimizer:
                 -eta * grad.weights
                 + alpha * old_delta.weights
                 - 2 * l2_coeff * old.weights,
-                -eta * grad.bias + alpha * old_delta.bias - 2 * l2_coeff * old.bias,
+                -eta * grad.bias + alpha * old_delta.bias - old.bias,
             )
 
         self.optimize = optimize
