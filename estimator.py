@@ -181,5 +181,5 @@ class Estimator:
         res = {}
         for loss in losses:
             loss_fn = LossFunction(loss)
-            res[loss] = loss_fn.foward(dataset.data, dataset.labels)
+            res[loss] = loss_fn.foward(self.net.foward(dataset.data), dataset.labels)
         return res
