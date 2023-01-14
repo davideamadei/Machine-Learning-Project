@@ -291,7 +291,7 @@ class GridSearch:
         callback : Callable[[dict], None], optional
             callback function to use during training, by default print
         loss_list: list[str]
-            list of loss to functions to apply to test set
+            list of loss functions to evaluate the test set on
 
         Returns
         -------
@@ -390,6 +390,7 @@ class GridSearch:
         n_epochs: int,
         inner_callback: Callable[[dict], None] = print,
         outer_callback: Callable[[dict], None] = print,
+        loss_list: list[str] = ['MSE']
     ) -> dict:
         """function implementing nested k-fold cross validation
 
@@ -407,6 +408,8 @@ class GridSearch:
             callback function to use during training for the inner cross validation, by default print
         outer_callback : Callable[[dict], None], optional
             callback function to use during training for the outer cross validation, by default print
+        loss_list: list[str]
+            list of loss functions to evaluate the test set on
 
         Returns
         -------
@@ -429,15 +432,15 @@ class GridSearch:
         # check outer_n_folds value
         if outer_n_folds > data_size:
             raise ValueError(
-                "The number of folds cannot be greater than the number of samples in"
-                " the dataset"
+                f'The number of folds cannot be greater than the number of samples in'
+                f' the dataset: {outer_n_folds} > {data_size}'
             )
 
         # check inner_n_folds value
         if inner_n_folds > data_size:
             raise ValueError(
-                "The number of folds cannot be greater than the number of samples in"
-                " the dataset"
+                f"The number of folds cannot be greater than the number of samples in"
+                f" the dataset: {inner_n_folds} > {data_size}"
             )
 
         test_loss_list = []
@@ -459,11 +462,15 @@ class GridSearch:
             estimator.train(
                 dataset=train_set, n_epochs=n_epochs, callback=outer_callback
             )
-            test_loss_list.append(estimator.evaluate(test_set))
+            
+            test_loss_list.append(estimator.evaluate(losses = loss_list, dataset = test_set))
             param_combination_list.append(params)
 
-        test_loss_avg = sum(test_loss_list) / outer_n_folds
-        test_loss_std = np.std(test_loss_list)
+        test_loss_avg = {}
+        test_loss_std = {}
+        for loss in loss_list:
+            test_loss_avg[loss] = sum(d[loss] for d in test_loss_list) / len(test_loss_list)
+            test_loss_std[loss] = np.std([d[loss] for d in test_loss_list])
 
         results = {
             "test_loss_list": list(zip(param_combination_list, test_loss_list)),
