@@ -7,22 +7,29 @@ import numpy as np
 # local libraries
 from ..utils import Parameter
 
+__all__ = ["Initializer"]
+
 
 class Initializer:
     """Class defining parameter initialization. Currently WIP."""
 
-    def __init__(self, fname, **kwargs):
+    def __init__(self, fname:str = "random_uniform", **kwargs):
         """Returns a new instance of an initializer
 
         Parameters
         ----------
-        fname : str
-            Name of a supported initializer algorithm
+        fname : str, optional
+            Name of a supported initializer algorithm, by default "random_uniform".
+            currently supported functions are: random_uniform.
         **kwargs
             Arguments of the initializer
         """
         self.rng = np.random.default_rng(None)
-        self.__call__ = Initializer.get_functions(fname, kwargs)
+        self._initializer = Initializer.get_functions(fname, kwargs)
+
+    def __call__(self, shape: Tuple):
+        """Call interface for initializer"""
+        return self._initializer(self, shape)
 
     @staticmethod
     def get_functions(
@@ -48,7 +55,7 @@ class Initializer:
         """
         if fname == "random_uniform":
             def initializer(self, shape):
-                params = Parameter(
+                return Parameter(
                     weights= 2 * (self.rng.random(shape) - 0.5),
                     bias= 2 * (self.rng.random(shape[0]) - 0.5)
                 )

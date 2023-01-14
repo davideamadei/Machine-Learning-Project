@@ -4,6 +4,8 @@ from typing import Callable
 # external libraries
 import numpy as np
 
+__all__ = ["LossFunction"]
+
 
 class LossFunction:
     """Defines a generic loss function."""
@@ -51,7 +53,6 @@ class LossFunction:
             gradient
         """
         delta = self._backward(*self._buffer)
-        self._buffer = None
         return delta
 
     @staticmethod
@@ -88,8 +89,10 @@ class LossFunction:
                 if len(o.squeeze().shape) > 1:
                     raise ValueError("output not one-dimensional")
                 return (np.round(o).astype(int) == y.astype(int)).sum() / y.size
+
             def accuracy_grad(o, y):
                 raise NotImplementedError()
+
             return (
                 accuracy_func, accuracy_grad
             )

@@ -10,6 +10,8 @@ from .abstract import Layer, UpdatableLayer
 from .activation import ActivationFunction
 from .initializer import Initializer
 
+__all__ = ["NeuralNetwork"]
+
 
 class NeuralNetwork:
     """NeuralNetwork"""

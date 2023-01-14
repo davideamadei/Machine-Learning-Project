@@ -1,5 +1,5 @@
 # python libraries
-from typing import Callable
+
 
 # external libraries
 import numpy as np
@@ -7,6 +7,8 @@ import numpy as np
 # local libraries
 from .abstract import UpdatableLayer
 from ..utils import Parameter
+
+__all__ = ["LinearLayer"]
 
 
 class LinearLayer(UpdatableLayer):
@@ -59,4 +61,5 @@ class LinearLayer(UpdatableLayer):
         """
         self.grads.bias[:] = ograds.sum(axis=0)
         self.grads.weights[:] = ograds.T @ self.cache
-        return ograds @ self.grads.weights
+        igrads = ograds @ self.params.weights
+        return igrads

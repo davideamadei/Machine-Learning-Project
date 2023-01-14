@@ -5,6 +5,8 @@ from typing import Optional
 # external libraries
 import numpy as np
 
+__all__ = ["Parameter", "Dataset"]
+
 
 @dataclass
 class Parameter:
@@ -24,19 +26,9 @@ class Parameter:
         self.bias += other.bias
         return self
 
+    @property
     def shape(self):
         return self.weights.shape
-    
-    def randomize(self, rng: np.random.Generator):
-        """random initialization of weights and biases
-
-        Parameters
-        ----------
-        rng : np.random.Generator
-            random number generator used.
-        """
-        self.weights[:] = 2*(rng.random(self.weights.shape) - 0.5)
-        self.bias[:] = 2*(rng.random(self.bias.shape) - 0.5)
 
 
 @dataclass

@@ -11,6 +11,8 @@ from .nn import NeuralNetwork
 from .initializer import Initializer
 from ..utils import Dataset
 
+__all__ = ["Estimator"]
+
 
 class Estimator:
     """Utility class defining generic training behaviour."""
@@ -46,12 +48,16 @@ class Estimator:
         self.optimizer = optimizer
         self.initializer = initializer
         self.batchsize = batchsize
-        self.initializer.rng = np.random.default_rng(seed)
+        self._seed = seed
+        self.rng = np.random.default_rng(self._seed)
+        self.initializer.rng = np.random.default_rng(self._seed)
         self.net.initialize(self.initializer)
 
     def reset(self):
         """Resets the model to its initial conditions."""
         self.t = 0
+        self.rng = np.random.default_rng(self._seed)
+        self.initializer.rng = np.random.default_rng(self._seed)
         self.net.initialize(self.initializer)
 
     def update_params(
@@ -81,7 +87,7 @@ class Estimator:
         """
         # update parameters
         if seed is not None:
-            self.rng = np.random.default_rng(seed)
+            self._seed = seed
         if net is not None:
             self.net = net
         if loss is not None:
@@ -163,7 +169,7 @@ class Estimator:
                 avg_loss += loss
                 loss_grad = self.loss.backward()
                 self.net.backward(loss_grad)
-                self.net.optimize(self.optimizer)
+                self.net.update(self.optimizer)
             avg_loss /= batchcount
             self.t += 1
             record = {"epoch": self.t, "loss": avg_loss}

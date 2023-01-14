@@ -7,22 +7,27 @@ import numpy as np
 # local libraries
 from ..utils import Parameter
 
+__all__ = ["Optimizer"]
+
 
 class Optimizer:
     """Class defining parameter updates. Currently WIP."""
 
-    def __init__(self, fname: str, **kwargs):
+    def __init__(self, fname:str = "SGD", **kwargs):
         """Returns a new instance of an optimizer
 
         Parameters
         ----------
-        fname : str
-            Name of a supported optimizer algorithm
+        fname : str, optional
+            Name of a supported optimizer algorithm, by default "SGD".
+            Currently supported functions are: SGD.
         **kwargs
             Arguments of the optimizer
         """
         self._opt = Optimizer.get_functions(fname, kwargs)
-        self.__call__ = lambda self: self._opt(self._opt)
+
+    def __call__(self, params: Parameter, grads: Parameter, state: Parameter) -> Tuple[Parameter, Any]:
+        return self._opt(params, grads, state)
 
     @staticmethod
     def get_functions(
@@ -61,7 +66,7 @@ class Optimizer:
                         -self._eta * grads.weights
                         + self._m * state.weights
                         - 2 * self._l2 * params.weights,
-                        -self._eta * grads.bias + self._m * state.bias - params.bias,
+                        -self._eta * grads.bias + self._m * state.bias,
                     )
                     return (delta, delta)
             return SGD(**kwargs)

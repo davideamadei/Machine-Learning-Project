@@ -10,16 +10,10 @@ from ..utils import Parameter
 from .optimizer import Optimizer
 from .initializer import Initializer
 
-
-class MyPropertyInitializerMetaclass(type):
-    """Simple hack to avoid calling super for every possible UpdatableLayer"""
-    def __init__(cls, name, bases, nmspc):
-        super(MyPropertyInitializerMetaclass, cls).__init__(name, bases, nmspc)
-        # sets relevant properties to None
-        cls._state = None
+__all__ = ["Layer", "UpdatableLayer"]
 
 
-class Layer(ABC, metaclass=MyPropertyInitializerMetaclass):
+class Layer(ABC):
     """Layer without parameters"""
 
     @property
@@ -65,14 +59,17 @@ class Layer(ABC, metaclass=MyPropertyInitializerMetaclass):
         pass
 
 
-class UpdatableLayer(Layer, metaclass=MyPropertyInitializerMetaclass):
+
+class UpdatableLayer(Layer):
     """Layer with parameters"""
 
     @property
     def state(self) -> Any:
         """Property that manages caching of optimization values required
-        for updates.
+        for updates. State should be set in any subclass.
         """
+        if not hasattr(self, "_state"):
+            self._state = None
         return self._state
     @state.setter
     def state(self, value: Any):
@@ -92,11 +89,10 @@ class UpdatableLayer(Layer, metaclass=MyPropertyInitializerMetaclass):
         """Property holding parameters (weights and biases).
         """
         return self._params
-    @grads.setter
+    @params.setter
     def params(self, value) -> Parameter:
         self._params = value
     
-
     def update(self, optimizer: Optimizer) -> None:
         """Function that updates current Parameters.
         Function should call optimizer(params, grads, state)

@@ -7,5 +7,7 @@ from .optimizer import Optimizer
 from .loss import LossFunction
 from .activation import ActivationFunction
 from .linear import LinearLayer
+from .abstract import Layer, UpdatableLayer
 
-__all__ = ["ActivationFunction", "Estimator", "LinearLayer", "LossFunction", "Initializer", "Optimizer", "NeuralNetwork"]
+__all__ = ["ActivationFunction", "Estimator", "LinearLayer", "LossFunction", 
+"Initializer", "Optimizer", "NeuralNetwork", "Layer", "UpdatableLayer"]

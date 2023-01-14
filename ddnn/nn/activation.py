@@ -7,6 +7,8 @@ import numpy as np
 # local libraries
 from .abstract import Layer
 
+__all__ = ["ActivationFunction"]
+
 
 class ActivationFunction(Layer):
     """Defines a generic activation function (Layer)."""
@@ -20,7 +22,6 @@ class ActivationFunction(Layer):
             name describing an activation function, by default "ReLU"
         """
         self._foward, self._backward = ActivationFunction.get_functions(fname)
-        self._buffer = None
 
     def foward(self, input: np.ndarray) -> np.ndarray:
         """Foward call of the Layer

@@ -1,18 +1,18 @@
 #TODO maybe change ValueError exceptions to show wrong value
 
 # python libraries
-import numpy as np
-from typing import Iterator, Callable
+from typing import Callable
 import itertools
 from numbers import Number
 
-# local libraries
-from estimator import Estimator
-from util_classes import Dataset
-from optimizer import Optimizer
-from nn import NeuralNetwork, LinearLayer, ActivationFunction
+# external libraries
+import numpy as np
 
-from loss import LossFunction
+# local libraries
+from ..utils import Dataset
+from ..nn import Estimator, LossFunction, Optimizer, LinearLayer, ActivationFunction, NeuralNetwork
+
+__all__ = ["GridSearch"]
 
 # def filter_dict_by_key(dictionary: dict, keys: list[str]) -> dict:
 #     filtered_dict = {}
