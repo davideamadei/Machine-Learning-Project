@@ -52,6 +52,7 @@ class Estimator:
         self.rng = np.random.default_rng(self._seed)
         self.initializer.rng = np.random.default_rng(self._seed)
         self.net.initialize(self.initializer)
+        self.stop_training = False
 
     def reset(self):
         """Resets the model to its initial conditions."""
@@ -151,6 +152,7 @@ class Estimator:
         mb_callback : Callable[[dict],None], optional
             callback after a minibatch has finihed, by default None
         """
+        self.stop_training = False
         for i in range(n_epochs):
             # permute dataset
             permutation = self.rng.permutation(dataset.shape[0])
@@ -174,6 +176,8 @@ class Estimator:
             self.t += 1
             record = {"epoch": self.t, "loss": avg_loss}
             callback(record)
+            if self.stop_training:
+                return
 
     def evaluate(self, losses:List[str], dataset: Dataset) -> Dict[str, float]:
         """Evaluate current model on dataset with given list of losses.
