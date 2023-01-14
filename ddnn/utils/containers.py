@@ -1,8 +1,11 @@
-import numpy as np
+# python libraries
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional
 
-# DATACLASSES
+# external libraries
+import numpy as np
+
+
 @dataclass
 class Parameter:
     """A simple dataclass holding Parameters.
@@ -21,6 +24,9 @@ class Parameter:
         self.bias += other.bias
         return self
 
+    def shape(self):
+        return self.weights.shape
+    
     def randomize(self, rng: np.random.Generator):
         """random initialization of weights and biases
 

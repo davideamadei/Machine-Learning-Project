@@ -1,12 +1,15 @@
 # python libraries
-import numpy as np
 from typing import Iterator, Callable, List, Dict
 
+# external libraries
+import numpy as np
+
 # local libraries
-from loss import LossFunction
-from optimizer import Optimizer
-from nn import NeuralNetwork
-from util_classes import Dataset
+from .loss import LossFunction
+from .optimizer import Optimizer
+from .nn import NeuralNetwork
+from .initializer import Initializer
+from ..utils import Dataset
 
 
 class Estimator:
@@ -18,6 +21,7 @@ class Estimator:
         *,
         loss: LossFunction = LossFunction(),
         optimizer: Optimizer = Optimizer(),
+        initializer: Initializer = Initializer(),
         batchsize: int = 1,
         seed: int = None
     ):
@@ -40,22 +44,22 @@ class Estimator:
         self.t = 0
         self.loss = loss
         self.optimizer = optimizer
+        self.initializer = initializer
         self.batchsize = batchsize
-        self.rng = np.random.default_rng(seed)
-        if seed != None:
-            # re-randomize all layers with new rng
-            self.net.rng = self.rng
+        self.initializer.rng = np.random.default_rng(seed)
+        self.net.initialize(self.initializer)
 
     def reset(self):
         """Resets the model to its initial conditions."""
         self.t = 0
-        self.net.rng = self.rng
+        self.net.initialize(self.initializer)
 
     def update_params(
-        self,
+        self, *,
         net: NeuralNetwork = None,
         loss: LossFunction = None,
         optimizer: Optimizer = None,
+        initializer: Initializer = None,
         batchsize: int = None,
         seed: int = None,
     ) -> None:
@@ -84,6 +88,8 @@ class Estimator:
             self.loss = loss
         if optimizer is not None:
             self.optimizer = optimizer
+        if initializer is not None:
+            self.initializer = initializer
         if batchsize is not None:
             self.batchsize = batchsize
         # reset state
@@ -179,7 +185,9 @@ class Estimator:
             for each loss value of result
         """
         res = {}
+        pred = self.net.foward(dataset.data)
         for loss in losses:
             loss_fn = LossFunction(loss)
-            res[loss] = loss_fn.foward(self.net.foward(dataset.data), dataset.labels)
+            # move predictions outside loop
+            res[loss] = loss_fn.foward(pred, dataset.labels)
         return res

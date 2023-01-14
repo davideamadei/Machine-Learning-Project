@@ -1,8 +1,10 @@
 # python libraries
-import numpy as np
 from typing import Callable
 
-# LOSS FUNCTIONS
+# external libraries
+import numpy as np
+
+
 class LossFunction:
     """Defines a generic loss function."""
 
