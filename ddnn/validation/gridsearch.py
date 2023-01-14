@@ -1,6 +1,6 @@
-#TODO maybe change ValueError exceptions to show wrong value
-#TODO add comments to nested k-fold and check those in k-fold
-#TODO EarlyStopping docs
+# TODO maybe change ValueError exceptions to show wrong value
+# TODO add comments to nested k-fold and check those in k-fold
+# TODO EarlyStopping docs
 
 # python libraries
 from typing import Callable
@@ -12,29 +12,45 @@ import numpy as np
 
 # local libraries
 from ..utils import Dataset
-from ..nn import Estimator, LossFunction, Optimizer, LinearLayer, ActivationFunction, NeuralNetwork
+from ..nn import (
+    Estimator,
+    LossFunction,
+    Optimizer,
+    LinearLayer,
+    ActivationFunction,
+    NeuralNetwork,
+)
 
 __all__ = ["GridSearch"]
 
 
 class EarlyStopping:
-    def __init__(self, estimator: Estimator, losses: list[str] = ['MSE'], checks_to_stop: int = 10, check_frequency: int = 10) -> None:
+    def __init__(
+        self,
+        estimator: Estimator,
+        losses: list[str] = ["MSE"],
+        checks_to_stop: int = 10,
+        check_frequency: int = 10,
+    ) -> None:
         self._estimator = estimator
         self._losses = losses
         self._n_worse_checks = 0
         self._checks_to_stop = checks_to_stop
         self._check_frequency = check_frequency
         self._current_epoch = 0
-        self._current_best = dict.fromkeys(losses, float('inf'))
+        self._current_best = dict.fromkeys(losses, float("inf"))
         self._best_epoch = 0
+
     def __call__(self, record) -> None:
-        current_epoch = record['epoch']
+        current_epoch = record["epoch"]
         self._current_epoch = current_epoch
         if (current_epoch - 1) % self._check_frequency == 0:
             validation_set = self._validation_set
             estimator = self._estimator
             losses = self._losses
-            validation_loss = self._estimator.evaluate(losses=losses, dataset=validation_set)
+            validation_loss = self._estimator.evaluate(
+                losses=losses, dataset=validation_set
+            )
             if validation_loss[losses[0]] < self._current_best[losses[0]]:
                 self._n_worse_checks = 0
                 self._current_best = validation_loss
@@ -42,17 +58,18 @@ class EarlyStopping:
             else:
                 self._n_worse_checks += 1
                 if self._n_worse_checks == self._checks_to_stop:
-                    print(f'Stopped early at epoch {current_epoch}.')
+                    print(f"Stopped early at epoch {current_epoch}.")
                     estimator.stop_training = True
-    
+
     def reset(self) -> None:
         self._n_worse_checks = 0
         self._best_epoch = 0
-        self._current_best = dict.fromkeys(self._losses, float('inf'))
+        self._current_best = dict.fromkeys(self._losses, float("inf"))
 
     def set_validation_set(self, validation_set: Dataset) -> None:
         self.reset()
         self._validation_set = validation_set
+
 
 class GridSearch:
     _net_keys = ["layers"]
@@ -95,7 +112,7 @@ class GridSearch:
             when an hyperparameter has a value with the wrong type or is not a list of values
         """
 
-        activation_functions = ["ReLU", 'logistic', 'tanh', "linear"]
+        activation_functions = ["ReLU", "logistic", "tanh", "linear"]
         loss_functions = ["MSE"]
 
         for key in param_dict.keys():
@@ -308,8 +325,8 @@ class GridSearch:
         n_folds: int,
         n_epochs: int,
         callback: Callable[[dict], None] = print,
-        loss_list: list[str] = ['MSE'],
-        early_stopping: tuple[int, int] = None
+        loss_list: list[str] = ["MSE"],
+        early_stopping: tuple[int, int] = None,
     ) -> list:
         """function to execute a k-fold cross-validation on the given dataset
 
@@ -368,13 +385,17 @@ class GridSearch:
                     "The batchsize cannot be greater than the number of samples"
                 )
 
-        #creates folds
+        # creates folds
         folds = self._generate_folds(dataset=dataset, n_folds=n_folds)
 
-        #creates early stopping if it was passed to the function
+        # creates early stopping if it was passed to the function
         if early_stopping != None:
-            early_stopper = EarlyStopping(estimator=estimator, losses=loss_list, checks_to_stop=early_stopping[0], check_frequency=early_stopping[1])
-
+            early_stopper = EarlyStopping(
+                estimator=estimator,
+                losses=loss_list,
+                checks_to_stop=early_stopping[0],
+                check_frequency=early_stopping[1],
+            )
 
         # generates all combinations of hyperparameters
         keys, values = zip(*hyper_grid.items())
@@ -399,21 +420,31 @@ class GridSearch:
             for train_set, test_set in folds:
                 if early_stopping != None:
                     early_stopper.set_validation_set(test_set)
+
                     def my_callback(record: dict) -> None:
                         callback(record)
                         early_stopper(record)
-                    estimator.train(dataset=train_set, n_epochs=n_epochs, callback=my_callback)
+
+                    estimator.train(
+                        dataset=train_set, n_epochs=n_epochs, callback=my_callback
+                    )
                     epoch_list.append(early_stopper._best_epoch)
                     test_loss_list.append(early_stopper._current_best)
                 else:
-                    estimator.train(dataset=train_set, n_epochs=n_epochs, callback=callback)
-                    test_loss_list.append(estimator.evaluate(losses = loss_list, dataset = test_set))
+                    estimator.train(
+                        dataset=train_set, n_epochs=n_epochs, callback=callback
+                    )
+                    test_loss_list.append(
+                        estimator.evaluate(losses=loss_list, dataset=test_set)
+                    )
                 estimator.reset()
 
             test_loss_avg = {}
             test_loss_std = {}
             for loss in loss_list:
-                test_loss_avg[loss] = sum(d[loss] for d in test_loss_list) / len(test_loss_list)
+                test_loss_avg[loss] = sum(d[loss] for d in test_loss_list) / len(
+                    test_loss_list
+                )
                 test_loss_std[loss] = np.std([d[loss] for d in test_loss_list])
 
             # test_loss_avg = sum(test_loss_list) / n_folds
@@ -426,15 +457,16 @@ class GridSearch:
                     "test_loss_std": test_loss_std,
                 }
             )
-            
-            if early_stopping != None:
-                combination_results[-1]['epoch_avg'] = np.average(epoch_list)
-                combination_results[-1]['epoch_std'] = np.std(epoch_list)
 
+            if early_stopping != None:
+                combination_results[-1]["epoch_avg"] = np.average(epoch_list)
+                combination_results[-1]["epoch_std"] = np.std(epoch_list)
 
             print(combination_results)
-        if(loss_list[0] == 'binary_accuracy'):
-            combination_results.sort(key=lambda x: x["test_loss_avg"][loss_list[0]], reverse = True)
+        if loss_list[0] == "binary_accuracy":
+            combination_results.sort(
+                key=lambda x: x["test_loss_avg"][loss_list[0]], reverse=True
+            )
         else:
             combination_results.sort(key=lambda x: x["test_loss_avg"][loss_list[0]])
         return combination_results
@@ -448,8 +480,8 @@ class GridSearch:
         n_epochs: int,
         inner_callback: Callable[[dict], None] = print,
         outer_callback: Callable[[dict], None] = print,
-        loss_list: list[str] = ['MSE'],
-        early_stopping: tuple[int, int] = None
+        loss_list: list[str] = ["MSE"],
+        early_stopping: tuple[int, int] = None,
     ) -> dict:
         """function implementing nested k-fold cross validation
 
@@ -493,8 +525,8 @@ class GridSearch:
         # check outer_n_folds value
         if outer_n_folds > data_size:
             raise ValueError(
-                f'The number of folds cannot be greater than the number of samples in'
-                f' the dataset: {outer_n_folds} > {data_size}'
+                f"The number of folds cannot be greater than the number of samples in"
+                f" the dataset: {outer_n_folds} > {data_size}"
             )
 
         # check inner_n_folds value
@@ -513,7 +545,7 @@ class GridSearch:
                 n_folds=inner_n_folds,
                 n_epochs=n_epochs,
                 callback=inner_callback,
-                early_stopping = early_stopping
+                early_stopping=early_stopping,
             )
             params = train_results[0]["parameters"]
             estimator_params = self._create_estimator_params(params, input_dim)
@@ -522,17 +554,25 @@ class GridSearch:
 
             estimator.update_params(**estimator_params)
             if early_stopping != None:
-                early_epochs = int(train_results[0]['epoch_avg'])
-                estimator.train(dataset=train_set, n_epochs=early_epochs, callback=outer_callback)
+                early_epochs = int(train_results[0]["epoch_avg"])
+                estimator.train(
+                    dataset=train_set, n_epochs=early_epochs, callback=outer_callback
+                )
             else:
-                estimator.train(dataset=train_set, n_epochs=n_epochs, callback=outer_callback)
-            test_loss_list.append(estimator.evaluate(losses = loss_list, dataset = test_set))
+                estimator.train(
+                    dataset=train_set, n_epochs=n_epochs, callback=outer_callback
+                )
+            test_loss_list.append(
+                estimator.evaluate(losses=loss_list, dataset=test_set)
+            )
             param_combination_list.append(params)
 
         test_loss_avg = {}
         test_loss_std = {}
         for loss in loss_list:
-            test_loss_avg[loss] = sum(d[loss] for d in test_loss_list) / len(test_loss_list)
+            test_loss_avg[loss] = sum(d[loss] for d in test_loss_list) / len(
+                test_loss_list
+            )
             test_loss_std[loss] = np.std([d[loss] for d in test_loss_list])
 
         results = {

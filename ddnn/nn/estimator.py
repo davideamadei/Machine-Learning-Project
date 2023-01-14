@@ -25,7 +25,7 @@ class Estimator:
         optimizer: Optimizer = Optimizer(),
         initializer: Initializer = Initializer(),
         batchsize: int = 1,
-        seed: int = None
+        seed: int = None,
     ):
         """Initializes a new Estimator.
 
@@ -62,7 +62,8 @@ class Estimator:
         self.net.initialize(self.initializer)
 
     def update_params(
-        self, *,
+        self,
+        *,
         net: NeuralNetwork = None,
         loss: LossFunction = None,
         optimizer: Optimizer = None,
@@ -137,7 +138,7 @@ class Estimator:
         *,
         n_epochs: int = 1,
         callback: Callable[[dict], None] = print,
-        mb_callback: Callable[[dict], None] = None
+        mb_callback: Callable[[dict], None] = None,
     ) -> None:
         """Trains the net with passed dataset.
 
@@ -179,7 +180,7 @@ class Estimator:
             if self.stop_training:
                 return
 
-    def evaluate(self, losses:List[str], dataset: Dataset) -> Dict[str, float]:
+    def evaluate(self, losses: List[str], dataset: Dataset) -> Dict[str, float]:
         """Evaluate current model on dataset with given list of losses.
 
         Parameters

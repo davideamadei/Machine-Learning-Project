@@ -81,6 +81,7 @@ class ActivationFunction(Layer):
                 lambda x: 1 * (x > 0),  # gradient
             )
         if fname == "logistic":
+
             def logistic_func(x):
                 return 1 / (1 + np.exp(-x))
 
@@ -90,6 +91,7 @@ class ActivationFunction(Layer):
 
             return (logistic_func, logistic_grad)
         if fname == "tanh":
+
             def tanh_func(x):
                 y = np.exp(x)
                 z = np.exp(-x)
@@ -97,7 +99,7 @@ class ActivationFunction(Layer):
 
             def tanh_grad(x):
                 y = tanh_func(x)
-                return 1 - (y*y)
+                return 1 - (y * y)
 
             return (tanh_func, tanh_grad)
         else:

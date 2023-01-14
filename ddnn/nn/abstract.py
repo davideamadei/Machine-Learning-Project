@@ -19,9 +19,10 @@ class Layer(ABC):
     @property
     def cache(self) -> Any:
         """Property that manages caching of input values required
-        for backpropagation. A call to get before set is undefined. 
+        for backpropagation. A call to get before set is undefined.
         """
         return self._cache
+
     @cache.setter
     def cache(self, value: Any):
         self._cache = value
@@ -59,7 +60,6 @@ class Layer(ABC):
         pass
 
 
-
 class UpdatableLayer(Layer):
     """Layer with parameters"""
 
@@ -71,28 +71,29 @@ class UpdatableLayer(Layer):
         if not hasattr(self, "_state"):
             self._state = None
         return self._state
+
     @state.setter
     def state(self, value: Any):
         self._state = value
 
     @property
     def grads(self) -> Parameter:
-        """Property holding gradients with respect to parameters.
-        """
+        """Property holding gradients with respect to parameters."""
         return self._grads
+
     @grads.setter
     def grads(self, value) -> Parameter:
         self._grads = value
 
     @property
     def params(self) -> Parameter:
-        """Property holding parameters (weights and biases).
-        """
+        """Property holding parameters (weights and biases)."""
         return self._params
+
     @params.setter
     def params(self, value) -> Parameter:
         self._params = value
-    
+
     def update(self, optimizer: Optimizer) -> None:
         """Function that updates current Parameters.
         Function should call optimizer(params, grads, state)

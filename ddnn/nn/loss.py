@@ -85,6 +85,7 @@ class LossFunction:
                 lambda o, y: (o - y) / o.shape[0],  # gradient
             )
         if fname == "binary_accuracy":
+
             def accuracy_func(o, y):
                 if len(o.squeeze().shape) > 1:
                     raise ValueError("output not one-dimensional")
@@ -93,8 +94,6 @@ class LossFunction:
             def accuracy_grad(o, y):
                 raise NotImplementedError()
 
-            return (
-                accuracy_func, accuracy_grad
-            )
+            return (accuracy_func, accuracy_grad)
         else:
             raise ValueError(f"Invalid Activation Function: {fname}")

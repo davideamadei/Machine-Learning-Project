@@ -1,4 +1,4 @@
-VERSION?=0.1.0
+VERSION?=0.2.0
 
 .PHONY: clean docs format
 
@@ -6,13 +6,13 @@ docs:
 	pydoctor \
 	--project-name=Machine-Learning-Project	\
 	--project-version=$(VERSION) \
-	--project-url=https://github.com/davideamadei/Machine-Learning-Project/ \
+	--project-url=https://github.com/davideamadei/Machine-Learning-Project/ddnn/ \
 	--make-html \
 	--html-output=docs \
 	--project-base-dir="ddnn" \
 	--docformat=numpy \
 	--intersphinx=https://docs.python.org/3/objects.inv \
-	.
+	./ddnn
 
 format:
 	black .

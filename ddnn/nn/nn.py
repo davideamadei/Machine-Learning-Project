@@ -33,13 +33,15 @@ class NeuralNetwork:
         """
         NeuralNetwork.check_network(net)
         self._net = net
-    
+
     def __getitem__(self, index):
         """Returns the index-th layer."""
         return self._net[index]
+
     def __setitem__(self, index, value):
         """Sets the index-th layer to the passed input"""
         self._net[index] = value
+
     def __len__(self):
         """Returns the number of layers"""
         return len(self._net)

@@ -13,7 +13,7 @@ __all__ = ["Optimizer"]
 class Optimizer:
     """Class defining parameter updates. Currently WIP."""
 
-    def __init__(self, fname:str = "SGD", **kwargs):
+    def __init__(self, fname: str = "SGD", **kwargs):
         """Returns a new instance of an optimizer
 
         Parameters
@@ -26,7 +26,9 @@ class Optimizer:
         """
         self._opt = Optimizer.get_functions(fname, kwargs)
 
-    def __call__(self, params: Parameter, grads: Parameter, state: Parameter) -> Tuple[Parameter, Any]:
+    def __call__(
+        self, params: Parameter, grads: Parameter, state: Parameter
+    ) -> Tuple[Parameter, Any]:
         return self._opt(params, grads, state)
 
     @staticmethod
@@ -52,16 +54,26 @@ class Optimizer:
             if fname is not supported
         """
         if fname == "SGD":
+
             class SGD:
-                def __init__(self, *, learning_rate=1e-3, l2_coefficient=1e-4, momentum_coefficient=0.8):
+                def __init__(
+                    self,
+                    *,
+                    learning_rate=1e-3,
+                    l2_coefficient=1e-4,
+                    momentum_coefficient=0.8,
+                ):
                     self._eta = learning_rate
                     self._l2 = l2_coefficient
                     self._m = momentum_coefficient
-                def __call__(self, params: Parameter, grads: Parameter, state: Parameter) -> Tuple[Parameter, Any]:
+
+                def __call__(
+                    self, params: Parameter, grads: Parameter, state: Parameter
+                ) -> Tuple[Parameter, Any]:
                     # first iteration set momentum to gradient
                     if state == None:
                         state = grads
-                    
+
                     delta = Parameter(
                         -self._eta * grads.weights
                         + self._m * state.weights
@@ -69,10 +81,13 @@ class Optimizer:
                         -self._eta * grads.bias + self._m * state.bias,
                     )
                     return (delta, delta)
+
             return SGD(**kwargs)
         if fname == "Adam":
+
             class Adam:
                 pass
+
             return Adam(**kwargs)
         else:
             raise ValueError(f"Invalid Optimizer: {fname}")

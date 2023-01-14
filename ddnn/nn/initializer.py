@@ -13,7 +13,7 @@ __all__ = ["Initializer"]
 class Initializer:
     """Class defining parameter initialization. Currently WIP."""
 
-    def __init__(self, fname:str = "random_uniform", **kwargs):
+    def __init__(self, fname: str = "random_uniform", **kwargs):
         """Returns a new instance of an initializer
 
         Parameters
@@ -32,9 +32,7 @@ class Initializer:
         return self._initializer(self, shape)
 
     @staticmethod
-    def get_functions(
-        fname: str, kwargs: Dict
-    ) -> Callable[[tuple], Parameter]:
+    def get_functions(fname: str, kwargs: Dict) -> Callable[[tuple], Parameter]:
         """Given a name identifing an initializer. Returns an initializer with
         given hyperparamters.
 
@@ -54,11 +52,13 @@ class Initializer:
             if fname is not supported
         """
         if fname == "random_uniform":
+
             def initializer(self, shape):
                 return Parameter(
-                    weights= 2 * (self.rng.random(shape) - 0.5),
-                    bias= 2 * (self.rng.random(shape[0]) - 0.5)
+                    weights=2 * (self.rng.random(shape) - 0.5),
+                    bias=2 * (self.rng.random(shape[0]) - 0.5),
                 )
+
             return initializer
         else:
             raise ValueError(f"Invalid Activation Function: {fname}")
