@@ -1,4 +1,6 @@
 #TODO maybe change ValueError exceptions to show wrong value
+#TODO add comments to nested k-fold and check those in k-fold
+#TODO EarlyStopping docs
 
 # python libraries
 import numpy as np
@@ -14,13 +16,42 @@ from nn import NeuralNetwork, LinearLayer, ActivationFunction
 
 from loss import LossFunction
 
-# def filter_dict_by_key(dictionary: dict, keys: list[str]) -> dict:
-#     filtered_dict = {}
-#     for key in keys:
-#         if key in dictionary.keys():
-#             filtered_dict[key] = dictionary[key]
-#     return filtered_dict
+class EarlyStopping:
+    def __init__(self, estimator: Estimator, losses: list[str] = ['MSE'], checks_to_stop: int = 10, check_frequency: int = 10) -> None:
+        self._estimator = estimator
+        self._losses = losses
+        self._n_worse_checks = 0
+        self._checks_to_stop = checks_to_stop
+        self._check_frequency = check_frequency
+        self._current_epoch = 0
+        self._current_best = dict.fromkeys(losses, float('inf'))
+        self._best_epoch = 0
+    def __call__(self, record) -> None:
+        current_epoch = record['epoch']
+        self._current_epoch = current_epoch
+        if (current_epoch - 1) % self._check_frequency == 0:
+            validation_set = self._validation_set
+            estimator = self._estimator
+            losses = self._losses
+            validation_loss = self._estimator.evaluate(losses=losses, dataset=validation_set)
+            if validation_loss[losses[0]] < self._current_best[losses[0]]:
+                self._n_worse_checks = 0
+                self._current_best = validation_loss
+                self._best_epoch = current_epoch
+            else:
+                self._n_worse_checks += 1
+                if self._n_worse_checks == self._checks_to_stop:
+                    print(f'Stopped early at epoch {current_epoch}.')
+                    estimator.stop_training = True
+    
+    def reset(self) -> None:
+        self._n_worse_checks = 0
+        self._best_epoch = 0
+        self._current_best = dict.fromkeys(self._losses, float('inf'))
 
+    def set_validation_set(self, validation_set: Dataset) -> None:
+        self.reset()
+        self._validation_set = validation_set
 
 class GridSearch:
     _net_keys = ["layers"]
@@ -276,7 +307,8 @@ class GridSearch:
         n_folds: int,
         n_epochs: int,
         callback: Callable[[dict], None] = print,
-        loss_list: list[str] = ['MSE']
+        loss_list: list[str] = ['MSE'],
+        early_stopping: tuple[int, int] = None
     ) -> list:
         """function to execute a k-fold cross-validation on the given dataset
 
@@ -292,6 +324,8 @@ class GridSearch:
             callback function to use during training, by default print
         loss_list: list[str]
             list of loss functions to evaluate the test set on
+        early_stopping: tuple
+            dictionary containing two values, respectively how many checks have to fail before stopping training and how many epochs need to pass between checks
 
         Returns
         -------
@@ -333,13 +367,19 @@ class GridSearch:
                     "The batchsize cannot be greater than the number of samples"
                 )
 
+        #creates folds
         folds = self._generate_folds(dataset=dataset, n_folds=n_folds)
+
+        #creates early stopping if it was passed to the function
+        if early_stopping != None:
+            early_stopper = EarlyStopping(estimator=estimator, losses=loss_list, checks_to_stop=early_stopping[0], check_frequency=early_stopping[1])
+
 
         # generates all combinations of hyperparameters
         keys, values = zip(*hyper_grid.items())
         param_combinations = [dict(zip(keys, v)) for v in itertools.product(*values)]
 
-        combination_loss_list = []
+        combination_results = []
 
         # iterates all combinations of hyperparameters
         for combination in param_combinations:
@@ -350,14 +390,25 @@ class GridSearch:
             estimator.update_params(**estimator_params)
 
             test_loss_list = []
+            epoch_list = []
 
             print(combination)
 
             # iterates folds of dataset
             for train_set, test_set in folds:
-                estimator.train(dataset=train_set, n_epochs=n_epochs, callback=callback)
-                test_loss_list.append(estimator.evaluate(losses = loss_list, dataset = test_set))
+                if early_stopping != None:
+                    early_stopper.set_validation_set(test_set)
+                    def my_callback(record: dict) -> None:
+                        callback(record)
+                        early_stopper(record)
+                    estimator.train(dataset=train_set, n_epochs=n_epochs, callback=my_callback)
+                    epoch_list.append(early_stopper._best_epoch)
+                    test_loss_list.append(early_stopper._current_best)
+                else:
+                    estimator.train(dataset=train_set, n_epochs=n_epochs, callback=callback)
+                    test_loss_list.append(estimator.evaluate(losses = loss_list, dataset = test_set))
                 estimator.reset()
+
             test_loss_avg = {}
             test_loss_std = {}
             for loss in loss_list:
@@ -367,19 +418,25 @@ class GridSearch:
             # test_loss_avg = sum(test_loss_list) / n_folds
             # test_loss_std = np.std(test_loss_list)
 
-            combination_loss_list.append(
+            combination_results.append(
                 {
                     "parameters": combination,
                     "test_loss_avg": test_loss_avg,
                     "test_loss_std": test_loss_std,
                 }
             )
-            print(combination_loss_list)
+            
+            if early_stopping != None:
+                combination_results[-1]['epoch_avg'] = np.average(epoch_list)
+                combination_results[-1]['epoch_std'] = np.std(epoch_list)
+
+
+            print(combination_results)
         if(loss_list[0] == 'binary_accuracy'):
-            combination_loss_list.sort(key=lambda x: x["test_loss_avg"][loss_list[0]], reverse = True)
+            combination_results.sort(key=lambda x: x["test_loss_avg"][loss_list[0]], reverse = True)
         else:
-            combination_loss_list.sort(key=lambda x: x["test_loss_avg"][loss_list[0]])
-        return combination_loss_list
+            combination_results.sort(key=lambda x: x["test_loss_avg"][loss_list[0]])
+        return combination_results
 
     # returns an estimation of the risk for the model, average +- standard deviation
     def nested_k_fold(
@@ -390,7 +447,8 @@ class GridSearch:
         n_epochs: int,
         inner_callback: Callable[[dict], None] = print,
         outer_callback: Callable[[dict], None] = print,
-        loss_list: list[str] = ['MSE']
+        loss_list: list[str] = ['MSE'],
+        early_stopping: tuple[int, int] = None
     ) -> dict:
         """function implementing nested k-fold cross validation
 
@@ -410,6 +468,8 @@ class GridSearch:
             callback function to use during training for the outer cross validation, by default print
         loss_list: list[str]
             list of loss functions to evaluate the test set on
+        early_stopping: dict
+            dictionary containing 'checks_to_stop' and 'check_frequency', respectively how many checks have to fail before stopping training and how many epochs need to pass between checks
 
         Returns
         -------
@@ -452,6 +512,7 @@ class GridSearch:
                 n_folds=inner_n_folds,
                 n_epochs=n_epochs,
                 callback=inner_callback,
+                early_stopping = early_stopping
             )
             params = train_results[0]["parameters"]
             estimator_params = self._create_estimator_params(params, input_dim)
@@ -459,10 +520,11 @@ class GridSearch:
                 estimator_params["batchsize"] = data_size
 
             estimator.update_params(**estimator_params)
-            estimator.train(
-                dataset=train_set, n_epochs=n_epochs, callback=outer_callback
-            )
-            
+            if early_stopping != None:
+                early_epochs = int(train_results[0]['epoch_avg'])
+                estimator.train(dataset=train_set, n_epochs=early_epochs, callback=outer_callback)
+            else:
+                estimator.train(dataset=train_set, n_epochs=n_epochs, callback=outer_callback)
             test_loss_list.append(estimator.evaluate(losses = loss_list, dataset = test_set))
             param_combination_list.append(params)
 
