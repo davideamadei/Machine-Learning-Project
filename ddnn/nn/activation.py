@@ -93,9 +93,7 @@ class ActivationFunction(Layer):
         if fname == "tanh":
 
             def tanh_func(x):
-                y = np.exp(x)
-                z = np.exp(-x)
-                return (y - z) / (y + z)
+                return np.tanh(x)
 
             def tanh_grad(x):
                 y = tanh_func(x)

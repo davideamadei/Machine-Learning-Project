@@ -13,17 +13,20 @@ __all__ = ["Initializer"]
 class Initializer:
     """Class defining parameter initialization. Currently WIP."""
 
-    def __init__(self, fname: str = "random_uniform", **kwargs):
+    def __init__(self, fname: str = "random_uniform", fan_mode: str=None):
         """Returns a new instance of an initializer
 
         Parameters
         ----------
         fname : str, optional
             Name of a supported initializer algorithm, by default "random_uniform".
-            currently supported functions are: random_uniform.
+            currently supported functions are: random_uniform, random_normal, 
+            glorot_uniform, glorot_normal, he_uniform, he_normal.
         **kwargs
-            Arguments of the initializer
+            Arguments of the specific initializer instance
+            fan_mode = "fan_in" or "fan_out" # for any He initializer
         """
+        kwargs = locals()
         self.rng = np.random.default_rng(None)
         self._initializer = Initializer.get_functions(fname, kwargs)
 
@@ -52,7 +55,7 @@ class Initializer:
             if fname is not supported
         """
         if fname == "random_uniform":
-
+            
             def initializer(self, shape):
                 a = 1
                 return Parameter(
