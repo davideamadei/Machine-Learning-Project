@@ -71,6 +71,8 @@ class Initializer:
                     bias=self.rng.normal(0, std, size=shape[0])
                 )
 
+            return initializer
+
         if fname == "glorot_uniform":
 
             def initializer(self, shape):
@@ -79,6 +81,9 @@ class Initializer:
                     weights=self.rng.uniform(-a, a, size=shape),
                     bias=self.rng.uniform(-a, a, size=shape[0])
                 )
+
+            return initializer
+        
         if fname == "glorot_normal":
 
             def initializer(self, shape):
@@ -88,10 +93,12 @@ class Initializer:
                     weights=self.rng.normal(0, var, size=shape),
                     bias=self.rng.normal(0, var, size=shape[0])
                 )
+            
+            return initializer
 
         if fname == "he_uniform":
             is_fan_in = None
-            if hasattr(kwargs, "fan_mode"):
+            if "fan_mode" in kwargs:
                 if kwargs["fan_mode"] == "fan_in":
                     is_fan_in = True
                 elif kwargs["fan_mode"] == "fan_out":
@@ -109,10 +116,12 @@ class Initializer:
                     weights=self.rng.uniform(-a, a, size=shape),
                     bias=self.rng.uniform(-a, a, size=shape[0])
                 )
+            
+            return initializer
         
         if fname == "he_normal":
             is_fan_in = None
-            if hasattr(kwargs, "fan_mode"):
+            if "fan_mode" in kwargs:
                 if kwargs["fan_mode"] == "fan_in":
                     is_fan_in = True
                 elif kwargs["fan_mode"] == "fan_out":
@@ -131,5 +140,7 @@ class Initializer:
                     weights=self.rng.normal(0, var, size=shape),
                     bias=self.rng.normal(0, var, size=shape[0])
                 )
+
+            return initializer
         else:
             raise ValueError(f"Invalid Activation Function: {fname}")
