@@ -54,11 +54,82 @@ class Initializer:
         if fname == "random_uniform":
 
             def initializer(self, shape):
+                a = 1
                 return Parameter(
-                    weights=2 * (self.rng.random(shape) - 0.5),
-                    bias=2 * (self.rng.random(shape[0]) - 0.5),
+                    weights=self.rng.uniform(-a, a, size=shape),
+                    bias=self.rng.uniform(-a, a, size=shape[0]),
                 )
 
             return initializer
+        
+        if fname == "random_normal":
+
+            def initializer(self, shape):
+                std = 1
+                return Parameter(
+                    weights=self.rng.normal(0, std, size=shape),
+                    bias=self.rng.normal(0, std, size=shape[0])
+                )
+
+        if fname == "glorot_uniform":
+
+            def initializer(self, shape):
+                a = np.sqrt(2) * np.sqrt(6 / sum(shape))
+                return Parameter(
+                    weights=self.rng.uniform(-a, a, size=shape),
+                    bias=self.rng.uniform(-a, a, size=shape[0])
+                )
+        if fname == "glorot_normal":
+
+            def initializer(self, shape):
+                std = np.sqrt(2) * np.sqrt(2 / sum(shape))
+                var = std*std
+                return Parameter(
+                    weights=self.rng.normal(0, var, size=shape),
+                    bias=self.rng.normal(0, var, size=shape[0])
+                )
+
+        if fname == "he_uniform":
+            is_fan_in = None
+            if hasattr(kwargs, "fan_mode"):
+                if kwargs["fan_mode"] == "fan_in":
+                    is_fan_in = True
+                elif kwargs["fan_mode"] == "fan_out":
+                    is_fan_in = False
+            if is_fan_in is None:
+                raise ValueError("Invalid fan_mode")
+            
+
+            def initializer(self, shape):
+                if is_fan_in:
+                    a = np.sqrt(2) * np.sqrt(3 / shape[1])
+                else:
+                    a = np.sqrt(2) * np.sqrt(3 / shape[0])
+                return Parameter(
+                    weights=self.rng.uniform(-a, a, size=shape),
+                    bias=self.rng.uniform(-a, a, size=shape[0])
+                )
+        
+        if fname == "he_normal":
+            is_fan_in = None
+            if hasattr(kwargs, "fan_mode"):
+                if kwargs["fan_mode"] == "fan_in":
+                    is_fan_in = True
+                elif kwargs["fan_mode"] == "fan_out":
+                    is_fan_in = False
+            if is_fan_in is None:
+                raise ValueError("Invalid fan_mode")
+            
+
+            def initializer(self, shape):
+                if is_fan_in:
+                    std = np.sqrt(2) / np.sqrt(shape[1])
+                else:
+                    std = np.sqrt(2) / np.sqrt(shape[0])
+                var = std*std
+                return Parameter(
+                    weights=self.rng.normal(0, var, size=shape),
+                    bias=self.rng.normal(0, var, size=shape[0])
+                )
         else:
             raise ValueError(f"Invalid Activation Function: {fname}")
