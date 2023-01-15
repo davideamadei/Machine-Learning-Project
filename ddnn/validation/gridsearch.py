@@ -11,92 +11,42 @@ from numbers import Number
 import numpy as np
 
 # local libraries
-from ..utils import Dataset
-from ..nn import (
+from ddnn.utils import Dataset
+from ddnn.nn import (
     Estimator,
     LossFunction,
     Optimizer,
     LinearLayer,
     ActivationFunction,
+    Initializer,
     NeuralNetwork,
 )
+from .callback import EarlyStopping, TrainingThresholdStopping
 
 __all__ = ["GridSearch"]
 
 
-class EarlyStopping:
-    def __init__(
-        self,
-        estimator: Estimator,
-        losses: list[str] = ["MSE"],
-        checks_to_stop: int = 10,
-        check_frequency: int = 10,
-    ) -> None:
-        self._estimator = estimator
-        self._losses = losses
-        self._n_worse_checks = 0
-        self._checks_to_stop = checks_to_stop
-        self._check_frequency = check_frequency
-        self._current_epoch = 0
-        self._current_best = dict.fromkeys(losses, float("inf"))
-        self._best_epoch = 0
-
-    def __call__(self, record) -> None:
-        current_epoch = record["epoch"]
-        self._current_epoch = current_epoch
-        if (current_epoch - 1) % self._check_frequency == 0:
-            validation_set = self._validation_set
-            estimator = self._estimator
-            losses = self._losses
-            validation_loss = self._estimator.evaluate(
-                losses=losses, dataset=validation_set
-            )
-            if validation_loss[losses[0]] < self._current_best[losses[0]]:
-                self._n_worse_checks = 0
-                self._current_best = validation_loss
-                self._best_epoch = current_epoch
-            else:
-                self._n_worse_checks += 1
-                if self._n_worse_checks == self._checks_to_stop:
-                    print(f"Stopped early at epoch {current_epoch}.")
-                    estimator.stop_training = True
-
-    def reset(self) -> None:
-        self._n_worse_checks = 0
-        self._best_epoch = 0
-        self._current_best = dict.fromkeys(self._losses, float("inf"))
-
-    def set_validation_set(self, validation_set: Dataset) -> None:
-        self.reset()
-        self._validation_set = validation_set
-
+# TODO maybe change ValueError exceptions to show wrong value
+# TODO add comments to nested k-fold and check those in k-fold
 
 class GridSearch:
+    _optional_keys = ['fan_mode']
     _net_keys = ["layers"]
-    _optimizer_keys = ["eta", "l2_coeff", "alpha"]
-    _loss_keys = ["fname"]
+    _weight_initializer_keys = ['weight_initializer']
+    _optimizer_keys = ['optimizer', "learning_rate", "l2_coefficient", "momentum_coefficient"]
+    _loss_keys = ["loss"]
     _estimator_keys = ["batchsize"]
-    # _global_keys = _net_keys + _optimizer_keys + _loss_keys + _estimator_keys
-
-    # dictionary containing translations from exposed names to names to pass to functions internally
-    _param_name_translations = {
-        "layers": "layers",
-        "l2": "l2_coeff",
-        "momentum": "alpha",
-        "eta": "eta",
-        "loss": "fname",
-        "batchsize": "batchsize",
-    }
+    _global_keys = _net_keys + _optimizer_keys + _weight_initializer_keys + _loss_keys + _estimator_keys
 
     # check param_grid validity
     @staticmethod
-    def _check_param_grid(param_dict: dict, hyper_grid: dict) -> None:
+    def _check_param_grid(param_list: list[str], optional_params: list[str], hyper_grid: dict) -> None:
         """Checks that the given grid of hyperparameters is correct
 
         Parameters
         ----------
-        param_dict : dict
-            dictionary of accepted hyperparameters
+        param_list : list
+            list of accepted hyperparameters
         hyper_grid : dict
             dictionary containing the grid of hyperparameters on which to perform the validity check
 
@@ -112,17 +62,19 @@ class GridSearch:
             when an hyperparameter has a value with the wrong type or is not a list of values
         """
 
+        weight_initializers = ['random_uniform', 'random_normal', 'glorot_uniform', 'glorot_normal', 'he_uniform', 'he_normal'] 
+        optimizers = ['SGD', 'ADAM']
         activation_functions = ["ReLU", "logistic", "tanh", "linear"]
-        loss_functions = ["MSE"]
+        loss_functions = ["MSE", 'binary_accuracy']
 
-        for key in param_dict.keys():
+        for key in param_list:
             if not key in hyper_grid.keys():
                 raise ValueError(
                     (
                         "All the following parameters must be present in the"
                         " hyperparameter grid: "
                     ),
-                    list(param_dict.keys()),
+                    list(param_list),
                 )
             if not isinstance(hyper_grid[key], list) or len(hyper_grid[key]) == 0:
                 raise ValueError(
@@ -130,6 +82,11 @@ class GridSearch:
                     " parameters"
                 )
 
+        # check that only accepted parameters were passed
+        for key in hyper_grid.keys():
+            if key not in param_list and key not in optional_params:
+                raise ValueError(f'{key} not accepted as hyperparameter. Only the following hyperparameters are accepted. Mandatory: {param_list}. Optional: {optional_params}')
+            
         # check layers
         for net in hyper_grid["layers"]:
             for layer in net:
@@ -157,25 +114,60 @@ class GridSearch:
                     )
 
         # check l2
-        for l2_coeff in hyper_grid["l2"]:
+        for l2_coeff in hyper_grid["l2_coefficient"]:
             if not isinstance(l2_coeff, Number):
                 raise TypeError("The L2 coefficient must be a number")
             if l2_coeff < 0:
                 raise ValueError("The L2 coefficient must be at least 0")
 
         # check momentum
-        for momentum in hyper_grid["momentum"]:
+        for momentum in hyper_grid["momentum_coefficient"]:
             if not isinstance(momentum, Number):
                 raise TypeError("The momentum parameter must be a number")
             if momentum < 0:
                 raise ValueError("The momentum parameter must be at least 0")
 
-        # check eta
-        for eta in hyper_grid["eta"]:
+        # check learning rate
+        for eta in hyper_grid["learning_rate"]:
             if not isinstance(eta, Number):
                 raise TypeError("The learning rate must be a number")
             if eta <= 0:
                 raise ValueError("The learning rate must be greater than 0")
+
+        # check optimizers
+        for optimizer in hyper_grid['optimizer']:
+            if not isinstance(optimizer, str):
+                raise TypeError(
+                    "The optimizer must be a string corresponding to the required optimizer"
+                )
+            if optimizer not in optimizers:
+                raise ValueError(
+                    "Only the following values are accepted for the optimizer: ",
+                    optimizers
+                )
+
+        # check if 'fan_mode' was passed as hyperparameter
+        fan_mode_flag = 'fan_mode' in hyper_grid.keys()
+        # check weight initialization functions
+        for weight_init in hyper_grid["weight_initializer"]:
+            if not isinstance(weight_init, str):
+                raise TypeError(
+                    "The weight initialization must be a string corresponding to the required weight initialization function"
+                )
+            if weight_init not in weight_initializers:
+                raise ValueError(
+                    "Only the following values are accepted for the weight initialization function: ",
+                    weight_initializers,
+                )
+            if (weight_init == 'he_uniform' or weight_init == 'he_normal') and not fan_mode_flag:
+                raise ValueError('He initializer requires fan_mode hyperparameter to also be passed with values fan_in or fan_out')
+            if weight_init != 'he_uniform' and weight_init != 'he_normal' and fan_mode_flag:
+                raise ValueError('fan_mode hyperparameter can only be set in conjunction with he_uniform or he_normal weight initializers')
+        # check fan_mode values
+        if fan_mode_flag:
+            for fan_mode in hyper_grid['fan_mode']:
+                if fan_mode != 'fan_in' and fan_mode != 'fan_out':
+                    raise ValueError('fan_mode for He weight initialization can only be set to fan_in or fan_out')
 
         # check loss functions
         for loss in hyper_grid["loss"]:
@@ -221,14 +213,8 @@ class GridSearch:
             raise TypeError
 
         # check for wrong values
-        GridSearch._check_param_grid(self._param_name_translations, hyper_grid)
-
-        # translate names of parameters and sort by key for better efficiency
-        new_grid = {}
-        for key in self._param_name_translations.keys():
-            if key in hyper_grid:
-                new_grid[self._param_name_translations[key]] = hyper_grid[key]
-        self._hyper_grid = new_grid
+        GridSearch._check_param_grid(self._global_keys, self._optional_keys, hyper_grid)
+        self._hyper_grid = hyper_grid
 
     # returns a list of data folds through indexes
     def _generate_folds(
@@ -295,11 +281,19 @@ class GridSearch:
         """
         # filter parameters for various classes
         loss_params = {key: combination[key] for key in self._loss_keys}
+        loss_params['fname'] = loss_params.pop('loss')
+        weight_init_params = {key: combination[key] for key in self._weight_initializer_keys}
+        if combination['weight_initializer'] == 'he_uniform' or combination['weight_initializer'] == 'he_normal':
+            weight_init_params['fan_mode'] = combination['fan_mode']
+        weight_init_params['fname'] = weight_init_params.pop('weight_initializer')
         estimator_params = {key: combination[key] for key in self._estimator_keys}
         optimizer_params = {key: combination[key] for key in self._optimizer_keys}
+        optimizer_params['fname'] = optimizer_params.pop('optimizer')
         net_params = {key: combination[key] for key in self._net_keys}
 
         # create dictionary of params to pass to constructors
+        print(weight_init_params, loss_params, optimizer_params)
+        estimator_params['initializer'] = Initializer(**weight_init_params)
         estimator_params["loss"] = LossFunction(**loss_params)
         estimator_params["optimizer"] = Optimizer(**optimizer_params)
 
@@ -396,6 +390,9 @@ class GridSearch:
                 checks_to_stop=early_stopping[0],
                 check_frequency=early_stopping[1],
             )
+            def new_callback(record: dict) -> None:
+                callback(record)
+                early_stopper(record)
 
         # generates all combinations of hyperparameters
         keys, values = zip(*hyper_grid.items())
@@ -413,7 +410,7 @@ class GridSearch:
 
             test_loss_list = []
             epoch_list = []
-
+            train_loss_list = []
             print(combination)
 
             # iterates folds of dataset
@@ -421,15 +418,12 @@ class GridSearch:
                 if early_stopping != None:
                     early_stopper.set_validation_set(test_set)
 
-                    def my_callback(record: dict) -> None:
-                        callback(record)
-                        early_stopper(record)
-
                     estimator.train(
-                        dataset=train_set, n_epochs=n_epochs, callback=my_callback
+                        dataset=train_set, n_epochs=n_epochs, callback=new_callback
                     )
                     epoch_list.append(early_stopper._best_epoch)
-                    test_loss_list.append(early_stopper._current_best)
+                    test_loss_list.append(early_stopper._best_vl_loss)
+                    train_loss_list.append(early_stopper._best_tr_loss)
                 else:
                     estimator.train(
                         dataset=train_set, n_epochs=n_epochs, callback=callback
@@ -459,10 +453,11 @@ class GridSearch:
             )
 
             if early_stopping != None:
-                combination_results[-1]["epoch_avg"] = np.average(epoch_list)
-                combination_results[-1]["epoch_std"] = np.std(epoch_list)
+                combination_results[-1]["n_epoch_avg"] = np.average(epoch_list)
+                combination_results[-1]["n_epoch_std"] = np.std(epoch_list)
+                combination_results[-1]['train_loss_avg'] = np.average(train_loss_list)
+                combination_results[-1]['train_loss_std'] = np.std(train_loss_list)
 
-            print(combination_results)
         if loss_list[0] == "binary_accuracy":
             combination_results.sort(
                 key=lambda x: x["test_loss_avg"][loss_list[0]], reverse=True
@@ -536,6 +531,12 @@ class GridSearch:
                 f" the dataset: {inner_n_folds} > {data_size}"
             )
 
+        if early_stopping != None:
+            threshold_stopper = TrainingThresholdStopping(estimator=estimator, threshold_loss=0)
+            def new_callback(record: dict) -> None:
+                outer_callback(record)
+                threshold_stopper(record)
+
         test_loss_list = []
         param_combination_list = []
 
@@ -554,9 +555,11 @@ class GridSearch:
 
             estimator.update_params(**estimator_params)
             if early_stopping != None:
-                early_epochs = int(train_results[0]["epoch_avg"])
+                early_epochs = int(train_results[0]["n_epoch_avg"])
+                threshold_stopper.update_threshold(train_results[0]['train_loss_avg'])
+                print(f'threshold = {train_results[0]["train_loss_avg"]}')
                 estimator.train(
-                    dataset=train_set, n_epochs=early_epochs, callback=outer_callback
+                    dataset=train_set, n_epochs=early_epochs, callback=new_callback
                 )
             else:
                 estimator.train(
