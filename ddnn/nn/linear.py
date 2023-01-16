@@ -24,8 +24,8 @@ class LinearLayer(UpdatableLayer):
         seed : int or None, optional
             seed used to initialize weights, by default None
         """
-        self.params = Parameter(weights=np.empty(shape[::-1]), bias=np.empty(shape[1]))
-        self.grads = Parameter(weights=np.empty(shape[::-1]), bias=np.empty(shape[1]))
+        self.params = Parameter(weights=np.zeros(shape[::-1]), bias=np.zeros(shape[1]))
+        self.grads = Parameter(weights=np.zeros(shape[::-1]), bias=np.zeros(shape[1]))
 
     def foward(self, input: np.ndarray) -> np.ndarray:
         """Foward call of this Layer.

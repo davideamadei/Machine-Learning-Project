@@ -1,9 +1,10 @@
 # TODO EarlyStopping and TrainingThresholdStopping docs
 
-from ddnn.utils import Dataset
-from ddnn.nn import Estimator
+from ..utils import Dataset
+from ..nn import Estimator
 
-__all__ = ['EarlyStopping', 'TrainingThresholdStopping']
+__all__ = ["EarlyStopping", "TrainingThresholdStopping"]
+
 
 class EarlyStopping:
     def __init__(
@@ -37,11 +38,13 @@ class EarlyStopping:
                 self._n_worse_checks = 0
                 self._best_vl_loss = validation_loss
                 self._best_epoch = current_epoch
-                self._best_tr_loss = record['loss']
+                self._best_tr_loss = record["loss"]
             else:
                 self._n_worse_checks += 1
                 if self._n_worse_checks == self._checks_to_stop:
-                    print(f"Stopped early at epoch {current_epoch} after {self._n_worse_checks} check(s) had a validation loss worse than the current best one.")
+                    print(
+                        f"Stopped early at epoch {current_epoch} after {self._n_worse_checks} check(s) had a validation loss worse than the current best one."
+                    )
                     estimator.stop_training = True
 
     def reset(self) -> None:
@@ -54,15 +57,18 @@ class EarlyStopping:
         self.reset()
         self._validation_set = validation_set
 
+
 class TrainingThresholdStopping:
     def __init__(self, estimator: Estimator, threshold_loss: float) -> None:
         self._estimator = estimator
         self._threshold_loss = threshold_loss
-    
+
     def __call__(self, record: dict) -> None:
-        if record['loss'] < self._threshold_loss:
-            print(f'Stopped training early at epoch {record["epoch"]} as threshold loss of {self._threshold_loss} on training set was reached.')
+        if record["loss"] < self._threshold_loss:
+            print(
+                f'Stopped training early at epoch {record["epoch"]} as threshold loss of {self._threshold_loss} on training set was reached.'
+            )
             self._estimator.stop_training = True
-    
+
     def update_threshold(self, threshold_loss: float) -> None:
         self._threshold_loss = threshold_loss

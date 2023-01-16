@@ -82,7 +82,7 @@ class LossFunction:
         if fname == "MSE":
             return (
                 lambda o, y: np.sum((o - y) ** 2) / o.shape[0],  # function
-                lambda o, y: 2*(o - y) / o.shape[0],  # gradient
+                lambda o, y: 2 * (o - y) / (o.shape[0] * o.shape[1]),  # gradient
             )
         if fname == "binary_accuracy":
 

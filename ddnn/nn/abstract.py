@@ -121,3 +121,6 @@ class UpdatableLayer(Layer):
             initializer method
         """
         self.params = initializer(self.params.shape)
+        self.grads.weights[:] = 0
+        self.grads.bias[:] = 0
+        self.state = None

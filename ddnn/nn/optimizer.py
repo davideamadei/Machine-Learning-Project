@@ -27,9 +27,9 @@ class Optimizer:
         self._opt = Optimizer.get_functions(fname, kwargs)
 
     def __call__(
-        self, params: Parameter, grads: Parameter, state: Parameter
-    ) -> Tuple[Parameter, Any]:
-        return self._opt(params, grads, state)
+        self, t: int
+    ) -> Callable[[Parameter, Parameter, Parameter], Tuple[Parameter, Any]]:
+        return self._opt(t)
 
     @staticmethod
     def get_functions(
@@ -66,53 +66,102 @@ class Optimizer:
                     self._eta = learning_rate
                     self._l2 = l2_coefficient
                     self._m = momentum_coefficient
+                    self._t = 0
 
                 def __call__(
-                    self, params: Parameter, grads: Parameter, state: Parameter
-                ) -> Tuple[Parameter, Any]:
-                    # first iteration set momentum to gradient
-                    if state == None:
-                        state = grads
+                    self, t: int
+                ) -> Callable[[Parameter, Parameter, Parameter], Tuple[Parameter, Any]]:
+                    self._t = t
 
-                    delta = Parameter(
-                        -self._eta * grads.weights
-                        + self._m * state.weights
-                        - 2 * self._l2 * params.weights,
-                        -self._eta * grads.bias + self._m * state.bias,
-                    )
-                    return (delta, delta)
+                    def call_t(
+                        params: Parameter, grads: Parameter, state: Parameter
+                    ) -> Tuple[Parameter, Any]:
+                        # first iteration set momentum to gradient
+                        if state == None:
+                            state = grads
+
+                        delta = Parameter(
+                            -self._eta * grads.weights
+                            + self._m * state.weights
+                            - 2 * self._l2 * params.weights,
+                            -self._eta * grads.bias + self._m * state.bias,
+                        )
+                        return (delta, delta)
+
+                    return call_t
 
             return SGD(**kwargs)
+
         if fname == "Adam":
 
             class Adam:
-                def __init__(self, *, learning_rate = 1e-3, l2_coefficient = 1e-4, beta1 = 0.9, beta2 = 0.999) -> None:
+                def __init__(
+                    self,
+                    *,
+                    learning_rate=1e-3,
+                    l2_coefficient=1e-4,
+                    beta1=0.9,
+                    beta2=0.999,
+                    eps=1e-8,
+                ) -> None:
                     self._eta = learning_rate
                     self._l2 = l2_coefficient
                     self._beta1 = beta1
                     self._beta2 = beta2
-                
-                def __call__(self, params: Parameter, grads: Parameter, state: tuple[Parameter]) -> Tuple[Parameter, Any]:
-                    if state == None:
-                        old_m = Parameter(np.zeros(grads.weights.shape, np.zeros(grads.bias.shape)))
-                        old_v = Parameter(np.zeros(grads.weights.shape, np.zeros(grads.bias.shape)))
-                    else:
-                        old_m = state[0]
-                        old_v = state[1]
+                    self._eps = eps
+                    self._t = 0
 
-                    tmp_grads = Parameter(grads.weights, grads.bias)
-                    if self._l2 != 0:
-                        tmp_grads.weights = grads.weights + self._l2 * params.weights
-                    m_w = (self._beta1 * old_m.weights + (1 - self._beta1) * tmp_grads.weights) / (1 - self._beta1 ** self._t)
-                    m_b = (self._beta1 * old_m.bias + (1 - self._beta1) * tmp_grads.bias) / (1 - self._beta1 ** self._t)
-                    v_w = (self._beta2 * old_v.weights + (1 - self._beta2) * tmp_grads.weights * tmp_grads.weights) / (1 - self._beta2 ** self._t)
-                    v_b = (self._beta2 * old_v.bias+ (1 - self._beta2) * tmp_grads.bias * tmp_grads.bias) / (1 - self._beta2 ** self._t)
-                    old_m - Parameter(m_w, m_b)
-                    old_v = Parameter(v_w, v_b)
-                    delta_w = -self._eta * m_w / (np.sqrt(v_w) + np.full(grads.weights.shape, 1e-8))
-                    delta_b = -self._eta * m_b / (np.sqrt(v_b) + np.full(grads.bias.shape, 1e-8))
-                    delta = Parameter(delta_w, delta_b)
-                    return(delta, (old_m, old_v))
+                def __call__(
+                    self, t: int
+                ) -> Callable[[Parameter, Parameter, Parameter], Tuple[Parameter, Any]]:
+                    self._t = t
+
+                    def call_t(
+                        params: Parameter, grads: Parameter, state: Parameter
+                    ) -> Tuple[Parameter, Any]:
+                        if self._t == 0:
+                            raise ValueError()
+                        if state == None:
+                            old_m = Parameter(
+                                np.zeros_like(grads.weights), np.zeros_like(grads.bias)
+                            )
+                            old_v = Parameter(
+                                np.zeros_like(grads.weights), np.zeros_like(grads.bias)
+                            )
+                        else:
+                            old_m = state[0]
+                            old_v = state[1]
+
+                        temp = grads.weights
+                        if self._l2 != 0:
+                            temp += self._l2 * params.weights
+
+                        m_w = self._beta1 * old_m.weights + (1 - self._beta1) * temp
+                        m_b = self._beta1 * old_m.bias + (1 - self._beta1) * grads.bias
+
+                        v_w = (
+                            self._beta2 * old_v.weights
+                            + (1 - self._beta2) * temp * temp
+                        )
+                        v_b = (
+                            self._beta2 * old_v.bias
+                            + (1 - self._beta2) * grads.bias * grads.bias
+                        )
+
+                        old_m = Parameter(m_w, m_b)
+                        old_v = Parameter(v_w, v_b)
+
+                        adj = (1 - self._beta2**self._t) ** 0.5 / (
+                            1 - self._beta1**self._t
+                        )
+                        delta_w = (-self._eta * adj) * m_w / (np.sqrt(v_w) + self._eps)
+                        delta_b = (-self._eta * adj) * m_b / (np.sqrt(v_b) + self._eps)
+
+                        delta = Parameter(delta_w, delta_b)
+
+                        return (delta, (old_m, old_v))
+
+                    return call_t
 
             return Adam(**kwargs)
         else:
