@@ -249,7 +249,8 @@ def onehot_encoding(
         is_categorical = np.full(data.data.shape[1], True)
     elif len(is_categorical) != data.data.shape[1]:
         raise ValueError(
-            f"shape of is_categorical does not match: {is_categorical.shape}!={data.data.shape[1]}"
+            "shape of is_categorical does not match:"
+            f" {is_categorical.shape}!={data.data.shape[1]}"
         )
     elif not all(isinstance(x, bool) for x in is_categorical):
         raise ValueError(f"is_categorical is not a bitmap")

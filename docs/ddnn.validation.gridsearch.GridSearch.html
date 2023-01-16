@@ -226,7 +226,17 @@
         <div class="childrenKindTitle">Attributes</div>
         <ul>
     
-    <li class="private">
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#rng" class="internal-link" title="ddnn.validation.gridsearch.GridSearch.rng">rng</a></code>
+            </div>
+        
+
+    </li><li class="private">
         
         
         
@@ -313,6 +323,16 @@
 
         
             <div class="itemName"><code><a href="#_hyper_grid" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._hyper_grid">_hyper<wbr></wbr>_grid</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_seed" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._seed">_seed</a></code>
             </div>
         
 
@@ -421,6 +441,11 @@
     <td>Method</td>
     <td><code><a href="#nested_k_fold" class="internal-link" title="ddnn.validation.gridsearch.GridSearch.nested_k_fold">nested<wbr></wbr>_k<wbr></wbr>_fold</a></code></td>
     <td>function implementing nested k-fold cross validation</td>
+  </tr><tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#rng" class="internal-link" title="ddnn.validation.gridsearch.GridSearch.rng">rng</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
   </tr><tr class="staticmethod private">
     
     <td>Static Method</td>
@@ -481,6 +506,11 @@
     <td>Instance Variable</td>
     <td><code><a href="#_hyper_grid" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._hyper_grid">_hyper<wbr></wbr>_grid</a></code></td>
     <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_seed" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._seed">_seed</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
   </tr>
 </table>
           
@@ -500,7 +530,7 @@
   </a>
   <div class="functionHeader">
     
-    <span class="py-keyword">def</span> <span class="py-defname">__init__</span>(self, estimator, hyper_grid):
+    <span class="py-keyword">def</span> <span class="py-defname">__init__</span>(self, estimator, hyper_grid, seed=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>):
     
     <a class="headerLink" href="#__init__" title="ddnn.validation.gridsearch.GridSearch.__init__">
       
@@ -511,7 +541,7 @@
   <div class="docstring functionBody">
     
     <div><p>Initializes a new instance</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">estimator:</span><code>Estimator</code></td><td class="fieldArgDesc">the estimator to use for training and evaluation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">hyper<wbr></wbr>_grid:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc">grid of hyperparameters</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Raises</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#TypeError" class="intersphinx-link">TypeError</a></code></td><td>when parameter types are incorrect</td></tr></table></div>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">estimator:</span><code>Estimator</code></td><td class="fieldArgDesc">the estimator to use for training and evaluation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">hyper<wbr></wbr>_grid:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc">grid of hyperparameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">seed:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number to initialize and fix rng</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Raises</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#TypeError" class="intersphinx-link">TypeError</a></code></td><td>when parameter types are incorrect</td></tr></table></div>
   </div>
 </div><div class="basemethod">
   
@@ -524,7 +554,7 @@
   </a>
   <div class="functionHeader">
     
-    <span class="py-keyword">def</span> <span class="py-defname">k_fold</span>(self, dataset, n_folds, n_epochs, callback=<a href="https://docs.python.org/3/library/functions.html#print" class="intersphinx-link">print</a>, loss_list=[<wbr></wbr><span class="rst-variable-quote">'</span><span class="rst-variable-string">MSE</span><span class="rst-variable-quote">'</span>], early_stopping=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>):
+    <span class="py-keyword">def</span> <span class="py-defname">k_fold</span>(self, dataset, n_folds, n_epochs, callback=<a href="https://docs.python.org/3/library/functions.html#print" class="intersphinx-link">print</a>, loss_list=[<wbr></wbr><span class="rst-variable-quote">'</span><span class="rst-variable-string">MSE</span><span class="rst-variable-quote">'</span>], early_stopping=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>, seed=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>):
     
     <a class="headerLink" href="#k_fold" title="ddnn.validation.gridsearch.GridSearch.k_fold">
       
@@ -535,9 +565,13 @@
   <div class="docstring functionBody">
     
     <div><p>function to execute a k-fold cross-validation on the given dataset</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">dataset:</span><code>Dataset</code></td><td class="fieldArgDesc">dataset to use for k-fold cross-validation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">n<wbr></wbr>_folds:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number of folds to use in cross-validation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">n<wbr></wbr>_epochs:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number of epochs to run training</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">callback:</span><code><a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="intersphinx-link">Callable</a>[[<a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a>]</code>, <code><a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>]</code>, <em>optional</em></td><td class="fieldArgDesc">callback function to use during training, by default print</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">loss<wbr></wbr>_list:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code></td><td class="fieldArgDesc">list of loss functions to evaluate the test set on</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">early<wbr></wbr>_stopping:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#tuple" class="intersphinx-link">tuple</a></code></td><td class="fieldArgDesc">dictionary containing two values, respectively how many checks have to fail before stopping training and how many epochs need to pass between checks</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a></code></td><td class="fieldArgDesc">list containing results of the cross-validation ordered by increasing average loss on the test set.
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">dataset:</span><code>Dataset</code></td><td class="fieldArgDesc">dataset to use for k-fold cross-validation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">n<wbr></wbr>_folds:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number of folds to use in cross-validation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">n<wbr></wbr>_epochs:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number of epochs to run training</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">callback:</span><code><a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="intersphinx-link">Callable</a>[[<a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a>]</code>, <code><a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>]</code>, <em>optional</em></td><td class="fieldArgDesc">callback function to use during training, by default print</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">loss<wbr></wbr>_list:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code></td><td class="fieldArgDesc">list of loss functions to evaluate the test set on, by default ['MSE']</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">early<wbr></wbr>_stopping:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#tuple" class="intersphinx-link">tuple</a></code></td><td class="fieldArgDesc">dictionary containing two values, respectively how many checks have to fail before stopping training and
+how many epochs need to pass between checks</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">seed:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">seed to fix rng</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a></code></td><td class="fieldArgDesc">List containing results of the cross-validation ordered by increasing average loss on the test set.
 Every element is a list of dictionaries containing the
-combination of hyperparameters, the average of the test loss and the standard deviation on the test loss</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Raises</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#ValueError" class="intersphinx-link">ValueError</a></code></td><td>when values of some parameters are incorrect</td></tr></table></div>
+combination of hyperparameters, the average of the test loss and the standard deviation on the test loss.
+If early_stopping was passed as a parameter also includes average number of epochs of training before stopping
+and the average training loss reached during the epoch with the best validation loss.
+The corresponding standard deviation values are also returned</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Raises</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#ValueError" class="intersphinx-link">ValueError</a></code></td><td>when values of some parameters are incorrect</td></tr></table></div>
   </div>
 </div><div class="basemethod">
   
@@ -550,7 +584,7 @@ combination of hyperparameters, the average of the test loss and the standard de
   </a>
   <div class="functionHeader">
     
-    <span class="py-keyword">def</span> <span class="py-defname">nested_k_fold</span>(self, dataset, inner_n_folds, outer_n_folds, n_epochs, inner_callback=<a href="https://docs.python.org/3/library/functions.html#print" class="intersphinx-link">print</a>, outer_callback=<a href="https://docs.python.org/3/library/functions.html#print" class="intersphinx-link">print</a>, loss_list=[<wbr></wbr><span class="rst-variable-quote">'</span><span class="rst-variable-string">MSE</span><span class="rst-variable-quote">'</span>], early_stopping=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>):
+    <span class="py-keyword">def</span> <span class="py-defname">nested_k_fold</span>(self, dataset, inner_n_folds, outer_n_folds, n_epochs, inner_callback=<a href="https://docs.python.org/3/library/functions.html#print" class="intersphinx-link">print</a>, outer_callback=<a href="https://docs.python.org/3/library/functions.html#print" class="intersphinx-link">print</a>, loss_list=[<wbr></wbr><span class="rst-variable-quote">'</span><span class="rst-variable-string">MSE</span><span class="rst-variable-quote">'</span>], early_stopping=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>, seed=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>):
     
     <a class="headerLink" href="#nested_k_fold" title="ddnn.validation.gridsearch.GridSearch.nested_k_fold">
       
@@ -561,9 +595,34 @@ combination of hyperparameters, the average of the test loss and the standard de
   <div class="docstring functionBody">
     
     <div><p>function implementing nested k-fold cross validation</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">dataset:</span><code>Dataset</code></td><td class="fieldArgDesc">dataset to run cross validation on</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">inner<wbr></wbr>_n<wbr></wbr>_folds:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number of folds for the inner cross validation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">outer<wbr></wbr>_n<wbr></wbr>_folds:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number of folds for the outer cross validation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">n<wbr></wbr>_epochs:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number of epochs to run training for</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">inner<wbr></wbr>_callback:</span><code><a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="intersphinx-link">Callable</a>[[<a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a>]</code>, <code><a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>]</code>, <em>optional</em></td><td class="fieldArgDesc">callback function to use during training for the inner cross validation, by default print</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">outer<wbr></wbr>_callback:</span><code><a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="intersphinx-link">Callable</a>[[<a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a>]</code>, <code><a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>]</code>, <em>optional</em></td><td class="fieldArgDesc">callback function to use during training for the outer cross validation, by default print</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">loss<wbr></wbr>_list:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code></td><td class="fieldArgDesc">list of loss functions to evaluate the test set on</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">early<wbr></wbr>_stopping:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc">dictionary containing 'checks_to_stop' and 'check_frequency', respectively how many checks have to fail before stopping training and how many epochs need to pass between checks</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc">a dictionary containing a list of tuples each containing the best combination of hyperparameters
-on that fold and the corresponding loss on the test set for that fold, the average loss on the test sets across the folds
-and their standard deviation</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Raises</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#ValueError" class="intersphinx-link">ValueError</a></code></td><td>when values are incorrect</td></tr></table></div>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">dataset:</span><code>Dataset</code></td><td class="fieldArgDesc">dataset to run cross validation on</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">inner<wbr></wbr>_n<wbr></wbr>_folds:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number of folds for the inner cross validation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">outer<wbr></wbr>_n<wbr></wbr>_folds:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number of folds for the outer cross validation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">n<wbr></wbr>_epochs:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">number of epochs to run training for</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">inner<wbr></wbr>_callback:</span><code><a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="intersphinx-link">Callable</a>[[<a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a>]</code>, <code><a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>]</code>, <em>optional</em></td><td class="fieldArgDesc">callback function to use during training for the inner cross validation, by default print</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">outer<wbr></wbr>_callback:</span><code><a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="intersphinx-link">Callable</a>[[<a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a>]</code>, <code><a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>]</code>, <em>optional</em></td><td class="fieldArgDesc">callback function to use during training for the outer cross validation, by default print</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">loss<wbr></wbr>_list:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code></td><td class="fieldArgDesc">list of loss functions to evaluate the test set on</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">early<wbr></wbr>_stopping:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc">dictionary containing 'checks_to_stop' and 'check_frequency', respectively how many checks have to fail before
+stopping training and how many epochs need to pass between checks</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">seed:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">seed to fix rng</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc">A dictionary containing a list of tuples each containing the best combination of hyperparameters on that fold
+and the corresponding loss on the test set for that fold, the average loss on the test sets across the folds and
+their standard deviation</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Raises</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#ValueError" class="intersphinx-link">ValueError</a></code></td><td>when values are incorrect</td></tr></table></div>
+  </div>
+</div><div class="baseinstancevariable">
+  
+  
+  <a name="ddnn.validation.gridsearch.GridSearch.rng">
+    
+  </a>
+  <a name="rng">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">rng</span> =
+    
+    <a class="headerLink" href="#rng" title="ddnn.validation.gridsearch.GridSearch.rng">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
   </div>
 </div><div class="basestaticmethod private">
   
@@ -853,6 +912,30 @@ and their standard deviation</td></tr><tr class="fieldStart"><td class="fieldNam
     <div><p class="undocumented">Undocumented</p></div>
     
   </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="ddnn.validation.gridsearch.GridSearch._seed">
+    
+  </a>
+  <a name="_seed">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_seed</span> =
+    
+    <a class="headerLink" href="#_seed" title="ddnn.validation.gridsearch.GridSearch._seed">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
 </div>
         </div>
       
@@ -865,7 +948,7 @@ and their standard deviation</td></tr><tr class="fieldStart"><td class="fieldNam
   <div class="container">
     <a href="index.html">API Documentation</a> for <a href="https://github.com/davideamadei/Machine-Learning-Project/ddnn/" class="projecthome">Machine-Learning-Project</a>,
   generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-    22.9.1 at 2023-01-16 01:29:55.
+    22.9.1 at 2023-01-16 11:48:30.
   </div>
 
   <!-- Search related scripts needs to be loaded at the end of HTML 

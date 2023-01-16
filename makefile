@@ -15,7 +15,7 @@ docs:
 	./ddnn
 
 format:
-	black .
+	black --preview .
 
 clean:
 	rm -rf docs/* __pycache__/*

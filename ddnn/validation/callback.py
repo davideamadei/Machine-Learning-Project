@@ -1,11 +1,12 @@
 from ..utils import Dataset
 from ..nn import Estimator
 
-__all__ = ['EarlyStopping', 'TrainingThresholdStopping']
+__all__ = ["EarlyStopping", "TrainingThresholdStopping"]
+
 
 class EarlyStopping:
-    """implements early stopping callback
-    """
+    """implements early stopping callback"""
+
     def __init__(
         self,
         estimator: Estimator,
@@ -62,13 +63,14 @@ class EarlyStopping:
                 self._n_worse_checks += 1
                 if self._n_worse_checks == self._checks_to_stop:
                     print(
-                        f"Stopped early at epoch {current_epoch} after {self._n_worse_checks} check(s) had a validation loss worse than the current best one."
+                        f"Stopped early at epoch {current_epoch} after"
+                        f" {self._n_worse_checks} check(s) had a validation loss worse"
+                        " than the current best one."
                     )
                     estimator.stop_training = True
 
     def reset(self) -> None:
-        """method to reset the early stopping class
-        """
+        """method to reset the early stopping class"""
         self._n_worse_checks = 0
         self._best_epoch = 0
         self._best_vl_loss = dict.fromkeys(self._losses, float("inf"))
@@ -87,8 +89,8 @@ class EarlyStopping:
 
 
 class TrainingThresholdStopping:
-    """class implementing a threshold stopping callback on the training set loss
-    """
+    """class implementing a threshold stopping callback on the training set loss"""
+
     def __init__(self, estimator: Estimator, threshold_loss: float) -> None:
         """init method
 
@@ -112,7 +114,8 @@ class TrainingThresholdStopping:
         """
         if record["loss"] < self._threshold_loss:
             print(
-                f'Stopped training early at epoch {record["epoch"]} as threshold loss of {self._threshold_loss} on training set was reached.'
+                f"Stopped training early at epoch {record['epoch']} as threshold loss"
+                f" of {self._threshold_loss} on training set was reached."
             )
             self._estimator.stop_training = True
 
