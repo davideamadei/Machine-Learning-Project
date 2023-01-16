@@ -6,7 +6,7 @@
 
   <head>
     
-    <title>ddnn.nn.initializer.Initializer</title>
+    <title>ddnn.validation.callback.TrainingThresholdStopping</title>
     <meta name="generator" content="pydoctor 22.9.1"> 
         
     </meta>
@@ -142,7 +142,7 @@
 
       <div class="thingTitle">
         <span>Class</span>
-        <code class="thisobject"><a href="ddnn.nn.initializer.Initializer.html" class="internal-link" title="This class"><wbr></wbr>Initializer</a></code> 
+        <code class="thisobject"><a href="ddnn.validation.callback.TrainingThresholdStopping.html" class="internal-link" title="This class"><wbr></wbr>Training<wbr></wbr>Threshold<wbr></wbr>Stopping</a></code> 
       </div>
       
       <div>
@@ -163,7 +163,7 @@
         
 
         
-            <div class="itemName"><code><a href="#get_functions" class="internal-link" title="ddnn.nn.initializer.Initializer.get_functions">get<wbr></wbr>_functions</a></code>
+            <div class="itemName"><code><a href="#__call__" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping.__call__">__call__</a></code>
             </div>
         
 
@@ -173,7 +173,7 @@
         
 
         
-            <div class="itemName"><code><a href="#__call__" class="internal-link" title="ddnn.nn.initializer.Initializer.__call__">__call__</a></code>
+            <div class="itemName"><code><a href="#__init__" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping.__init__">__init__</a></code>
             </div>
         
 
@@ -183,7 +183,7 @@
         
 
         
-            <div class="itemName"><code><a href="#__init__" class="internal-link" title="ddnn.nn.initializer.Initializer.__init__">__init__</a></code>
+            <div class="itemName"><code><a href="#update_threshold" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping.update_threshold">update<wbr></wbr>_threshold</a></code>
             </div>
         
 
@@ -196,13 +196,13 @@
         <div class="childrenKindTitle">Attributes</div>
         <ul>
     
-    <li class="">
+    <li class="private">
         
         
         
 
         
-            <div class="itemName"><code><a href="#rng" class="internal-link" title="ddnn.nn.initializer.Initializer.rng">rng</a></code>
+            <div class="itemName"><code><a href="#_estimator" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping._estimator">_estimator</a></code>
             </div>
         
 
@@ -212,7 +212,7 @@
         
 
         
-            <div class="itemName"><code><a href="#_initializer" class="internal-link" title="ddnn.nn.initializer.Initializer._initializer">_initializer</a></code>
+            <div class="itemName"><code><a href="#_threshold_loss" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping._threshold_loss">_threshold<wbr></wbr>_loss</a></code>
             </div>
         
 
@@ -227,7 +227,7 @@
 
       <div class="thingTitle">
         <span>Module</span>
-        <code><a href="ddnn.nn.initializer.html" class="internal-link" title="The parent of this class">initializer</a></code> 
+        <code><a href="ddnn.validation.callback.html" class="internal-link" title="The parent of this class">callback</a></code> 
       </div>
       
       <div>
@@ -239,13 +239,23 @@
         <div class="childrenKindTitle">Classes</div>
         <ul>
     
-    <li class=" thisobject">
+    <li class="">
         
         
         
 
         
-            <div class="itemName"><code><a href="ddnn.nn.initializer.Initializer.html" class="internal-link" title="ddnn.nn.initializer.Initializer"><wbr></wbr>Initializer</a></code>
+            <div class="itemName"><code><a href="ddnn.validation.callback.EarlyStopping.html" class="internal-link" title="ddnn.validation.callback.EarlyStopping"><wbr></wbr>Early<wbr></wbr>Stopping</a></code>
+            </div>
+        
+
+    </li><li class=" thisobject">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="ddnn.validation.callback.TrainingThresholdStopping.html" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping"><wbr></wbr>Training<wbr></wbr>Threshold<wbr></wbr>Stopping</a></code>
             </div>
         
 
@@ -283,7 +293,7 @@
         
 
         <div class="page-header">
-          <h1 class="class"><code><code><a href="index.html" class="internal-link">ddnn</a></code><wbr></wbr>.<code><a href="ddnn.nn.html" class="internal-link" title="ddnn.nn">nn</a></code><wbr></wbr>.<code><a href="ddnn.nn.initializer.html" class="internal-link" title="ddnn.nn.initializer">initializer</a></code><wbr></wbr>.<code><a href="ddnn.nn.initializer.Initializer.html" class="internal-link" title="ddnn.nn.initializer.Initializer">Initializer</a></code></code></h1>
+          <h1 class="class"><code><code><a href="index.html" class="internal-link">ddnn</a></code><wbr></wbr>.<code><a href="ddnn.validation.html" class="internal-link" title="ddnn.validation">validation</a></code><wbr></wbr>.<code><a href="ddnn.validation.callback.html" class="internal-link" title="ddnn.validation.callback">callback</a></code><wbr></wbr>.<code><a href="ddnn.validation.callback.TrainingThresholdStopping.html" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping">TrainingThresholdStopping</a></code></code></h1>
           <div id="showPrivate">
             <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
           </div>
@@ -294,43 +304,42 @@
         </div>
 
         <div class="extrasDocstring">
-          <p><code><span class="py-keyword">class</span> <span class="py-defname">Initializer</span>:</code></p>
-          <p><a href="classIndex.html#ddnn.nn.initializer.Initializer">View In Hierarchy</a></p>
+          <p><code><span class="py-keyword">class</span> <span class="py-defname">TrainingThresholdStopping</span>:</code></p>
+          <p><a href="classIndex.html#ddnn.validation.callback.TrainingThresholdStopping">View In Hierarchy</a></p>
         </div>
 
         <div class="moduleDocstring">
-          <div><p>Class defining parameter initialization. Currently WIP.</p>
-</div>
+          <div><p class="undocumented">Undocumented</p></div>
         </div>
 
         <div id="splitTables">
-          <table class="children sortable" id="id15">
+          <table class="children sortable" id="id33">
   
   
-  <tr class="staticmethod">
+  <tr class="method">
     
-    <td>Static Method</td>
-    <td><code><a href="#get_functions" class="internal-link" title="ddnn.nn.initializer.Initializer.get_functions">get<wbr></wbr>_functions</a></code></td>
-    <td>Given a name identifing an initializer. Returns an initializer with given hyperparamters.</td>
+    <td>Method</td>
+    <td><code><a href="#__call__" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping.__call__">__call__</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
   </tr><tr class="method">
     
     <td>Method</td>
-    <td><code><a href="#__call__" class="internal-link" title="ddnn.nn.initializer.Initializer.__call__">__call__</a></code></td>
-    <td>Call interface for initializer</td>
+    <td><code><a href="#__init__" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping.__init__">__init__</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
   </tr><tr class="method">
     
     <td>Method</td>
-    <td><code><a href="#__init__" class="internal-link" title="ddnn.nn.initializer.Initializer.__init__">__init__</a></code></td>
-    <td>Returns a new instance of an initializer</td>
-  </tr><tr class="instancevariable">
-    
-    <td>Instance Variable</td>
-    <td><code><a href="#rng" class="internal-link" title="ddnn.nn.initializer.Initializer.rng">rng</a></code></td>
+    <td><code><a href="#update_threshold" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping.update_threshold">update<wbr></wbr>_threshold</a></code></td>
     <td><span class="undocumented">Undocumented</span></td>
   </tr><tr class="instancevariable private">
     
     <td>Instance Variable</td>
-    <td><code><a href="#_initializer" class="internal-link" title="ddnn.nn.initializer.Initializer._initializer">_initializer</a></code></td>
+    <td><code><a href="#_estimator" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping._estimator">_estimator</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_threshold_loss" class="internal-link" title="ddnn.validation.callback.TrainingThresholdStopping._threshold_loss">_threshold<wbr></wbr>_loss</a></code></td>
     <td><span class="undocumented">Undocumented</span></td>
   </tr>
 </table>
@@ -340,35 +349,10 @@
         </div>
 
         <div id="childList">
-          <div class="basestaticmethod">
+          <div class="basemethod">
   
   
-  <a name="ddnn.nn.initializer.Initializer.get_functions">
-    
-  </a>
-  <a name="get_functions">
-    
-  </a>
-  <div class="functionHeader">
-    @<a href="https://docs.python.org/3/library/functions.html#staticmethod" class="intersphinx-link">staticmethod</a><br />
-    <span class="py-keyword">def</span> <span class="py-defname">get_functions</span>(fname, kwargs):
-    
-    <a class="headerLink" href="#get_functions" title="ddnn.nn.initializer.Initializer.get_functions">
-      
-      
-      ¶
-    </a>
-  </div>
-  <div class="docstring functionBody">
-    
-    <div><p>Given a name identifing an initializer. Returns an initializer with
-given hyperparamters.</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">fname:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a></code></td><td class="fieldArgDesc">Name of a supported initializer algorithm</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">kwargs:</span><code><a href="https://docs.python.org/3/library/typing.html#typing.Dict" class="intersphinx-link">Dict</a></code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/typing.html#typing.Callable" class="intersphinx-link">Callable</a>[[<a href="https://docs.python.org/3/library/stdtypes.html#tuple" class="intersphinx-link">tuple</a>]</code>, <code>Parameter]</code></td><td class="fieldArgDesc">function and its derivative</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Raises</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#ValueError" class="intersphinx-link">ValueError</a></code></td><td>if fname is not supported</td></tr></table></div>
-  </div>
-</div><div class="basemethod">
-  
-  
-  <a name="ddnn.nn.initializer.Initializer.__call__">
+  <a name="ddnn.validation.callback.TrainingThresholdStopping.__call__">
     
   </a>
   <a name="__call__">
@@ -376,9 +360,9 @@ given hyperparamters.</p>
   </a>
   <div class="functionHeader">
     
-    <span class="py-keyword">def</span> <span class="py-defname">__call__</span>(self, shape):
+    <span class="py-keyword">def</span> <span class="py-defname">__call__</span>(self, record):
     
-    <a class="headerLink" href="#__call__" title="ddnn.nn.initializer.Initializer.__call__">
+    <a class="headerLink" href="#__call__" title="ddnn.validation.callback.TrainingThresholdStopping.__call__">
       
       
       ¶
@@ -386,13 +370,12 @@ given hyperparamters.</p>
   </div>
   <div class="docstring functionBody">
     
-    <div><p>Call interface for initializer</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">shape:</span><code><a href="https://docs.python.org/3/library/typing.html#typing.Tuple" class="intersphinx-link">Tuple</a></code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr></table></div>
+    <div><p class="undocumented">Undocumented</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">record:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr></table></div>
   </div>
 </div><div class="basemethod">
   
   
-  <a name="ddnn.nn.initializer.Initializer.__init__">
+  <a name="ddnn.validation.callback.TrainingThresholdStopping.__init__">
     
   </a>
   <a name="__init__">
@@ -400,9 +383,9 @@ given hyperparamters.</p>
   </a>
   <div class="functionHeader">
     
-    <span class="py-keyword">def</span> <span class="py-defname">__init__</span>(self, fname=<span class="rst-variable-quote">'</span><span class="rst-variable-string">random_uniform</span><span class="rst-variable-quote">'</span>, fan_mode=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>):
+    <span class="py-keyword">def</span> <span class="py-defname">__init__</span>(self, estimator, threshold_loss):
     
-    <a class="headerLink" href="#__init__" title="ddnn.nn.initializer.Initializer.__init__">
+    <a class="headerLink" href="#__init__" title="ddnn.validation.callback.TrainingThresholdStopping.__init__">
       
       
       ¶
@@ -410,25 +393,45 @@ given hyperparamters.</p>
   </div>
   <div class="docstring functionBody">
     
-    <div><p>Returns a new instance of an initializer</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">fname:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a></code>, <em>optional</em></td><td class="fieldArgDesc">Name of a supported initializer algorithm, by default "random_uniform".
-currently supported functions are: random_uniform, random_normal,
-glorot_uniform, glorot_normal, he_uniform, he_normal.</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">fan<wbr></wbr>_mode:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a></code>, <em>optional</em></td><td class="fieldArgDesc">(he initializer only) Either "fan_in" or "fan_out".</td></tr></table></div>
+    <div><p class="undocumented">Undocumented</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">estimator:</span><code>Estimator</code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">threshold<wbr></wbr>_loss:</span><code><a href="https://docs.python.org/3/library/functions.html#float" class="intersphinx-link">float</a></code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr></table></div>
   </div>
-</div><div class="baseinstancevariable">
+</div><div class="basemethod">
   
   
-  <a name="ddnn.nn.initializer.Initializer.rng">
+  <a name="ddnn.validation.callback.TrainingThresholdStopping.update_threshold">
     
   </a>
-  <a name="rng">
+  <a name="update_threshold">
     
   </a>
   <div class="functionHeader">
     
-    <span class="py-defname">rng</span> =
+    <span class="py-keyword">def</span> <span class="py-defname">update_threshold</span>(self, threshold_loss):
     
-    <a class="headerLink" href="#rng" title="ddnn.nn.initializer.Initializer.rng">
+    <a class="headerLink" href="#update_threshold" title="ddnn.validation.callback.TrainingThresholdStopping.update_threshold">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p class="undocumented">Undocumented</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">threshold<wbr></wbr>_loss:</span><code><a href="https://docs.python.org/3/library/functions.html#float" class="intersphinx-link">float</a></code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr></table></div>
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="ddnn.validation.callback.TrainingThresholdStopping._estimator">
+    
+  </a>
+  <a name="_estimator">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_estimator</span> =
+    
+    <a class="headerLink" href="#_estimator" title="ddnn.validation.callback.TrainingThresholdStopping._estimator">
       
       
       ¶
@@ -442,17 +445,17 @@ glorot_uniform, glorot_normal, he_uniform, he_normal.</td></tr><tr><td class="fi
 </div><div class="baseinstancevariable private">
   
   
-  <a name="ddnn.nn.initializer.Initializer._initializer">
+  <a name="ddnn.validation.callback.TrainingThresholdStopping._threshold_loss">
     
   </a>
-  <a name="_initializer">
+  <a name="_threshold_loss">
     
   </a>
   <div class="functionHeader">
     
-    <span class="py-defname">_initializer</span> =
+    <span class="py-defname">_threshold_loss</span> =
     
-    <a class="headerLink" href="#_initializer" title="ddnn.nn.initializer.Initializer._initializer">
+    <a class="headerLink" href="#_threshold_loss" title="ddnn.validation.callback.TrainingThresholdStopping._threshold_loss">
       
       
       ¶

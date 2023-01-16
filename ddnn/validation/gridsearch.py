@@ -1,6 +1,4 @@
 # TODO maybe change ValueError exceptions to show wrong value
-# TODO add comments to nested k-fold and check those in k-fold
-# TODO EarlyStopping docs
 
 # python libraries
 from typing import Callable
@@ -27,9 +25,6 @@ from .callback import EarlyStopping, TrainingThresholdStopping
 __all__ = ["GridSearch"]
 
 
-# TODO maybe change ValueError exceptions to show wrong value
-# TODO add comments to nested k-fold and check those in k-fold
-
 class GridSearch:
     _optional_keys = ['fan_mode', 'beta1', 'beta2', 'eps', "momentum_coefficient"]
     _net_keys = ["layers"]
@@ -37,11 +32,19 @@ class GridSearch:
     _optimizer_keys = ['optimizer', "learning_rate", "l2_coefficient"]
     _loss_keys = ["loss"]
     _estimator_keys = ["batchsize"]
-    _global_keys = _net_keys + _optimizer_keys + _weight_initializer_keys + _loss_keys + _estimator_keys
+    _global_keys = (
+        _net_keys
+        + _optimizer_keys
+        + _weight_initializer_keys
+        + _loss_keys
+        + _estimator_keys
+    )
 
     # check param_grid validity
     @staticmethod
-    def _check_param_grid(param_list: list[str], optional_params: list[str], hyper_grid: dict) -> None:
+    def _check_param_grid(
+        param_list: list[str], optional_params: list[str], hyper_grid: dict
+    ) -> None:
         """Checks that the given grid of hyperparameters is correct
 
         Parameters
@@ -63,10 +66,17 @@ class GridSearch:
             when an hyperparameter has a value with the wrong type or is not a list of values
         """
 
-        weight_initializers = ['random_uniform', 'random_normal', 'glorot_uniform', 'glorot_normal', 'he_uniform', 'he_normal'] 
-        optimizers = ['SGD', 'ADAM']
+        weight_initializers = [
+            "random_uniform",
+            "random_normal",
+            "glorot_uniform",
+            "glorot_normal",
+            "he_uniform",
+            "he_normal",
+        ]
+        optimizers = ["SGD", "ADAM"]
         activation_functions = ["ReLU", "logistic", "tanh", "linear"]
-        loss_functions = ["MSE", 'binary_accuracy']
+        loss_functions = ["MSE", "binary_accuracy"]
 
         for key in param_list:
             if not key in hyper_grid.keys():
@@ -86,8 +96,10 @@ class GridSearch:
         # check that only accepted parameters were passed
         for key in hyper_grid.keys():
             if key not in param_list and key not in optional_params:
-                raise ValueError(f'{key} not accepted as hyperparameter. Only the following hyperparameters are accepted. Mandatory: {param_list}. Optional: {optional_params}')
-            
+                raise ValueError(
+                    f"{key} not accepted as hyperparameter. Only the following hyperparameters are accepted. Mandatory: {param_list}. Optional: {optional_params}"
+                )
+
         # check layers
         for net in hyper_grid["layers"]:
             for layer in net:
@@ -136,7 +148,7 @@ class GridSearch:
                 raise ValueError("The learning rate must be greater than 0")
 
         # check optimizers
-        for optimizer in hyper_grid['optimizer']:
+        for optimizer in hyper_grid["optimizer"]:
             if not isinstance(optimizer, str):
                 raise TypeError(
                     "The optimizer must be a string corresponding to the required optimizer"
@@ -144,11 +156,11 @@ class GridSearch:
             if optimizer not in optimizers:
                 raise ValueError(
                     "Only the following values are accepted for the optimizer: ",
-                    optimizers
+                    optimizers,
                 )
 
         # check if 'fan_mode' was passed as hyperparameter
-        fan_mode_flag = 'fan_mode' in hyper_grid.keys()
+        fan_mode_flag = "fan_mode" in hyper_grid.keys()
         # check weight initialization functions
         for weight_init in hyper_grid["weight_initializer"]:
             if not isinstance(weight_init, str):
@@ -160,15 +172,27 @@ class GridSearch:
                     "Only the following values are accepted for the weight initialization function: ",
                     weight_initializers,
                 )
-            if (weight_init == 'he_uniform' or weight_init == 'he_normal') and not fan_mode_flag:
-                raise ValueError('He initializer requires fan_mode hyperparameter to also be passed with values fan_in or fan_out')
-            if weight_init != 'he_uniform' and weight_init != 'he_normal' and fan_mode_flag:
-                raise ValueError('fan_mode hyperparameter can only be set in conjunction with he_uniform or he_normal weight initializers')
+            if (
+                weight_init == "he_uniform" or weight_init == "he_normal"
+            ) and not fan_mode_flag:
+                raise ValueError(
+                    "He initializer requires fan_mode hyperparameter to also be passed with values fan_in or fan_out"
+                )
+            if (
+                weight_init != "he_uniform"
+                and weight_init != "he_normal"
+                and fan_mode_flag
+            ):
+                raise ValueError(
+                    "fan_mode hyperparameter can only be set in conjunction with he_uniform or he_normal weight initializers"
+                )
         # check fan_mode values
         if fan_mode_flag:
-            for fan_mode in hyper_grid['fan_mode']:
-                if fan_mode != 'fan_in' and fan_mode != 'fan_out':
-                    raise ValueError('fan_mode for He weight initialization can only be set to fan_in or fan_out')
+            for fan_mode in hyper_grid["fan_mode"]:
+                if fan_mode != "fan_in" and fan_mode != "fan_out":
+                    raise ValueError(
+                        "fan_mode for He weight initialization can only be set to fan_in or fan_out"
+                    )
 
         # check loss functions
         for loss in hyper_grid["loss"]:
@@ -286,11 +310,16 @@ class GridSearch:
         """
         # filter parameters for various classes
         loss_params = {key: combination[key] for key in self._loss_keys}
-        loss_params['fname'] = loss_params.pop('loss')
-        weight_init_params = {key: combination[key] for key in self._weight_initializer_keys}
-        if combination['weight_initializer'] == 'he_uniform' or combination['weight_initializer'] == 'he_normal':
-            weight_init_params['fan_mode'] = combination['fan_mode']
-        weight_init_params['fname'] = weight_init_params.pop('weight_initializer')
+        loss_params["fname"] = loss_params.pop("loss")
+        weight_init_params = {
+            key: combination[key] for key in self._weight_initializer_keys
+        }
+        if (
+            combination["weight_initializer"] == "he_uniform"
+            or combination["weight_initializer"] == "he_normal"
+        ):
+            weight_init_params["fan_mode"] = combination["fan_mode"]
+        weight_init_params["fname"] = weight_init_params.pop("weight_initializer")
         estimator_params = {key: combination[key] for key in self._estimator_keys}
         optimizer_params = {key: combination[key] for key in self._optimizer_keys}
         if combination['optimizer'] == 'SGD':
@@ -303,8 +332,7 @@ class GridSearch:
         net_params = {key: combination[key] for key in self._net_keys}
 
         # create dictionary of params to pass to constructors
-        print(weight_init_params, loss_params, optimizer_params)
-        estimator_params['initializer'] = Initializer(**weight_init_params)
+        estimator_params["initializer"] = Initializer(**weight_init_params)
         estimator_params["loss"] = LossFunction(**loss_params)
         estimator_params["optimizer"] = Optimizer(**optimizer_params)
         estimator_params['seed'] = self.rng.integers(0, sys.maxsize)
@@ -348,7 +376,7 @@ class GridSearch:
         callback : Callable[[dict], None], optional
             callback function to use during training, by default print
         loss_list : list[str]
-            list of loss functions to evaluate the test set on
+            list of loss functions to evaluate the test set on, by default ['MSE']
         early_stopping : tuple
             dictionary containing two values, respectively how many checks have to fail before stopping training and how many epochs need to pass between checks
         seed : int
@@ -358,7 +386,8 @@ class GridSearch:
         list
             list containing results of the cross-validation ordered by increasing average loss on the test set.
             Every element is a list of dictionaries containing the
-            combination of hyperparameters, the average of the test loss and the standard deviation on the test loss
+            combination of hyperparameters, the average of the test loss and the standard deviation on the test loss.
+            If early_stopping was passed as a parameter also includes average number of epochs of training before stopping and the average training loss reached during the epoch with the best validation loss. The corresponding standard deviation values are also returned
 
         Raises
         ------
@@ -409,6 +438,7 @@ class GridSearch:
                 checks_to_stop=early_stopping[0],
                 check_frequency=early_stopping[1],
             )
+
             def new_callback(record: dict) -> None:
                 callback(record)
                 early_stopper(record)
@@ -419,9 +449,10 @@ class GridSearch:
 
         combination_results = []
 
-        # iterates all combinations of hyperparameters
+        # iterates on all combinations of hyperparameters
         for combination in param_combinations:
-
+            
+            #update estimator with the new hyperparameters
             estimator_params = self._create_estimator_params(combination, input_dim)
             if estimator_params["batchsize"] == -1:
                 estimator_params["batchsize"] = data_size
@@ -432,8 +463,9 @@ class GridSearch:
             train_loss_list = []
             print(combination)
 
-            # iterates folds of dataset
+            # iterates on folds of dataset
             for train_set, test_set in folds:
+                #if early stopping was passed, train with a composite callback function
                 if early_stopping != None:
                     early_stopper.set_validation_set(test_set)
 
@@ -460,9 +492,7 @@ class GridSearch:
                 )
                 test_loss_std[loss] = np.std([d[loss] for d in test_loss_list])
 
-            # test_loss_avg = sum(test_loss_list) / n_folds
-            # test_loss_std = np.std(test_loss_list)
-
+            # append results for that combination of hyperparameters
             combination_results.append(
                 {
                     "parameters": combination,
@@ -471,12 +501,14 @@ class GridSearch:
                 }
             )
 
+            # add additional results if early stopping was defined
             if early_stopping != None:
                 combination_results[-1]["n_epoch_avg"] = np.average(epoch_list)
                 combination_results[-1]["n_epoch_std"] = np.std(epoch_list)
-                combination_results[-1]['train_loss_avg'] = np.average(train_loss_list)
-                combination_results[-1]['train_loss_std'] = np.std(train_loss_list)
+                combination_results[-1]["train_loss_avg"] = np.average(train_loss_list)
+                combination_results[-1]["train_loss_std"] = np.std(train_loss_list)
 
+        #sort the list of results based on loss such that they are ordered from best to worst
         if loss_list[0] == "binary_accuracy":
             combination_results.sort(
                 key=lambda x: x["test_loss_avg"][loss_list[0]], reverse=True
@@ -559,7 +591,10 @@ class GridSearch:
 
         # if early stopping is not None initialize threshold stopping for retraining after model selection
         if early_stopping != None:
-            threshold_stopper = TrainingThresholdStopping(estimator=estimator, threshold_loss=0)
+            threshold_stopper = TrainingThresholdStopping(
+                estimator=estimator, threshold_loss=0
+            )
+
             def new_callback(record: dict) -> None:
                 outer_callback(record)
                 threshold_stopper(record)
@@ -567,7 +602,9 @@ class GridSearch:
         test_loss_list = []
         param_combination_list = []
 
+        #iterate on all folds
         for train_set, test_set in folds:
+            # call a k-fold cross-validation on the current fold
             train_results = self.k_fold(
                 dataset=train_set,
                 n_folds=inner_n_folds,
@@ -575,19 +612,23 @@ class GridSearch:
                 callback=inner_callback,
                 early_stopping=early_stopping,
             )
+
+            #get the best combination of hyperparameters from the results of the cross-validation
             params = train_results[0]["parameters"]
             estimator_params = self._create_estimator_params(params, input_dim)
             if estimator_params["batchsize"] == -1:
                 estimator_params["batchsize"] = data_size
-
             estimator.update_params(**estimator_params)
+
+            # if early stopping was defined retrain with a threshold stopping callback on the training loss
             if early_stopping != None:
                 early_epochs = int(train_results[0]["n_epoch_avg"])
-                threshold_stopper.update_threshold(train_results[0]['train_loss_avg'])
+                threshold_stopper.update_threshold(train_results[0]["train_loss_avg"])
                 print(f'threshold = {train_results[0]["train_loss_avg"]}')
                 estimator.train(
                     dataset=train_set, n_epochs=early_epochs, callback=new_callback
                 )
+            # otherwise just retrain the model normally
             else:
                 estimator.train(
                     dataset=train_set, n_epochs=n_epochs, callback=outer_callback
@@ -605,6 +646,7 @@ class GridSearch:
             )
             test_loss_std[loss] = np.std([d[loss] for d in test_loss_list])
 
+        # save results of the neste k-fold cross-validation
         results = {
             "test_loss_list": list(zip(param_combination_list, test_loss_list)),
             "test_loss_avg": test_loss_avg,

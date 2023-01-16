@@ -242,6 +242,16 @@
         
 
         
+            <div class="itemName"><code><a href="#_global_keys" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._global_keys">_global<wbr></wbr>_keys</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
             <div class="itemName"><code><a href="#_loss_keys" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._loss_keys">_loss<wbr></wbr>_keys</a></code>
             </div>
         
@@ -272,7 +282,17 @@
         
 
         
-            <div class="itemName"><code><a href="#_param_name_translations" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._param_name_translations">_param<wbr></wbr>_name<wbr></wbr>_translations</a></code>
+            <div class="itemName"><code><a href="#_optional_keys" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._optional_keys">_optional<wbr></wbr>_keys</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_weight_initializer_keys" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._weight_initializer_keys">_weight<wbr></wbr>_initializer<wbr></wbr>_keys</a></code>
             </div>
         
 
@@ -319,17 +339,7 @@
         <div class="childrenKindTitle">Classes</div>
         <ul>
     
-    <li class="">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="ddnn.validation.gridsearch.EarlyStopping.html" class="internal-link" title="ddnn.validation.gridsearch.EarlyStopping"><wbr></wbr>Early<wbr></wbr>Stopping</a></code>
-            </div>
-        
-
-    </li><li class=" thisobject">
+    <li class=" thisobject">
         
         
         
@@ -393,7 +403,7 @@
         </div>
 
         <div id="splitTables">
-          <table class="children sortable" id="id33">
+          <table class="children sortable" id="id35">
   
   
   <tr class="method">
@@ -434,6 +444,11 @@
   </tr><tr class="classvariable private">
     
     <td>Class Variable</td>
+    <td><code><a href="#_global_keys" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._global_keys">_global<wbr></wbr>_keys</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable private">
+    
+    <td>Class Variable</td>
     <td><code><a href="#_loss_keys" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._loss_keys">_loss<wbr></wbr>_keys</a></code></td>
     <td><span class="undocumented">Undocumented</span></td>
   </tr><tr class="classvariable private">
@@ -449,7 +464,12 @@
   </tr><tr class="classvariable private">
     
     <td>Class Variable</td>
-    <td><code><a href="#_param_name_translations" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._param_name_translations">_param<wbr></wbr>_name<wbr></wbr>_translations</a></code></td>
+    <td><code><a href="#_optional_keys" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._optional_keys">_optional<wbr></wbr>_keys</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable private">
+    
+    <td>Class Variable</td>
+    <td><code><a href="#_weight_initializer_keys" class="internal-link" title="ddnn.validation.gridsearch.GridSearch._weight_initializer_keys">_weight<wbr></wbr>_initializer<wbr></wbr>_keys</a></code></td>
     <td><span class="undocumented">Undocumented</span></td>
   </tr><tr class="instancevariable private">
     
@@ -556,7 +576,7 @@ and their standard deviation</td></tr><tr class="fieldStart"><td class="fieldNam
   </a>
   <div class="functionHeader">
     @<a href="https://docs.python.org/3/library/functions.html#staticmethod" class="intersphinx-link">staticmethod</a><br />
-    <span class="py-keyword">def</span> <span class="py-defname">_check_param_grid</span>(param_dict, hyper_grid):
+    <span class="py-keyword">def</span> <span class="py-defname">_check_param_grid</span>(param_list, optional_params, hyper_grid):
     
     <a class="headerLink" href="#_check_param_grid" title="ddnn.validation.gridsearch.GridSearch._check_param_grid">
       
@@ -567,7 +587,7 @@ and their standard deviation</td></tr><tr class="fieldStart"><td class="fieldNam
   <div class="docstring functionBody">
     
     <div><p>Checks that the given grid of hyperparameters is correct</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">param<wbr></wbr>_dict:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc">dictionary of accepted hyperparameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">hyper<wbr></wbr>_grid:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc">dictionary containing the grid of hyperparameters on which to perform the validity check</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a></code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Raises</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#ValueError" class="intersphinx-link">ValueError</a></code></td><td>when an hyperparameter is missing or one of its possible values is not valid</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#TypeError" class="intersphinx-link">TypeError</a></code></td><td>when an hyperparameter has a value with the wrong type or is not a list of values</td></tr></table></div>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">param<wbr></wbr>_list:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a></code></td><td class="fieldArgDesc">list of accepted hyperparameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">optional<wbr></wbr>_params:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<wbr></wbr><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">hyper<wbr></wbr>_grid:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc">dictionary containing the grid of hyperparameters on which to perform the validity check</td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Returns</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a></code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr class="fieldStart"><td class="fieldName" colspan="2">Raises</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#ValueError" class="intersphinx-link">ValueError</a></code></td><td>when an hyperparameter is missing or one of its possible values is not valid</td></tr><tr><td class="fieldArgContainer"><code><a href="https://docs.python.org/3/library/exceptions.html#TypeError" class="intersphinx-link">TypeError</a></code></td><td>when an hyperparameter has a value with the wrong type or is not a list of values</td></tr></table></div>
   </div>
 </div><div class="basemethod private">
   
@@ -631,6 +651,30 @@ and their standard deviation</td></tr><tr class="fieldStart"><td class="fieldNam
     <span class="py-defname">_estimator_keys</span>: <code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<wbr></wbr><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code> =
     
     <a class="headerLink" href="#_estimator_keys" title="ddnn.validation.gridsearch.GridSearch._estimator_keys">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable private">
+  
+  
+  <a name="ddnn.validation.gridsearch.GridSearch._global_keys">
+    
+  </a>
+  <a name="_global_keys">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_global_keys</span> =
+    
+    <a class="headerLink" href="#_global_keys" title="ddnn.validation.gridsearch.GridSearch._global_keys">
       
       
       ¶
@@ -716,17 +760,41 @@ and their standard deviation</td></tr><tr class="fieldStart"><td class="fieldNam
 </div><div class="baseclassvariable private">
   
   
-  <a name="ddnn.validation.gridsearch.GridSearch._param_name_translations">
+  <a name="ddnn.validation.gridsearch.GridSearch._optional_keys">
     
   </a>
-  <a name="_param_name_translations">
+  <a name="_optional_keys">
     
   </a>
   <div class="functionHeader">
     
-    <span class="py-defname">_param_name_translations</span>: <code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a>[<wbr></wbr><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>, <wbr></wbr><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code> =
+    <span class="py-defname">_optional_keys</span>: <code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<wbr></wbr><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code> =
     
-    <a class="headerLink" href="#_param_name_translations" title="ddnn.validation.gridsearch.GridSearch._param_name_translations">
+    <a class="headerLink" href="#_optional_keys" title="ddnn.validation.gridsearch.GridSearch._optional_keys">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable private">
+  
+  
+  <a name="ddnn.validation.gridsearch.GridSearch._weight_initializer_keys">
+    
+  </a>
+  <a name="_weight_initializer_keys">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_weight_initializer_keys</span>: <code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<wbr></wbr><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code> =
+    
+    <a class="headerLink" href="#_weight_initializer_keys" title="ddnn.validation.gridsearch.GridSearch._weight_initializer_keys">
       
       
       ¶
@@ -797,7 +865,7 @@ and their standard deviation</td></tr><tr class="fieldStart"><td class="fieldNam
   <div class="container">
     <a href="index.html">API Documentation</a> for <a href="https://github.com/davideamadei/Machine-Learning-Project/ddnn/" class="projecthome">Machine-Learning-Project</a>,
   generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-    22.9.1 at 2023-01-14 23:29:12.
+    22.9.1 at 2023-01-16 01:29:55.
   </div>
 
   <!-- Search related scripts needs to be loaded at the end of HTML 

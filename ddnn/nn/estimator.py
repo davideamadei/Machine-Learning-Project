@@ -161,6 +161,7 @@ class Estimator:
             y = dataset.labels[permutation]
             # iterate minibatches
             avg_loss, batchcount = 0.0, np.ceil(x.shape[0] / self.batchsize)
+            self.t += 1
             for b, (mini_x, mini_y) in enumerate(
                 Estimator.get_minibatches(x, y, self.batchsize)
             ):
@@ -172,9 +173,8 @@ class Estimator:
                 avg_loss += loss
                 loss_grad = self.loss.backward()
                 self.net.backward(loss_grad)
-                self.net.update(self.optimizer)
+                self.net.update(self.optimizer(self.t))
             avg_loss /= batchcount
-            self.t += 1
             record = {"epoch": self.t, "loss": avg_loss}
             callback(record)
             if self.stop_training:

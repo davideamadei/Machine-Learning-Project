@@ -13,18 +13,17 @@ __all__ = ["Initializer"]
 class Initializer:
     """Class defining parameter initialization. Currently WIP."""
 
-    def __init__(self, fname: str = "random_uniform", fan_mode: str=None):
+    def __init__(self, fname: str = "random_uniform", fan_mode: str = None):
         """Returns a new instance of an initializer
 
         Parameters
         ----------
         fname : str, optional
             Name of a supported initializer algorithm, by default "random_uniform".
-            currently supported functions are: random_uniform, random_normal, 
+            currently supported functions are: random_uniform, random_normal,
             glorot_uniform, glorot_normal, he_uniform, he_normal.
-        **kwargs
-            Arguments of the specific initializer instance
-            fan_mode = "fan_in" or "fan_out" # for any He initializer
+        fan_mode : str, optional
+            (he initializer only) Either "fan_in" or "fan_out".
         """
         kwargs = locals()
         self.rng = np.random.default_rng(None)
@@ -55,7 +54,7 @@ class Initializer:
             if fname is not supported
         """
         if fname == "random_uniform":
-            
+
             def initializer(self, shape):
                 a = 1
                 return Parameter(
@@ -64,14 +63,14 @@ class Initializer:
                 )
 
             return initializer
-        
+
         if fname == "random_normal":
 
             def initializer(self, shape):
                 std = 1
                 return Parameter(
                     weights=self.rng.normal(0, std, size=shape),
-                    bias=self.rng.normal(0, std, size=shape[0])
+                    bias=self.rng.normal(0, std, size=shape[0]),
                 )
 
             return initializer
@@ -82,21 +81,21 @@ class Initializer:
                 a = np.sqrt(2) * np.sqrt(6 / sum(shape))
                 return Parameter(
                     weights=self.rng.uniform(-a, a, size=shape),
-                    bias=self.rng.uniform(-a, a, size=shape[0])
+                    bias=self.rng.uniform(-a, a, size=shape[0]),
                 )
 
             return initializer
-        
+
         if fname == "glorot_normal":
 
             def initializer(self, shape):
                 std = np.sqrt(2) * np.sqrt(2 / sum(shape))
-                var = std*std
+                var = std * std
                 return Parameter(
                     weights=self.rng.normal(0, var, size=shape),
-                    bias=self.rng.normal(0, var, size=shape[0])
+                    bias=self.rng.normal(0, var, size=shape[0]),
                 )
-            
+
             return initializer
 
         if fname == "he_uniform":
@@ -108,7 +107,6 @@ class Initializer:
                     is_fan_in = False
             if is_fan_in is None:
                 raise ValueError("Invalid fan_mode")
-            
 
             def initializer(self, shape):
                 if is_fan_in:
@@ -117,11 +115,11 @@ class Initializer:
                     a = np.sqrt(2) * np.sqrt(3 / shape[0])
                 return Parameter(
                     weights=self.rng.uniform(-a, a, size=shape),
-                    bias=self.rng.uniform(-a, a, size=shape[0])
+                    bias=self.rng.uniform(-a, a, size=shape[0]),
                 )
-            
+
             return initializer
-        
+
         if fname == "he_normal":
             is_fan_in = None
             if "fan_mode" in kwargs:
@@ -131,17 +129,16 @@ class Initializer:
                     is_fan_in = False
             if is_fan_in is None:
                 raise ValueError("Invalid fan_mode")
-            
 
             def initializer(self, shape):
                 if is_fan_in:
                     std = np.sqrt(2) / np.sqrt(shape[1])
                 else:
                     std = np.sqrt(2) / np.sqrt(shape[0])
-                var = std*std
+                var = std * std
                 return Parameter(
                     weights=self.rng.normal(0, var, size=shape),
-                    bias=self.rng.normal(0, var, size=shape[0])
+                    bias=self.rng.normal(0, var, size=shape[0]),
                 )
 
             return initializer
