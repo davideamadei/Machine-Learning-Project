@@ -6,6 +6,7 @@
 from typing import Callable
 import itertools
 from numbers import Number
+import sys
 
 # external libraries
 import numpy as np
@@ -30,10 +31,10 @@ __all__ = ["GridSearch"]
 # TODO add comments to nested k-fold and check those in k-fold
 
 class GridSearch:
-    _optional_keys = ['fan_mode']
+    _optional_keys = ['fan_mode', 'beta1', 'beta2', 'eps', "momentum_coefficient"]
     _net_keys = ["layers"]
     _weight_initializer_keys = ['weight_initializer']
-    _optimizer_keys = ['optimizer', "learning_rate", "l2_coefficient", "momentum_coefficient"]
+    _optimizer_keys = ['optimizer', "learning_rate", "l2_coefficient"]
     _loss_keys = ["loss"]
     _estimator_keys = ["batchsize"]
     _global_keys = _net_keys + _optimizer_keys + _weight_initializer_keys + _loss_keys + _estimator_keys
@@ -191,7 +192,7 @@ class GridSearch:
                     " the size of the dataset will be used"
                 )
 
-    def __init__(self, estimator: Estimator, hyper_grid: dict):
+    def __init__(self, estimator: Estimator, hyper_grid: dict, seed: int = None):
         """Initializes a new instance
 
         Parameters
@@ -200,6 +201,8 @@ class GridSearch:
             the estimator to use for training and evaluation
         hyper_grid : dict
             grid of hyperparameters
+        seed : int
+            number to initialize and fix rng
 
         Raises
         ------
@@ -207,10 +210,12 @@ class GridSearch:
             when parameter types are incorrect
         """
         if estimator == None or type(estimator) != Estimator:
-            raise TypeError
+            raise TypeError('estimator must be an Estimator object')
         self._estimator = estimator
         if hyper_grid == None or type(hyper_grid) != dict:
-            raise TypeError
+            raise TypeError('hyper_grid must be a dictionary')
+        self._seed = seed
+        self.rng = np.random.default_rng(self._seed)
 
         # check for wrong values
         GridSearch._check_param_grid(self._global_keys, self._optional_keys, hyper_grid)
@@ -240,7 +245,7 @@ class GridSearch:
         indices = np.arange(data_size)
 
         # TODO maybe shuffle not needed if we assume dataset has already been shuffled
-        np.random.shuffle(indices)
+        self.rng.shuffle(indices)
 
         folds = []
 
@@ -288,6 +293,12 @@ class GridSearch:
         weight_init_params['fname'] = weight_init_params.pop('weight_initializer')
         estimator_params = {key: combination[key] for key in self._estimator_keys}
         optimizer_params = {key: combination[key] for key in self._optimizer_keys}
+        if combination['optimizer'] == 'SGD':
+            optimizer_params['momentum_coefficient'] = combination['momentum_coefficient']
+        if combination['optimizer'] == 'Adam':
+            optimizer_params['beta1'] = combination['beta1']
+            optimizer_params['beta2'] = combination['beta2']
+            optimizer_params['eps'] = combination['eps']
         optimizer_params['fname'] = optimizer_params.pop('optimizer')
         net_params = {key: combination[key] for key in self._net_keys}
 
@@ -296,6 +307,7 @@ class GridSearch:
         estimator_params['initializer'] = Initializer(**weight_init_params)
         estimator_params["loss"] = LossFunction(**loss_params)
         estimator_params["optimizer"] = Optimizer(**optimizer_params)
+        estimator_params['seed'] = self.rng.integers(0, sys.maxsize)
 
         # create list of layers to create NN
         old_units = input_dim
@@ -321,6 +333,7 @@ class GridSearch:
         callback: Callable[[dict], None] = print,
         loss_list: list[str] = ["MSE"],
         early_stopping: tuple[int, int] = None,
+        seed: int = None
     ) -> list:
         """function to execute a k-fold cross-validation on the given dataset
 
@@ -334,11 +347,12 @@ class GridSearch:
             number of epochs to run training
         callback : Callable[[dict], None], optional
             callback function to use during training, by default print
-        loss_list: list[str]
+        loss_list : list[str]
             list of loss functions to evaluate the test set on
-        early_stopping: tuple
+        early_stopping : tuple
             dictionary containing two values, respectively how many checks have to fail before stopping training and how many epochs need to pass between checks
-
+        seed : int
+            seed to fix rng
         Returns
         -------
         list
@@ -378,6 +392,11 @@ class GridSearch:
                 raise ValueError(
                     "The batchsize cannot be greater than the number of samples"
                 )
+
+        # fix rng if seed was passed
+        if seed != None:
+            self._seed = seed
+            self.rng = np.random.default_rng(seed)
 
         # creates folds
         folds = self._generate_folds(dataset=dataset, n_folds=n_folds)
@@ -477,6 +496,7 @@ class GridSearch:
         outer_callback: Callable[[dict], None] = print,
         loss_list: list[str] = ["MSE"],
         early_stopping: tuple[int, int] = None,
+        seed: int = None
     ) -> dict:
         """function implementing nested k-fold cross validation
 
@@ -498,7 +518,8 @@ class GridSearch:
             list of loss functions to evaluate the test set on
         early_stopping: dict
             dictionary containing 'checks_to_stop' and 'check_frequency', respectively how many checks have to fail before stopping training and how many epochs need to pass between checks
-
+        seed : int
+            seed to fix rng
         Returns
         -------
         dict
@@ -530,7 +551,13 @@ class GridSearch:
                 f"The number of folds cannot be greater than the number of samples in"
                 f" the dataset: {inner_n_folds} > {data_size}"
             )
+            
+        # fix rng if seed was passed
+        if seed != None:
+            self._seed = seed
+            self.rng = np.random.default_rng(seed)
 
+        # if early stopping is not None initialize threshold stopping for retraining after model selection
         if early_stopping != None:
             threshold_stopper = TrainingThresholdStopping(estimator=estimator, threshold_loss=0)
             def new_callback(record: dict) -> None:

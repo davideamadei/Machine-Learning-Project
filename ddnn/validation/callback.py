@@ -1,7 +1,7 @@
 # TODO EarlyStopping and TrainingThresholdStopping docs
 
-from ddnn.utils import Dataset
-from ddnn.nn import Estimator
+from ..utils import Dataset
+from ..nn import Estimator
 
 __all__ = ['EarlyStopping', 'TrainingThresholdStopping']
 
