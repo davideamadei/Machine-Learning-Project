@@ -84,6 +84,11 @@ class LossFunction:
                 lambda o, y: np.sum((o - y) ** 2) / o.shape[0],  # function
                 lambda o, y: 2 * (o - y) / (o.shape[0] * o.shape[1]),  # gradient
             )
+        if fname == "MEE":
+            return (
+                lambda o, y: np.sum(np.sqrt(np.sum((o - y)**2, axis=1))) / o.shape[0],
+                lambda o, y: (_ for _ in ()).throw(NotImplementedError())
+            )
         if fname == "binary_accuracy":
 
             def accuracy_func(o, y):
