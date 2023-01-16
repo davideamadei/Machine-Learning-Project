@@ -6,7 +6,7 @@
 
   <head>
     
-    <title>ddnn</title>
+    <title>ddnn.utils.containers.Parameter</title>
     <meta name="generator" content="pydoctor 22.9.1"> 
         
     </meta>
@@ -141,14 +141,20 @@
   <div>
 
       <div class="thingTitle">
-        <span>Package</span>
-        <code class="thisobject"><a href="index.html" class="internal-link" title="This package">ddnn</a></code> 
+        <span>Class</span>
+        <code class="thisobject"><a href="ddnn.utils.containers.Parameter.html" class="internal-link" title="This class"><wbr></wbr>Parameter</a></code> 
       </div>
       
       <div>
         
 
-        <div class="childrenKindTitle">Modules</div>
+        
+         
+
+        
+        
+
+        <div class="childrenKindTitle">Methods</div>
         <ul>
     
     <li class="">
@@ -157,37 +163,7 @@
         
 
         
-            <div class="itemName"><code><a href="ddnn.data.html" class="internal-link" title="ddnn.data">data</a></code>
-            </div>
-        
-
-    </li><li class="">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="ddnn.nn.html" class="internal-link" title="ddnn.nn">nn</a></code>
-            </div>
-        
-
-    </li><li class="">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="ddnn.utils.html" class="internal-link" title="ddnn.utils">utils</a></code>
-            </div>
-        
-
-    </li><li class="">
-        
-        
-        
-
-        
-            <div class="itemName"><code><a href="ddnn.validation.html" class="internal-link" title="ddnn.validation">validation</a></code>
+            <div class="itemName"><code><a href="#__iadd__" class="internal-link" title="ddnn.utils.containers.Parameter.__iadd__">__iadd__</a></code>
             </div>
         
 
@@ -195,7 +171,86 @@
 </ul> 
 
         
+         
+
+        <div class="childrenKindTitle">Attributes</div>
+        <ul>
+    
+    <li class="">
         
+        
+        
+
+        
+            <div class="itemName"><code><a href="#bias" class="internal-link" title="ddnn.utils.containers.Parameter.bias">bias</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#weights" class="internal-link" title="ddnn.utils.containers.Parameter.weights">weights</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#shape" class="internal-link" title="ddnn.utils.containers.Parameter.shape">shape</a></code>
+            </div>
+        
+
+    </li>
+</ul> 
+
+        
+         
+        
+      </div>
+  </div><div>
+
+      <div class="thingTitle">
+        <span>Module</span>
+        <code><a href="ddnn.utils.containers.html" class="internal-link" title="The parent of this class">containers</a></code> 
+      </div>
+      
+      <div>
+        
+
+        
+         
+
+        <div class="childrenKindTitle">Classes</div>
+        <ul>
+    
+    <li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="ddnn.utils.containers.Dataset.html" class="internal-link" title="ddnn.utils.containers.Dataset"><wbr></wbr>Dataset</a></code>
+            </div>
+        
+
+    </li><li class=" thisobject">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="ddnn.utils.containers.Parameter.html" class="internal-link" title="ddnn.utils.containers.Parameter"><wbr></wbr>Parameter</a></code>
+            </div>
+        
+
+    </li>
+</ul>
 
         
          
@@ -228,50 +283,54 @@
         
 
         <div class="page-header">
-          <h1 class="package"><code><code><a href="index.html" class="internal-link">ddnn</a></code></code></h1>
+          <h1 class="class"><code><code><a href="index.html" class="internal-link">ddnn</a></code><wbr></wbr>.<code><a href="ddnn.utils.html" class="internal-link" title="ddnn.utils">utils</a></code><wbr></wbr>.<code><a href="ddnn.utils.containers.html" class="internal-link" title="ddnn.utils.containers">containers</a></code><wbr></wbr>.<code><a href="ddnn.utils.containers.Parameter.html" class="internal-link" title="ddnn.utils.containers.Parameter">Parameter</a></code></code></h1>
           <div id="showPrivate">
             <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
           </div>
         </div>
 
         <div class="categoryHeader">
-          package documentation
+          class documentation
         </div>
 
         <div class="extrasDocstring">
-          
-          <p></p>
+          <p><code><span class="py-keyword">class</span> <span class="py-defname">Parameter</span>:</code></p>
+          <p><a href="classIndex.html#ddnn.utils.containers.Parameter">View In Hierarchy</a></p>
         </div>
 
         <div class="moduleDocstring">
-          <div><p>Neural Network Library</p>
+          <div><p>A simple dataclass holding Parameters.
+its currently used for multiple purposes:
+- hold weights and biases
+- hold gradients with respect to weights and biases
+- hold updates that should (or have been applied) to weights and biases</p>
 </div>
         </div>
 
         <div id="splitTables">
-          <table class="children sortable" id="id1">
+          <table class="children sortable" id="id28">
   
   
-  <tr class="package">
+  <tr class="method">
     
-    <td>Package</td>
-    <td><code><a href="ddnn.data.html" class="internal-link" title="ddnn.data">data</a></code></td>
-    <td>Dataset Interface</td>
-  </tr><tr class="package">
+    <td>Method</td>
+    <td><code><a href="#__iadd__" class="internal-link" title="ddnn.utils.containers.Parameter.__iadd__">__iadd__</a></code></td>
+    <td>support for += operator</td>
+  </tr><tr class="classvariable">
     
-    <td>Package</td>
-    <td><code><a href="ddnn.nn.html" class="internal-link" title="ddnn.nn">nn</a></code></td>
-    <td>Neural Network Estimator and Layers</td>
-  </tr><tr class="package">
+    <td>Class Variable</td>
+    <td><code><a href="#bias" class="internal-link" title="ddnn.utils.containers.Parameter.bias">bias</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="classvariable">
     
-    <td>Package</td>
-    <td><code><a href="ddnn.utils.html" class="internal-link" title="ddnn.utils">utils</a></code></td>
-    <td>Utility Functions</td>
-  </tr><tr class="package">
+    <td>Class Variable</td>
+    <td><code><a href="#weights" class="internal-link" title="ddnn.utils.containers.Parameter.weights">weights</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="property">
     
-    <td>Package</td>
-    <td><code><a href="ddnn.validation.html" class="internal-link" title="ddnn.validation">validation</a></code></td>
-    <td>Validation Methods</td>
+    <td>Property</td>
+    <td><code><a href="#shape" class="internal-link" title="ddnn.utils.containers.Parameter.shape">shape</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
   </tr>
 </table>
           
@@ -280,7 +339,103 @@
         </div>
 
         <div id="childList">
-          
+          <div class="basemethod">
+  
+  
+  <a name="ddnn.utils.containers.Parameter.__iadd__">
+    
+  </a>
+  <a name="__iadd__">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">__iadd__</span>(self, other):
+    
+    <a class="headerLink" href="#__iadd__" title="ddnn.utils.containers.Parameter.__iadd__">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    
+    <div><p>support for += operator</p>
+</div>
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="ddnn.utils.containers.Parameter.bias">
+    
+  </a>
+  <a name="bias">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">bias</span>: <code>np.array</code> =
+    
+    <a class="headerLink" href="#bias" title="ddnn.utils.containers.Parameter.bias">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseclassvariable">
+  
+  
+  <a name="ddnn.utils.containers.Parameter.weights">
+    
+  </a>
+  <a name="weights">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">weights</span>: <code>np.array</code> =
+    
+    <a class="headerLink" href="#weights" title="ddnn.utils.containers.Parameter.weights">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseproperty">
+  
+  
+  <a name="ddnn.utils.containers.Parameter.shape">
+    
+  </a>
+  <a name="shape">
+    
+  </a>
+  <div class="functionHeader">
+    @<a href="https://docs.python.org/3/library/functions.html#property" class="intersphinx-link">property</a><br />
+    <span class="py-defname">shape</span> =
+    
+    <a class="headerLink" href="#shape" title="ddnn.utils.containers.Parameter.shape">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div>
         </div>
       
       </div>
