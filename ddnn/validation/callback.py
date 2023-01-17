@@ -13,7 +13,7 @@ class EarlyStopping:
         losses: list[str] = ["MSE"],
         checks_to_stop: int = 10,
         check_frequency: int = 10,
-        eps: int = 10 - 8,
+        eps: int = 1e-8,
         verbose: bool = False,
     ) -> None:
         """init method
@@ -28,7 +28,7 @@ class EarlyStopping:
             number of checks without a decrease in loss needed to stop training, by default 10
         check_frequency : int, optional
             how often to do a check in terms of epochs, by default 10
-        eps : int
+        eps : float
             tolerance for the decrease of the validation loss
         verbose : bool
             if True adds some prints
