@@ -399,7 +399,8 @@
         </div>
 
         <div class="moduleDocstring">
-          <div><p class="undocumented">Undocumented</p></div>
+          <div><p>implements early stopping callback</p>
+</div>
         </div>
 
         <div id="splitTables">
@@ -410,22 +411,22 @@
     
     <td>Method</td>
     <td><code><a href="#__call__" class="internal-link" title="ddnn.validation.callback.EarlyStopping.__call__">__call__</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>call method</td>
   </tr><tr class="method">
     
     <td>Method</td>
     <td><code><a href="#__init__" class="internal-link" title="ddnn.validation.callback.EarlyStopping.__init__">__init__</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>init method</td>
   </tr><tr class="method">
     
     <td>Method</td>
     <td><code><a href="#reset" class="internal-link" title="ddnn.validation.callback.EarlyStopping.reset">reset</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>method to reset the early stopping class</td>
   </tr><tr class="method">
     
     <td>Method</td>
     <td><code><a href="#set_validation_set" class="internal-link" title="ddnn.validation.callback.EarlyStopping.set_validation_set">set<wbr></wbr>_validation<wbr></wbr>_set</a></code></td>
-    <td><span class="undocumented">Undocumented</span></td>
+    <td>method to set the validation set on which checks must be done, also resets the class</td>
   </tr><tr class="instancevariable private">
     
     <td>Instance Variable</td>
@@ -505,7 +506,8 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">record:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr></table></div>
+    <div><p>call method</p>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">record:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#dict" class="intersphinx-link">dict</a></code></td><td class="fieldArgDesc">record containing the epoch number and the loss on the training set at that epoch</td></tr></table></div>
   </div>
 </div><div class="basemethod">
   
@@ -528,7 +530,8 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">estimator:</span><code>Estimator</code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">losses:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<wbr></wbr><a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">checks<wbr></wbr>_to<wbr></wbr>_stop:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">check<wbr></wbr>_frequency:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr></table></div>
+    <div><p>init method</p>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">estimator:</span><code>Estimator</code></td><td class="fieldArgDesc">estimator to use for evaluation and to notify when training has to be stopped</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">losses:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code>, <em>optional</em></td><td class="fieldArgDesc">list of losses on which to evaluate the validation set, first one is used to check, by default ["MSE"]</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">checks<wbr></wbr>_to<wbr></wbr>_stop:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code>, <em>optional</em></td><td class="fieldArgDesc">number of checks without a decrease in loss needed to stop training, by default 10</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">check<wbr></wbr>_frequency:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code>, <em>optional</em></td><td class="fieldArgDesc">how often to do a check in terms of epochs, by default 10</td></tr></table></div>
   </div>
 </div><div class="basemethod">
   
@@ -551,7 +554,8 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p></div>
+    <div><p>method to reset the early stopping class</p>
+</div>
   </div>
 </div><div class="basemethod">
   
@@ -574,7 +578,8 @@
   </div>
   <div class="docstring functionBody">
     
-    <div><p class="undocumented">Undocumented</p><table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">validation<wbr></wbr>_set:</span><code>Dataset</code></td><td class="fieldArgDesc"><span class="undocumented">Undocumented</span></td></tr></table></div>
+    <div><p>method to set the validation set on which checks must be done, also resets the class</p>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">validation<wbr></wbr>_set:</span><code>Dataset</code></td><td class="fieldArgDesc">dataset to use for checks</td></tr></table></div>
   </div>
 </div><div class="baseinstancevariable private">
   
@@ -828,7 +833,11 @@
   <div class="container">
     <a href="index.html">API Documentation</a> for <a href="https://github.com/davideamadei/Machine-Learning-Project/ddnn/" class="projecthome">Machine-Learning-Project</a>,
   generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
+<<<<<<< HEAD
     22.9.1 at 2023-01-17 15:11:56.
+=======
+    22.9.1 at 2023-01-16 11:48:30.
+>>>>>>> e048699282f48c92e484682befc7a43545a8c129
   </div>
 
   <!-- Search related scripts needs to be loaded at the end of HTML 

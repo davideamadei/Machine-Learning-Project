@@ -128,7 +128,8 @@ class NeuralNetwork:
         for i, layer in enumerate(net):
             if not isinstance(layer, expected_layer_type):
                 raise ValueError(
-                    f"layer #{i} is of type {type(layer)} expected type is {expected_layer_type}"
+                    f"layer #{i} is of type {type(layer)} expected type is"
+                    f" {expected_layer_type}"
                 )
             expected_layer_type = (
                 ActivationFunction

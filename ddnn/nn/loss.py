@@ -86,8 +86,8 @@ class LossFunction:
             )
         if fname == "MEE":
             return (
-                lambda o, y: np.sum(np.sqrt(np.sum((o - y)**2, axis=1))) / o.shape[0],
-                lambda o, y: (_ for _ in ()).throw(NotImplementedError())
+                lambda o, y: np.sum(np.sqrt(np.sum((o - y) ** 2, axis=1))) / o.shape[0],
+                lambda o, y: (_ for _ in ()).throw(NotImplementedError()),
             )
         if fname == "binary_accuracy":
 
