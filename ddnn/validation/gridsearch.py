@@ -371,7 +371,7 @@ class GridSearch:
         n_folds: int,
         n_epochs: int,
         training_callback: Callable[[dict], None] = print,
-        on_hp_change_callback: Callable[[dict], None] = None,
+        on_hp_change: Callable[[dict], None] = None,
         on_fold_change: Callable[[dict], None] = None,
         loss_list: list[str] = ["MSE"],
         early_stopping: tuple[int, int] = None,
@@ -473,8 +473,8 @@ class GridSearch:
         # iterates on all combinations of hyperparameters
         for combination in param_combinations:
             # call update for callback as combination of hyperparameter changed
-            if on_hp_change_callback != None:
-                on_hp_change_callback(combination)
+            if on_hp_change != None:
+                on_hp_change(combination)
 
             # update estimator with the new hyperparameters
             estimator_params = self._create_estimator_params(combination, input_dim)

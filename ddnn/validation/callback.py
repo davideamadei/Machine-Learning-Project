@@ -13,6 +13,7 @@ class EarlyStopping:
         losses: list[str] = ["MSE"],
         checks_to_stop: int = 10,
         check_frequency: int = 10,
+        verbose : bool = False
     ) -> None:
         """init method
 
@@ -36,6 +37,7 @@ class EarlyStopping:
         self._best_vl_loss = dict.fromkeys(losses, float("inf"))
         self._best_tr_loss = 0
         self._best_epoch = 0
+        self._verbose = verbose
 
     def __call__(self, record: dict) -> None:
         """call method
@@ -62,11 +64,12 @@ class EarlyStopping:
             else:
                 self._n_worse_checks += 1
                 if self._n_worse_checks == self._checks_to_stop:
-                    print(
-                        f"Stopped early at epoch {current_epoch} after"
-                        f" {self._n_worse_checks} check(s) had a validation loss worse"
-                        " than the current best one."
-                    )
+                    if self._verbose:
+                        print(
+                            f"Stopped early at epoch {current_epoch} after"
+                            f" {self._n_worse_checks} check(s) had a validation loss worse"
+                            " than the current best one."
+                        )
                     estimator.stop_training = True
 
     def reset(self) -> None:
