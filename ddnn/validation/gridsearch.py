@@ -370,7 +370,9 @@ class GridSearch:
         dataset: Dataset,
         n_folds: int,
         n_epochs: int,
-        callback: Callable[[dict], None] = print,
+        training_callback: Callable[[dict], None] = print,
+        on_hp_change_callback: Callable[[dict], None] = None,
+        on_fold_change: Callable[[dict], None] = None,
         loss_list: list[str] = ["MSE"],
         early_stopping: tuple[int, int] = None,
         seed: int = None,
@@ -385,8 +387,12 @@ class GridSearch:
             number of folds to use in cross-validation
         n_epochs : int
             number of epochs to run training
-        callback : Callable[[dict], None], optional
+        training_callback : Callable[[dict], None], optional
             callback function to use during training, by default print
+        on_hp_change : Callable[[dict], None], optional
+            callback function called when the combination of hyperparameters changes
+        on_fold_change : Callable[[dict], None], optional
+            callback function called when the fold changes
         loss_list : list[str]
             list of loss functions to evaluate the test set on, by default ['MSE']
         early_stopping : tuple
@@ -455,7 +461,7 @@ class GridSearch:
             )
 
             def new_callback(record: dict) -> None:
-                callback(record)
+                training_callback(record)
                 early_stopper(record)
 
         # generates all combinations of hyperparameters
@@ -466,6 +472,10 @@ class GridSearch:
 
         # iterates on all combinations of hyperparameters
         for combination in param_combinations:
+            # call update for callback as combination of hyperparameter changed
+            if on_hp_change_callback != None:
+                on_hp_change_callback(combination)
+
             # update estimator with the new hyperparameters
             estimator_params = self._create_estimator_params(combination, input_dim)
             if estimator_params["batchsize"] == -1:
@@ -479,6 +489,10 @@ class GridSearch:
 
             # iterates on folds of dataset
             for train_set, test_set in folds:
+                # call update for callback as fold changed
+                if on_fold_change != None:
+                    on_fold_change({'train': train_set, 'test': test_set, 'n_folds': n_folds})
+
                 # if early stopping was passed, train with a composite callback function
                 if early_stopping != None:
                     early_stopper.set_validation_set(test_set)
@@ -491,7 +505,7 @@ class GridSearch:
                     train_loss_list.append(early_stopper._best_tr_loss)
                 else:
                     estimator.train(
-                        dataset=train_set, n_epochs=n_epochs, callback=callback
+                        dataset=train_set, n_epochs=n_epochs, callback=training_callback
                     )
                     test_loss_list.append(
                         estimator.evaluate(losses=loss_list, dataset=test_set)
