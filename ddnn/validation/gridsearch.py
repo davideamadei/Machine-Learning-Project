@@ -491,7 +491,9 @@ class GridSearch:
             for train_set, test_set in folds:
                 # call update for callback as fold changed
                 if on_fold_change != None:
-                    on_fold_change({'train': train_set, 'test': test_set, 'n_folds': n_folds})
+                    on_fold_change(
+                        {"train": train_set, "test": test_set, "n_folds": n_folds}
+                    )
 
                 # if early stopping was passed, train with a composite callback function
                 if early_stopping != None:
@@ -531,6 +533,7 @@ class GridSearch:
 
             # add additional results if early stopping was defined
             if early_stopping != None:
+                combination_results[-1]["n_epochs_list"] = epoch_list
                 combination_results[-1]["n_epoch_avg"] = np.average(epoch_list)
                 combination_results[-1]["n_epoch_std"] = np.std(epoch_list)
                 combination_results[-1]["train_loss_avg"] = np.average(train_loss_list)

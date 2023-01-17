@@ -79,12 +79,12 @@ class Optimizer:
                         # first iteration set momentum to zero
                         if state == None:
                             state = Parameter(0, 0)
-                        
+
                         temp = grads.weights
                         if self._l2 != 0:
                             # += here would modify grads.weights
                             temp = temp + self._l2 * params.weights
-                        
+
                         # we prefer to multiple L2 coeff and momentum by eta
                         m_w = temp + self._m * state.weights
                         # we ignore L2 for bias only
