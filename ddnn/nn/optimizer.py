@@ -76,17 +76,22 @@ class Optimizer:
                     def call_t(
                         params: Parameter, grads: Parameter, state: Parameter
                     ) -> Tuple[Parameter, Any]:
-                        # first iteration set momentum to gradient
+                        # first iteration set momentum to zero
                         if state == None:
-                            state = grads
+                            state = Parameter(0, 0)
+                        
+                        temp = grads.weights
+                        if self._l2 != 0:
+                            # += here would modify grads.weights
+                            temp = temp + self._l2 * params.weights
+                        
+                        # we prefer to multiple L2 coeff and momentum by eta
+                        m_w = temp + self._m * state.weights
+                        # we ignore L2 for bias only
+                        m_b = grads.bias + self._m * state.bias
 
-                        delta = Parameter(
-                            -self._eta * grads.weights
-                            + self._m * state.weights
-                            - 2 * self._l2 * params.weights,
-                            -self._eta * grads.bias + self._m * state.bias,
-                        )
-                        return (delta, delta)
+                        delta = Parameter(-self._eta * m_w, -self._eta * m_b)
+                        return (delta, Parameter(m_w, m_b))
 
                     return call_t
 
@@ -134,7 +139,8 @@ class Optimizer:
 
                         temp = grads.weights
                         if self._l2 != 0:
-                            temp += self._l2 * params.weights
+                            # += here would modify grads.weights
+                            temp = temp + self._l2 * params.weights
 
                         m_w = self._beta1 * old_m.weights + (1 - self._beta1) * temp
                         m_b = self._beta1 * old_m.bias + (1 - self._beta1) * grads.bias
