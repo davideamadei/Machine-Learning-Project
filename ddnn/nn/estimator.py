@@ -137,7 +137,7 @@ class Estimator:
         dataset: Dataset,
         *,
         n_epochs: int = 1,
-        callback: Callable[[dict], None] = print,
+        callback_list: List[Callable[[dict], None]] = [print],
         mb_callback: Callable[[dict], None] = None,
     ) -> None:
         """Trains the net with passed dataset.
@@ -176,7 +176,8 @@ class Estimator:
                 self.net.update(self.optimizer(self.t))
             avg_loss /= batchcount
             record = {"epoch": self.t, "loss": avg_loss}
-            callback(record)
+            for callback in callback_list:
+                callback(record)
             if self.stop_training:
                 return
 
