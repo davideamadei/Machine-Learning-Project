@@ -181,7 +181,7 @@ class Logger:
         self._every = every
         # if training set and validation set are given, initialize for a single training
         if training_set != None and validation_set != None:
-            self._scores.append({"folds": []})
+            self._scores.append({"folds": {}})
             self.update_fold(fold_dict={"train": training_set, "test": validation_set})
 
     def update_hp(self, hp_dict: dict):
@@ -194,7 +194,8 @@ class Logger:
         """
         # append a new dictionary with keys 'hp' and 'folds'. The value for 'hp' is the current combination of hyperparamaters
         # while 'folds' is initialized as an empty list
-        self._scores.append({"hp": hp_dict.copy(), "folds": []})
+        self._scores.append({"hp": hp_dict.copy(), "folds": {}})
+        self._fold_count = 0
 
     def update_fold(self, fold_dict: dict):
         """function to update the logger after changing folds
@@ -213,13 +214,13 @@ class Logger:
         # 'train' and 'valid' contain a dictionary where the keys are the names of the loss functions and the values are a list of
         # loss values, one for each evaluation made by the logger
         current_hp_config = self._scores[-1]
-        current_hp_config["folds"].append({"train": {}, "valid": {}})
-
+        current_hp_config["folds"][self._fold_count]= {"train": {}, "valid": {}}
         # initialize the dictionaries for 'train' and 'valid'
-        current_fold = current_hp_config["folds"][-1]
+        current_fold = current_hp_config["folds"][self._fold_count]
         for loss in self._losses:
             current_fold["train"][loss] = []
             current_fold["valid"][loss] = []
+        self._fold_count += 1
 
     def __call__(self, record: dict):
         """call method
@@ -235,8 +236,8 @@ class Logger:
             dt = self._estimator.evaluate(self._losses, self._tfold)
             dv = self._estimator.evaluate(self._losses, self._vfold)
 
-            current_train = self._scores[-1]["folds"][-1]["train"]
-            current_valid = self._scores[-1]["folds"][-1]["valid"]
+            current_train = self._scores[-1]["folds"][self._fold_count-1]["train"]
+            current_valid = self._scores[-1]["folds"][self._fold_count-1]["valid"]
 
             # append evaluations to the corresponding lists
             for loss in self._losses:
