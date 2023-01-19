@@ -136,11 +136,12 @@ class GridSearch:
                 raise ValueError("The L2 coefficient must be at least 0")
 
         # check momentum
-        for momentum in hyper_grid["momentum_coefficient"]:
-            if not isinstance(momentum, Number):
-                raise TypeError("The momentum parameter must be a number")
-            if momentum < 0:
-                raise ValueError("The momentum parameter must be at least 0")
+        if "momentum_coefficient" in hyper_grid.keys():
+            for momentum in hyper_grid["momentum_coefficient"]:
+                if not isinstance(momentum, Number):
+                    raise TypeError("The momentum parameter must be a number")
+                if momentum < 0:
+                    raise ValueError("The momentum parameter must be at least 0")
 
         # check learning rate
         for eta in hyper_grid["learning_rate"]:
