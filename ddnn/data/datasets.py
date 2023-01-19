@@ -209,7 +209,7 @@ def read_monks(number: int, dname: str, basedir="./monks") -> Dataset:
         raise ValueError(f"Invalid Dataset Type: {dname}")
 
     path = f"{basedir}/monks-{number}.{dname}"
-    raw = pd.read_csv("monks/monks-1.train", sep=" ", header=None).drop(columns=0)
+    raw = pd.read_csv(path, sep=" ", header=None).drop(columns=0)
     raw[8] = raw[8].str.removeprefix("data_").astype(int)
 
     dataset = Dataset(
