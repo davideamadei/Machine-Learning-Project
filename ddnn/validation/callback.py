@@ -155,9 +155,9 @@ class Logger:
         self,
         estimator: Estimator,
         losses: list[str],
-        training_set: Dataset = None,
         every: int = 1,
-        validation_set: Dataset = None,
+        training_set: Dataset = None,
+        validation_set: Dataset = None
     ):
         """init method
 
@@ -182,6 +182,7 @@ class Logger:
         # if training set and validation set are given, initialize for a single training
         if training_set != None and validation_set != None:
             self._scores.append({"folds": {}})
+            self._fold_count = 0
             self.update_fold(fold_dict={"train": training_set, "test": validation_set})
 
     def update_hp(self, hp_dict: dict):

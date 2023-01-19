@@ -26,6 +26,9 @@ __all__ = ["GridSearch"]
 
 
 class GridSearch:
+    """class implementing a grid search with functions for k-fold and nested k-fold
+    cross-validation
+    """
     _optional_keys = ["fan_mode", "beta1", "beta2", "eps", "momentum_coefficient"]
     _net_keys = ["layers"]
     _weight_initializer_keys = ["weight_initializer"]
@@ -534,6 +537,7 @@ class GridSearch:
                     "parameters": combination,
                     "test_loss_avg": test_loss_avg,
                     "test_loss_std": test_loss_std,
+                    "seed": estimator_params["seed"]
                 }
             )
 
