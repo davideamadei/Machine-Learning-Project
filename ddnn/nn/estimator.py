@@ -202,3 +202,20 @@ class Estimator:
             # move predictions outside loop
             res[loss] = loss_fn.foward(pred, dataset.labels)
         return res
+    
+    #TODO add output type
+    def predict(self, dataset: Dataset):
+        """method to predict output on given data
+
+        Parameters
+        ----------
+        dataset : Dataset
+            data to pass to neural network to get predictions
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
+        pred = self.net.foward(dataset.data)
+        return pred
