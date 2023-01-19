@@ -74,7 +74,7 @@ class GridSearch:
             "he_uniform",
             "he_normal",
         ]
-        optimizers = ["SGD", "ADAM"]
+        optimizers = ["SGD", "Adam"]
         activation_functions = ["ReLU", "logistic", "tanh", "linear"]
         loss_functions = ["MSE", "binary_accuracy"]
 
@@ -338,9 +338,12 @@ class GridSearch:
                 "momentum_coefficient"
             ]
         if combination["optimizer"] == "Adam":
-            optimizer_params["beta1"] = combination["beta1"]
-            optimizer_params["beta2"] = combination["beta2"]
-            optimizer_params["eps"] = combination["eps"]
+            if 'beta1' in combination.keys():
+                optimizer_params["beta1"] = combination["beta1"]
+            if 'beta2' in combination.keys():
+                optimizer_params["beta2"] = combination["beta2"]
+            if 'eps' in combination.keys():
+                optimizer_params["eps"] = combination["eps"]
         optimizer_params["fname"] = optimizer_params.pop("optimizer")
         net_params = {key: combination[key] for key in self._net_keys}
 
@@ -375,7 +378,7 @@ class GridSearch:
         on_hp_change: Callable[[dict], None] = None,
         on_fold_change: Callable[[dict], None] = None,
         loss_list: list[str] = ["MSE"],
-        early_stopping: tuple[int, int] = None,
+        early_stopping: tuple[int, int, int] = None,
         seed: int = None,
     ) -> list:
         """function to execute a k-fold cross-validation on the given dataset
@@ -396,9 +399,10 @@ class GridSearch:
             callback function called when the fold changes
         loss_list : list[str]
             list of loss functions to evaluate the test set on, by default ['MSE']
-        early_stopping : tuple
-            dictionary containing two values, respectively how many checks have to fail before stopping training and
-            how many epochs need to pass between checks
+        early_stopping: dict
+            dictionary containing 'check_frequency', 'checks_to_stop' and 'eps', 
+            respectively how many epochs need to pass between checks,
+            how many checks have to fail before stopping training and a tolerance on loss decrease
         seed : int
             seed to fix rng
         Returns
@@ -457,8 +461,9 @@ class GridSearch:
             early_stopper = EarlyStopping(
                 estimator=estimator,
                 losses=loss_list,
-                checks_to_stop=early_stopping[0],
-                check_frequency=early_stopping[1],
+                check_frequency=early_stopping[0],
+                checks_to_stop=early_stopping[1],
+                eps=early_stopping[2]
             )
 
             def new_callback(record: dict) -> None:
@@ -559,7 +564,7 @@ class GridSearch:
         inner_callback: Callable[[dict], None] = print,
         outer_callback: Callable[[dict], None] = print,
         loss_list: list[str] = ["MSE"],
-        early_stopping: tuple[int, int] = None,
+        early_stopping: tuple[int, int, int] = None,
         seed: int = None,
     ) -> dict:
         """function implementing nested k-fold cross validation
@@ -581,8 +586,9 @@ class GridSearch:
         loss_list: list[str]
             list of loss functions to evaluate the test set on
         early_stopping: dict
-            dictionary containing 'checks_to_stop' and 'check_frequency', respectively how many checks have to fail before
-            stopping training and how many epochs need to pass between checks
+            dictionary containing 'check_frequency', 'checks_to_stop' and 'eps', 
+            respectively how many epochs need to pass between checks,
+            how many checks have to fail before stopping training and a tolerance on loss decrease
         seed : int
             seed to fix rng
         Returns
