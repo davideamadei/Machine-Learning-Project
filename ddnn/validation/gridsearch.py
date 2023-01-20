@@ -476,7 +476,11 @@ class GridSearch:
         # generates all combinations of hyperparameters
         keys, values = zip(*hyper_grid.items())
         param_combinations = [dict(zip(keys, v)) for v in itertools.product(*values)]
-
+        comb=1
+        for k,v in hyper_grid.items():
+            comb*= len(v)
+        print(comb)
+        comb_counter = 0
         combination_results = []
 
         # iterates on all combinations of hyperparameters
@@ -494,7 +498,9 @@ class GridSearch:
             test_loss_list = []
             epoch_list = []
             train_loss_list = []
-            print(combination)
+            comb_counter += 1
+
+            print(f"{comb_counter} / {comb}: {combination}")
 
             # iterates on folds of dataset
             for train_set, test_set in folds:
