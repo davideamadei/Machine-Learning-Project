@@ -123,6 +123,8 @@ class Estimator:
         Iterator[tuple[np.ndarray,np.ndarray]]
             iterator over minibatches
         """
+        if batchsize in [None, 0, -1]:
+            batchsize = x.shape[0]
         size = x.shape[0]
         batchtotal, remainder = divmod(size, batchsize)
         for i in range(batchtotal):

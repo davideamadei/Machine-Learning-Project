@@ -232,6 +232,16 @@
         
 
         
+            <div class="itemName"><code><a href="#_fold_count" class="internal-link" title="ddnn.validation.callback.Logger._fold_count">_fold<wbr></wbr>_count</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
             <div class="itemName"><code><a href="#_losses" class="internal-link" title="ddnn.validation.callback.Logger._losses">_losses</a></code>
             </div>
         
@@ -413,6 +423,11 @@ For every fold, saves the training loss and validation loss for each epoch and f
   </tr><tr class="instancevariable private">
     
     <td>Instance Variable</td>
+    <td><code><a href="#_fold_count" class="internal-link" title="ddnn.validation.callback.Logger._fold_count">_fold<wbr></wbr>_count</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
     <td><code><a href="#_losses" class="internal-link" title="ddnn.validation.callback.Logger._losses">_losses</a></code></td>
     <td><span class="undocumented">Undocumented</span></td>
   </tr><tr class="instancevariable private">
@@ -473,7 +488,7 @@ For every fold, saves the training loss and validation loss for each epoch and f
   </a>
   <div class="functionHeader">
     
-    <span class="py-keyword">def</span> <span class="py-defname">__init__</span>(self, estimator, losses, training_set=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>, every=1, validation_set=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>):
+    <span class="py-keyword">def</span> <span class="py-defname">__init__</span>(self, estimator, losses, every=1, training_set=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>, validation_set=<a href="https://docs.python.org/3/library/constants.html#None" class="intersphinx-link">None</a>):
     
     <a class="headerLink" href="#__init__" title="ddnn.validation.callback.Logger.__init__">
       
@@ -484,7 +499,7 @@ For every fold, saves the training loss and validation loss for each epoch and f
   <div class="docstring functionBody">
     
     <div><p>init method</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">estimator:</span><code>Estimator</code></td><td class="fieldArgDesc">estimator to use for evaluation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">losses:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code></td><td class="fieldArgDesc">list of loss functions to use for evaluation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">training<wbr></wbr>_set:</span><code>Dataset</code>, <em>optional</em></td><td class="fieldArgDesc">training set to evaluate, by default None</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">every:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">how many epochs need to pass between evaluations</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">validation<wbr></wbr>_set:</span><code>Dataset</code>, <em>optional</em></td><td class="fieldArgDesc">validation set to evaluate, by default None</td></tr></table></div>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">estimator:</span><code>Estimator</code></td><td class="fieldArgDesc">estimator to use for evaluation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">losses:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code></td><td class="fieldArgDesc">list of loss functions to use for evaluation</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">every:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code></td><td class="fieldArgDesc">how many epochs need to pass between evaluations</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">training<wbr></wbr>_set:</span><code>Dataset</code>, <em>optional</em></td><td class="fieldArgDesc">training set to evaluate, by default None</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">validation<wbr></wbr>_set:</span><code>Dataset</code>, <em>optional</em></td><td class="fieldArgDesc">validation set to evaluate, by default None</td></tr></table></div>
   </div>
 </div><div class="basemethod">
   
@@ -573,6 +588,30 @@ and a value 'train' for the training set</td></tr></table></div>
     <span class="py-defname">_every</span> =
     
     <a class="headerLink" href="#_every" title="ddnn.validation.callback.Logger._every">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="ddnn.validation.callback.Logger._fold_count">
+    
+  </a>
+  <a name="_fold_count">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_fold_count</span>: <code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code> =
+    
+    <a class="headerLink" href="#_fold_count" title="ddnn.validation.callback.Logger._fold_count">
       
       
       ¶
@@ -691,7 +730,7 @@ and a value 'train' for the training set</td></tr></table></div>
   <div class="container">
     <a href="index.html">API Documentation</a> for <a href="https://github.com/davideamadei/Machine-Learning-Project/ddnn/" class="projecthome">Machine-Learning-Project</a>,
   generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-    22.9.1 at 2023-01-17 18:08:57.
+    22.9.1 at 2023-01-20 23:35:20.
   </div>
 
   <!-- Search related scripts needs to be loaded at the end of HTML 
