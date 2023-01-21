@@ -237,8 +237,8 @@ def onehot_encoding(
 
     Returns
     -------
-    _type_
-        _description_
+    Dataset
+        returns the given dataset with one hot encoding applied to the requested features
 
     Raises
     -------

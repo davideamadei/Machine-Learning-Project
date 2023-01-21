@@ -29,6 +29,7 @@ class GridSearch:
     """class implementing a grid search with functions for k-fold and nested k-fold
     cross-validation
     """
+
     _optional_keys = ["fan_mode", "beta1", "beta2", "eps", "momentum_coefficient"]
     _net_keys = ["layers"]
     _weight_initializer_keys = ["weight_initializer"]
@@ -341,11 +342,11 @@ class GridSearch:
                 "momentum_coefficient"
             ]
         if combination["optimizer"] == "Adam":
-            if 'beta1' in combination.keys():
+            if "beta1" in combination.keys():
                 optimizer_params["beta1"] = combination["beta1"]
-            if 'beta2' in combination.keys():
+            if "beta2" in combination.keys():
                 optimizer_params["beta2"] = combination["beta2"]
-            if 'eps' in combination.keys():
+            if "eps" in combination.keys():
                 optimizer_params["eps"] = combination["eps"]
         optimizer_params["fname"] = optimizer_params.pop("optimizer")
         net_params = {key: combination[key] for key in self._net_keys}
@@ -403,7 +404,7 @@ class GridSearch:
         loss_list : list[str]
             list of loss functions to evaluate the test set on, by default ['MSE']
         early_stopping: dict
-            dictionary containing 'check_frequency', 'checks_to_stop' and 'eps', 
+            dictionary containing 'check_frequency', 'checks_to_stop' and 'eps',
             respectively how many epochs need to pass between checks,
             how many checks have to fail before stopping training and a tolerance on loss decrease
         seed : int
@@ -466,7 +467,7 @@ class GridSearch:
                 losses=loss_list,
                 check_frequency=early_stopping[0],
                 checks_to_stop=early_stopping[1],
-                eps=early_stopping[2]
+                eps=early_stopping[2],
             )
 
             def new_callback(record: dict) -> None:
@@ -476,9 +477,9 @@ class GridSearch:
         # generates all combinations of hyperparameters
         keys, values = zip(*hyper_grid.items())
         param_combinations = [dict(zip(keys, v)) for v in itertools.product(*values)]
-        comb=1
-        for k,v in hyper_grid.items():
-            comb*= len(v)
+        comb = 1
+        for k, v in hyper_grid.items():
+            comb *= len(v)
         print(comb)
         comb_counter = 0
         combination_results = []
@@ -543,7 +544,7 @@ class GridSearch:
                     "parameters": combination,
                     "test_loss_avg": test_loss_avg,
                     "test_loss_std": test_loss_std,
-                    "seed": estimator_params["seed"]
+                    "seed": estimator_params["seed"],
                 }
             )
 
@@ -596,7 +597,7 @@ class GridSearch:
         loss_list: list[str]
             list of loss functions to evaluate the test set on
         early_stopping: dict
-            dictionary containing 'check_frequency', 'checks_to_stop' and 'eps', 
+            dictionary containing 'check_frequency', 'checks_to_stop' and 'eps',
             respectively how many epochs need to pass between checks,
             how many checks have to fail before stopping training and a tolerance on loss decrease
         seed : int

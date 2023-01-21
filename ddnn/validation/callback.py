@@ -157,7 +157,7 @@ class Logger:
         losses: list[str],
         every: int = 1,
         training_set: Dataset = None,
-        validation_set: Dataset = None
+        validation_set: Dataset = None,
     ):
         """init method
 
@@ -215,7 +215,7 @@ class Logger:
         # 'train' and 'valid' contain a dictionary where the keys are the names of the loss functions and the values are a list of
         # loss values, one for each evaluation made by the logger
         current_hp_config = self._scores[-1]
-        current_hp_config["folds"][self._fold_count]= {"train": {}, "valid": {}}
+        current_hp_config["folds"][self._fold_count] = {"train": {}, "valid": {}}
         # initialize the dictionaries for 'train' and 'valid'
         current_fold = current_hp_config["folds"][self._fold_count]
         for loss in self._losses:
@@ -237,8 +237,8 @@ class Logger:
             dt = self._estimator.evaluate(self._losses, self._tfold)
             dv = self._estimator.evaluate(self._losses, self._vfold)
 
-            current_train = self._scores[-1]["folds"][self._fold_count-1]["train"]
-            current_valid = self._scores[-1]["folds"][self._fold_count-1]["valid"]
+            current_train = self._scores[-1]["folds"][self._fold_count - 1]["train"]
+            current_valid = self._scores[-1]["folds"][self._fold_count - 1]["valid"]
 
             # append evaluations to the corresponding lists
             for loss in self._losses:

@@ -162,7 +162,12 @@ class Estimator:
             x = dataset.data[permutation]
             y = dataset.labels[permutation]
             # iterate minibatches
-            avg_loss, batchcount = 0.0, np.ceil(x.shape[0] / self.batchsize)
+            if self.batchsize in [None, 0, -1]:
+                batchsize = x.shape[0]
+            else:
+                batchsize = self.batchsize
+            avg_loss, batchcount = 0.0, np.ceil(x.shape[0] / batchsize)
+
             self.t += 1
             for b, (mini_x, mini_y) in enumerate(
                 Estimator.get_minibatches(x, y, self.batchsize)
@@ -204,9 +209,9 @@ class Estimator:
             # move predictions outside loop
             res[loss] = loss_fn.foward(pred, dataset.labels)
         return res
-    
-    #TODO add output type
-    def predict(self, dataset: Dataset):
+
+    # TODO add output type
+    def predict(self, dataset: Dataset) -> np.ndarray:
         """method to predict output on given data
 
         Parameters
@@ -216,8 +221,8 @@ class Estimator:
 
         Returns
         -------
-        _type_
-            _description_
+        np.ndarray
+            numpy array containing predictions for the given dataset
         """
         pred = self.net.foward(dataset.data)
         return pred
