@@ -210,8 +210,7 @@ class Estimator:
             res[loss] = loss_fn.foward(pred, dataset.labels)
         return res
 
-    # TODO add output type
-    def predict(self, dataset: Dataset):
+    def predict(self, dataset: Dataset) -> np.ndarray:
         """method to predict output on given data
 
         Parameters
@@ -221,8 +220,8 @@ class Estimator:
 
         Returns
         -------
-        _type_
-            _description_
+        np.ndarray
+            returns an array containing the predictions of the model on the given dataset
         """
         pred = self.net.foward(dataset.data)
         return pred

@@ -21,8 +21,6 @@ class LinearLayer(UpdatableLayer):
         ----------
         shape : tuple[int,int]
             Layer input and output dimension.
-        seed : int or None, optional
-            seed used to initialize weights, by default None
         """
         self.params = Parameter(weights=np.zeros(shape[::-1]), bias=np.zeros(shape[1]))
         self.grads = Parameter(weights=np.zeros(shape[::-1]), bias=np.zeros(shape[1]))

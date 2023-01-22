@@ -70,8 +70,8 @@ class EarlyStopping:
                 self._best_vl_loss = validation_loss
                 self._best_epoch = current_epoch
                 self._best_tr_loss = self._estimator.evaluate(
-                losses=losses, dataset=self._training_set
-            )
+                    losses=losses, dataset=self._training_set
+                )
             # no significant increase in loss
             else:
                 self._n_worse_checks += 1
@@ -92,7 +92,9 @@ class EarlyStopping:
         self._best_vl_loss = dict.fromkeys(self._losses, float("inf"))
         self._best_tr_loss = 0
 
-    def set_validation_set(self, validation_set: Dataset, training_set: Dataset) -> None:
+    def set_validation_set(
+        self, validation_set: Dataset, training_set: Dataset
+    ) -> None:
         """method to set the validation set on which checks must be done, also resets the class
 
         Parameters
