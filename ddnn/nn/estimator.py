@@ -167,7 +167,7 @@ class Estimator:
             else:
                 batchsize = self.batchsize
             avg_loss, batchcount = 0.0, np.ceil(x.shape[0] / batchsize)
-            
+
             self.t += 1
             for b, (mini_x, mini_y) in enumerate(
                 Estimator.get_minibatches(x, y, self.batchsize)
@@ -209,8 +209,8 @@ class Estimator:
             # move predictions outside loop
             res[loss] = loss_fn.foward(pred, dataset.labels)
         return res
-    
-    #TODO add output type
+
+    # TODO add output type
     def predict(self, dataset: Dataset):
         """method to predict output on given data
 

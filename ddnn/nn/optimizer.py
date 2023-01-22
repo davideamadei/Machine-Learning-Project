@@ -13,10 +13,15 @@ __all__ = ["Optimizer"]
 class Optimizer:
     """Class defining parameter updates. Currently WIP."""
 
-    def __init__(self, fname: str = "SGD",
-        learning_rate: float = 1e-3, l2_coefficient: float = 0,
-        momentum_coefficient: float = 0, beta1: float = 0.9,
-        beta2: float = 0.999, eps: float = 1e-8
+    def __init__(
+        self,
+        fname: str = "SGD",
+        learning_rate: float = 1e-3,
+        l2_coefficient: float = 0,
+        momentum_coefficient: float = 0,
+        beta1: float = 0.9,
+        beta2: float = 0.999,
+        eps: float = 1e-8,
     ):
         """Returns a new instance of an optimizer
 
@@ -78,7 +83,7 @@ class Optimizer:
                     learning_rate=1e-3,
                     l2_coefficient=1e-4,
                     momentum_coefficient=0.8,
-                    **kwargs
+                    **kwargs,
                 ):
                     self._eta = learning_rate
                     self._l2 = l2_coefficient
@@ -115,6 +120,7 @@ class Optimizer:
             return SGD(**kwargs)
 
         if fname == "Adam":
+
             class Adam:
                 def __init__(
                     self,
@@ -124,7 +130,7 @@ class Optimizer:
                     beta1=0.9,
                     beta2=0.999,
                     eps=1e-8,
-                    **kwargs
+                    **kwargs,
                 ) -> None:
                     self._eta = learning_rate
                     self._l2 = l2_coefficient
