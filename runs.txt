@@ -1,0 +1,91 @@
+# 1) ACTIVATION FUNCTIONS
+
+grid["layers"] = [
+    [(64, "ReLU"),     (2, "linear")],
+    [(64, "tanh"),     (2, "linear")],
+    [(64, "logistic"), (2, "linear")],
+]
+grid["learning_rate"] = [1e-2, 1e-3]
+grid["optimizer"] = ["Adam"]
+grid["loss"] = ["MSE"]
+grid["l2_coefficient"] = [1e-2, 1e-3]
+grid["batchsize"] = [-1]
+grid["weight_initializer"] = ["glorot_uniform"]
+-----------------------------------------------------
+# 3) INITILIZATION
+
+grid["layers"] = [
+    [(64, "tanh"),     (2, "linear")],
+    [(64, "ReLU"),     (2, "linear")],
+]
+grid["learning_rate"] = [1e-2, 1e-3]
+grid["optimizer"] = ["Adam"]
+grid["loss"] = ["MSE"]
+grid["l2_coefficient"] = [1e-2, 1e-3]
+grid["batchsize"] = [-1]
+grid["weight_initializer"] = [
+    "glorot_uniform", "glorot_normal",
+    "random_uniform", "random_normal"
+]
+-----------------------------------------------------
+# 4) INITILIZATION HE vs GLOROT (deep)
+
+grid["layers"] = [
+    [   
+        (8, "ReLU"), (8, "ReLU"), (8, "ReLU"), (8, "ReLU"), 
+        (8, "ReLU"), (8, "ReLU"), (8, "ReLU"), (8, "ReLU"), (2, "linear")
+    ]
+]
+grid["learning_rate"] = [1e-2, 1e-3]
+grid["optimizer"] = ["Adam"]
+grid["loss"] = ["MSE"]
+grid["l2_coefficient"] = [1e-2, 1e-3]
+grid["batchsize"] = [-1]
+grid["weight_initializer"] = [
+    "glorot_uniform", "glorot_normal",
+    "he_uniform", "he_normal"
+]
+grid["fan_mode"] = ["fan_out"]
+-----------------------------------------------------
+# 2) ARCHITECTURE
+
+grid["layers"] = [
+    [(64, "ReLU"), (2, "linear")]
+    [(32, "ReLU"), (32, "ReLU"), (2, "linear")]
+    [(16, "ReLU"), (16, "ReLU"), (16, "ReLU"), (16, "ReLU"), (2, "linear")],
+    [   
+        (8, "ReLU"), (8, "ReLU"), (8, "ReLU"), (8, "ReLU"), 
+        (8, "ReLU"), (8, "ReLU"), (8, "ReLU"), (8, "ReLU"), (2, "linear")
+    ]
+]
+grid["learning_rate"] = [1e-2, 1e-3]
+grid["optimizer"] = ["Adam"]
+grid["loss"] = ["MSE"]
+grid["l2_coefficient"] = [1e-2, 1e-3]
+grid["batchsize"] = [-1]
+grid["weight_initializer"] = ["glorot_uniform"]
+-------------------------------------------------------
+# 0) SGD vs ADAM
+--> with ES plot (2 figure with/without)
+
+grid["layers"] = [
+    [(64, "tanh"),     (2, "linear")],
+]
+grid["learning_rate"] = [1e-2, 1e-3]
+grid["optimizer"] = ["Adam"]
+grid["loss"] = ["MSE"]
+grid["l2_coefficient"] = [1e-2, 1e-3]
+grid["batchsize"] = [-1]
+grid["weight_initializer"] = ["glorot_uniform"]
+
+
+grid["layers"] = [
+    [(64, "tanh"),     (2, "linear")],
+]
+grid["learning_rate"] = [1e-2, 1e-3]
+grid["optimizer"] = ["SGD"]
+grid["momentum_coefficient"] = [0.1, 0.5, 0.9]
+grid["loss"] = ["MSE"]
+grid["l2_coefficient"] = [1e-2, 1e-3]
+grid["batchsize"] = [-1]
+grid["weight_initializer"] = ["glorot_uniform"]
