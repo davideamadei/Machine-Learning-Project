@@ -513,7 +513,7 @@ class GridSearch:
 
                 # if early stopping was passed, train with a composite callback function
                 if early_stopping != None:
-                    early_stopper.set_validation_set(test_set)
+                    early_stopper.set_validation_set(test_set, train_set)
 
                     estimator.train(
                         dataset=train_set, n_epochs=n_epochs, callback=new_callback
@@ -532,11 +532,18 @@ class GridSearch:
 
             test_loss_avg = {}
             test_loss_std = {}
+            train_loss_avg = {}
+            train_loss_std = {}
             for loss in loss_list:
                 test_loss_avg[loss] = sum(d[loss] for d in test_loss_list) / len(
                     test_loss_list
                 )
                 test_loss_std[loss] = np.std([d[loss] for d in test_loss_list])
+                if early_stopping != None:
+                    train_loss_avg[loss] = sum(d[loss] for d in train_loss_list) / len(
+                        train_loss_list
+                    )
+                    train_loss_std[loss] = np.std([d[loss] for d in train_loss_list])
 
             # append results for that combination of hyperparameters
             combination_results.append(
@@ -553,8 +560,8 @@ class GridSearch:
                 combination_results[-1]["n_epochs_list"] = epoch_list
                 combination_results[-1]["n_epoch_avg"] = np.average(epoch_list)
                 combination_results[-1]["n_epoch_std"] = np.std(epoch_list)
-                combination_results[-1]["train_loss_avg"] = np.average(train_loss_list)
-                combination_results[-1]["train_loss_std"] = np.std(train_loss_list)
+                combination_results[-1]["train_loss_avg"] = train_loss_avg
+                combination_results[-1]["train_loss_std"] = train_loss_std
 
         # sort the list of results based on loss such that they are ordered from best to worst
         if loss_list[0] == "binary_accuracy":

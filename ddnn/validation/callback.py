@@ -40,7 +40,7 @@ class EarlyStopping:
         self._check_frequency = check_frequency
         self._current_epoch = 0
         self._best_vl_loss = dict.fromkeys(losses, float("inf"))
-        self._best_tr_loss = 0
+        self._best_tr_loss = dict.fromkeys(losses, float("inf"))
         self._best_epoch = 0
         self._eps = eps
         self._verbose = verbose
@@ -69,7 +69,9 @@ class EarlyStopping:
                 self._n_worse_checks = 0
                 self._best_vl_loss = validation_loss
                 self._best_epoch = current_epoch
-                self._best_tr_loss = record["loss"]
+                self._best_tr_loss = self._estimator.evaluate(
+                losses=losses, dataset=self._training_set
+            )
             # no significant increase in loss
             else:
                 self._n_worse_checks += 1
@@ -90,16 +92,19 @@ class EarlyStopping:
         self._best_vl_loss = dict.fromkeys(self._losses, float("inf"))
         self._best_tr_loss = 0
 
-    def set_validation_set(self, validation_set: Dataset) -> None:
+    def set_validation_set(self, validation_set: Dataset, training_set: Dataset) -> None:
         """method to set the validation set on which checks must be done, also resets the class
 
         Parameters
         ----------
         validation_set : Dataset
             dataset to use for checks
+        training_set : Dataset
+            dataset currently used as training set
         """
         self.reset()
         self._validation_set = validation_set
+        self._training_set = training_set
 
 
 class TrainingThresholdStopping:
