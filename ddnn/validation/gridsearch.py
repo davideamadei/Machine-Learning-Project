@@ -26,6 +26,10 @@ __all__ = ["GridSearch"]
 
 
 class GridSearch:
+    """class implementing a grid search with functions for k-fold and nested k-fold
+    cross-validation
+    """
+
     _optional_keys = ["fan_mode", "beta1", "beta2", "eps", "momentum_coefficient"]
     _net_keys = ["layers"]
     _weight_initializer_keys = ["weight_initializer"]
@@ -74,7 +78,7 @@ class GridSearch:
             "he_uniform",
             "he_normal",
         ]
-        optimizers = ["SGD", "ADAM"]
+        optimizers = ["SGD", "Adam"]
         activation_functions = ["ReLU", "logistic", "tanh", "linear"]
         loss_functions = ["MSE", "binary_accuracy"]
 
@@ -136,11 +140,12 @@ class GridSearch:
                 raise ValueError("The L2 coefficient must be at least 0")
 
         # check momentum
-        for momentum in hyper_grid["momentum_coefficient"]:
-            if not isinstance(momentum, Number):
-                raise TypeError("The momentum parameter must be a number")
-            if momentum < 0:
-                raise ValueError("The momentum parameter must be at least 0")
+        if "momentum_coefficient" in hyper_grid.keys():
+            for momentum in hyper_grid["momentum_coefficient"]:
+                if not isinstance(momentum, Number):
+                    raise TypeError("The momentum parameter must be a number")
+                if momentum < 0:
+                    raise ValueError("The momentum parameter must be at least 0")
 
         # check learning rate
         for eta in hyper_grid["learning_rate"]:
@@ -337,9 +342,12 @@ class GridSearch:
                 "momentum_coefficient"
             ]
         if combination["optimizer"] == "Adam":
-            optimizer_params["beta1"] = combination["beta1"]
-            optimizer_params["beta2"] = combination["beta2"]
-            optimizer_params["eps"] = combination["eps"]
+            if "beta1" in combination.keys():
+                optimizer_params["beta1"] = combination["beta1"]
+            if "beta2" in combination.keys():
+                optimizer_params["beta2"] = combination["beta2"]
+            if "eps" in combination.keys():
+                optimizer_params["eps"] = combination["eps"]
         optimizer_params["fname"] = optimizer_params.pop("optimizer")
         net_params = {key: combination[key] for key in self._net_keys}
 
@@ -370,9 +378,11 @@ class GridSearch:
         dataset: Dataset,
         n_folds: int,
         n_epochs: int,
-        callback: Callable[[dict], None] = print,
+        training_callback: Callable[[dict], None] = print,
+        on_hp_change: Callable[[dict], None] = None,
+        on_fold_change: Callable[[dict], None] = None,
         loss_list: list[str] = ["MSE"],
-        early_stopping: tuple[int, int] = None,
+        early_stopping: tuple[int, int, int] = None,
         seed: int = None,
     ) -> list:
         """function to execute a k-fold cross-validation on the given dataset
@@ -385,13 +395,18 @@ class GridSearch:
             number of folds to use in cross-validation
         n_epochs : int
             number of epochs to run training
-        callback : Callable[[dict], None], optional
+        training_callback : Callable[[dict], None], optional
             callback function to use during training, by default print
+        on_hp_change : Callable[[dict], None], optional
+            callback function called when the combination of hyperparameters changes
+        on_fold_change : Callable[[dict], None], optional
+            callback function called when the fold changes
         loss_list : list[str]
             list of loss functions to evaluate the test set on, by default ['MSE']
-        early_stopping : tuple
-            dictionary containing two values, respectively how many checks have to fail before stopping training and
-            how many epochs need to pass between checks
+        early_stopping: dict
+            dictionary containing 'check_frequency', 'checks_to_stop' and 'eps',
+            respectively how many epochs need to pass between checks,
+            how many checks have to fail before stopping training and a tolerance on loss decrease
         seed : int
             seed to fix rng
         Returns
@@ -450,22 +465,31 @@ class GridSearch:
             early_stopper = EarlyStopping(
                 estimator=estimator,
                 losses=loss_list,
-                checks_to_stop=early_stopping[0],
-                check_frequency=early_stopping[1],
+                check_frequency=early_stopping[0],
+                checks_to_stop=early_stopping[1],
+                eps=early_stopping[2],
             )
 
             def new_callback(record: dict) -> None:
-                callback(record)
+                training_callback(record)
                 early_stopper(record)
 
         # generates all combinations of hyperparameters
         keys, values = zip(*hyper_grid.items())
         param_combinations = [dict(zip(keys, v)) for v in itertools.product(*values)]
-
+        comb = 1
+        for k, v in hyper_grid.items():
+            comb *= len(v)
+        print(comb)
+        comb_counter = 0
         combination_results = []
 
         # iterates on all combinations of hyperparameters
         for combination in param_combinations:
+            # call update for callback as combination of hyperparameter changed
+            if on_hp_change != None:
+                on_hp_change(combination)
+
             # update estimator with the new hyperparameters
             estimator_params = self._create_estimator_params(combination, input_dim)
             if estimator_params["batchsize"] == -1:
@@ -475,13 +499,21 @@ class GridSearch:
             test_loss_list = []
             epoch_list = []
             train_loss_list = []
-            print(combination)
+            comb_counter += 1
+
+            print(f"{comb_counter} / {comb}: {combination}")
 
             # iterates on folds of dataset
             for train_set, test_set in folds:
+                # call update for callback as fold changed
+                if on_fold_change != None:
+                    on_fold_change(
+                        {"train": train_set, "test": test_set, "n_folds": n_folds}
+                    )
+
                 # if early stopping was passed, train with a composite callback function
                 if early_stopping != None:
-                    early_stopper.set_validation_set(test_set)
+                    early_stopper.set_validation_set(test_set, train_set)
 
                     estimator.train(
                         dataset=train_set, n_epochs=n_epochs, callback=new_callback
@@ -491,7 +523,7 @@ class GridSearch:
                     train_loss_list.append(early_stopper._best_tr_loss)
                 else:
                     estimator.train(
-                        dataset=train_set, n_epochs=n_epochs, callback=callback
+                        dataset=train_set, n_epochs=n_epochs, callback=training_callback
                     )
                     test_loss_list.append(
                         estimator.evaluate(losses=loss_list, dataset=test_set)
@@ -500,11 +532,18 @@ class GridSearch:
 
             test_loss_avg = {}
             test_loss_std = {}
+            train_loss_avg = {}
+            train_loss_std = {}
             for loss in loss_list:
                 test_loss_avg[loss] = sum(d[loss] for d in test_loss_list) / len(
                     test_loss_list
                 )
                 test_loss_std[loss] = np.std([d[loss] for d in test_loss_list])
+                if early_stopping != None:
+                    train_loss_avg[loss] = sum(d[loss] for d in train_loss_list) / len(
+                        train_loss_list
+                    )
+                    train_loss_std[loss] = np.std([d[loss] for d in train_loss_list])
 
             # append results for that combination of hyperparameters
             combination_results.append(
@@ -512,15 +551,17 @@ class GridSearch:
                     "parameters": combination,
                     "test_loss_avg": test_loss_avg,
                     "test_loss_std": test_loss_std,
+                    "seed": estimator_params["seed"],
                 }
             )
 
             # add additional results if early stopping was defined
             if early_stopping != None:
+                combination_results[-1]["n_epochs_list"] = epoch_list
                 combination_results[-1]["n_epoch_avg"] = np.average(epoch_list)
                 combination_results[-1]["n_epoch_std"] = np.std(epoch_list)
-                combination_results[-1]["train_loss_avg"] = np.average(train_loss_list)
-                combination_results[-1]["train_loss_std"] = np.std(train_loss_list)
+                combination_results[-1]["train_loss_avg"] = train_loss_avg
+                combination_results[-1]["train_loss_std"] = train_loss_std
 
         # sort the list of results based on loss such that they are ordered from best to worst
         if loss_list[0] == "binary_accuracy":
@@ -541,7 +582,7 @@ class GridSearch:
         inner_callback: Callable[[dict], None] = print,
         outer_callback: Callable[[dict], None] = print,
         loss_list: list[str] = ["MSE"],
-        early_stopping: tuple[int, int] = None,
+        early_stopping: tuple[int, int, int] = None,
         seed: int = None,
     ) -> dict:
         """function implementing nested k-fold cross validation
@@ -563,8 +604,9 @@ class GridSearch:
         loss_list: list[str]
             list of loss functions to evaluate the test set on
         early_stopping: dict
-            dictionary containing 'checks_to_stop' and 'check_frequency', respectively how many checks have to fail before
-            stopping training and how many epochs need to pass between checks
+            dictionary containing 'check_frequency', 'checks_to_stop' and 'eps',
+            respectively how many epochs need to pass between checks,
+            how many checks have to fail before stopping training and a tolerance on loss decrease
         seed : int
             seed to fix rng
         Returns

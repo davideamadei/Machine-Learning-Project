@@ -23,8 +23,6 @@ class NeuralNetwork:
         ----------
         net : List[Layer]
             a sequence of layer, in the order in which they should be applied.
-        seed : int or None, optional
-            seed to initialize weights in all UpdatableLayer, by default None
 
         Raises
         ------
@@ -71,7 +69,7 @@ class NeuralNetwork:
 
         Parameters
         ----------
-        grad : np.ndarray
+        ograd : np.ndarray
             gradient with respect to the output.
 
         Returns
@@ -102,8 +100,8 @@ class NeuralNetwork:
 
         Parameters
         ----------
-        optimizer : Optimizer
-            an optimizer that selects how weights and biases are updated
+        initializer : Initializer
+            the initializer to use for weight initialization
         """
         for layer in self[:]:
             if isinstance(layer, UpdatableLayer):

@@ -13,17 +13,38 @@ __all__ = ["Optimizer"]
 class Optimizer:
     """Class defining parameter updates. Currently WIP."""
 
-    def __init__(self, fname: str = "SGD", **kwargs):
+    def __init__(
+        self,
+        fname: str = "SGD",
+        learning_rate: float = 1e-3,
+        l2_coefficient: float = 0,
+        momentum_coefficient: float = 0,
+        beta1: float = 0.9,
+        beta2: float = 0.999,
+        eps: float = 1e-8,
+    ):
         """Returns a new instance of an optimizer
 
         Parameters
         ----------
         fname : str, optional
             Name of a supported optimizer algorithm, by default "SGD".
-            Currently supported functions are: SGD.
-        **kwargs
-            Arguments of the optimizer
+            Currently supported functions are: SGD, Adam.
+        learning_rate : float, optional
+            learning rate of the selected optimizer, by default 1e-3
+        l2_coefficient : float, optional
+            L2 regularization (which is multiplied by learning rate), by default 0
+        momentum_coefficient : float, optional
+            (SGD only) momentum (residual of previous update), by default 0
+        beta1 : float, optional
+            (Adam only) beta1 (first momentum coefficient), by default 0.9
+        beta2 : float, optional
+            (Adam only) beta2 (second momentum coefficient), by default 0.999
+        eps : float, optional
+            (Adam only) eps (to regulate divide by zero), by default 1e-8
         """
+        kwargs = locals()
+        del kwargs["self"], kwargs["fname"]
         self._opt = Optimizer.get_functions(fname, kwargs)
 
     def __call__(
@@ -62,6 +83,7 @@ class Optimizer:
                     learning_rate=1e-3,
                     l2_coefficient=1e-4,
                     momentum_coefficient=0.8,
+                    **kwargs,
                 ):
                     self._eta = learning_rate
                     self._l2 = l2_coefficient
@@ -79,12 +101,12 @@ class Optimizer:
                         # first iteration set momentum to zero
                         if state == None:
                             state = Parameter(0, 0)
-                        
+
                         temp = grads.weights
                         if self._l2 != 0:
                             # += here would modify grads.weights
                             temp = temp + self._l2 * params.weights
-                        
+
                         # we prefer to multiple L2 coeff and momentum by eta
                         m_w = temp + self._m * state.weights
                         # we ignore L2 for bias only
@@ -108,6 +130,7 @@ class Optimizer:
                     beta1=0.9,
                     beta2=0.999,
                     eps=1e-8,
+                    **kwargs,
                 ) -> None:
                     self._eta = learning_rate
                     self._l2 = l2_coefficient

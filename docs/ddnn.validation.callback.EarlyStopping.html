@@ -272,6 +272,16 @@
         
 
         
+            <div class="itemName"><code><a href="#_eps" class="internal-link" title="ddnn.validation.callback.EarlyStopping._eps">_eps</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
             <div class="itemName"><code><a href="#_estimator" class="internal-link" title="ddnn.validation.callback.EarlyStopping._estimator">_estimator</a></code>
             </div>
         
@@ -302,7 +312,27 @@
         
 
         
+            <div class="itemName"><code><a href="#_training_set" class="internal-link" title="ddnn.validation.callback.EarlyStopping._training_set">_training<wbr></wbr>_set</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
             <div class="itemName"><code><a href="#_validation_set" class="internal-link" title="ddnn.validation.callback.EarlyStopping._validation_set">_validation<wbr></wbr>_set</a></code>
+            </div>
+        
+
+    </li><li class="private">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="#_verbose" class="internal-link" title="ddnn.validation.callback.EarlyStopping._verbose">_verbose</a></code>
             </div>
         
 
@@ -336,6 +366,16 @@
 
         
             <div class="itemName"><code><a href="ddnn.validation.callback.EarlyStopping.html" class="internal-link" title="ddnn.validation.callback.EarlyStopping"><wbr></wbr>Early<wbr></wbr>Stopping</a></code>
+            </div>
+        
+
+    </li><li class="">
+        
+        
+        
+
+        
+            <div class="itemName"><code><a href="ddnn.validation.callback.Logger.html" class="internal-link" title="ddnn.validation.callback.Logger"><wbr></wbr>Logger</a></code>
             </div>
         
 
@@ -460,6 +500,11 @@
   </tr><tr class="instancevariable private">
     
     <td>Instance Variable</td>
+    <td><code><a href="#_eps" class="internal-link" title="ddnn.validation.callback.EarlyStopping._eps">_eps</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
     <td><code><a href="#_estimator" class="internal-link" title="ddnn.validation.callback.EarlyStopping._estimator">_estimator</a></code></td>
     <td><span class="undocumented">Undocumented</span></td>
   </tr><tr class="instancevariable private">
@@ -475,7 +520,17 @@
   </tr><tr class="instancevariable private">
     
     <td>Instance Variable</td>
+    <td><code><a href="#_training_set" class="internal-link" title="ddnn.validation.callback.EarlyStopping._training_set">_training<wbr></wbr>_set</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
     <td><code><a href="#_validation_set" class="internal-link" title="ddnn.validation.callback.EarlyStopping._validation_set">_validation<wbr></wbr>_set</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="instancevariable private">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#_verbose" class="internal-link" title="ddnn.validation.callback.EarlyStopping._verbose">_verbose</a></code></td>
     <td><span class="undocumented">Undocumented</span></td>
   </tr>
 </table>
@@ -520,7 +575,7 @@
   </a>
   <div class="functionHeader">
     
-    <span class="py-keyword">def</span> <span class="py-defname">__init__</span>(self, estimator, losses=[<wbr></wbr><span class="rst-variable-quote">'</span><span class="rst-variable-string">MSE</span><span class="rst-variable-quote">'</span>], checks_to_stop=10, check_frequency=10):
+    <span class="py-keyword">def</span> <span class="py-defname">__init__</span>(self, estimator, losses=[<wbr></wbr><span class="rst-variable-quote">'</span><span class="rst-variable-string">MSE</span><span class="rst-variable-quote">'</span>], checks_to_stop=10, check_frequency=10, eps=1e-08, verbose=<a href="https://docs.python.org/3/library/constants.html#False" class="intersphinx-link">False</a>):
     
     <a class="headerLink" href="#__init__" title="ddnn.validation.callback.EarlyStopping.__init__">
       
@@ -531,7 +586,7 @@
   <div class="docstring functionBody">
     
     <div><p>init method</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">estimator:</span><code>Estimator</code></td><td class="fieldArgDesc">estimator to use for evaluation and to notify when training has to be stopped</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">losses:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code>, <em>optional</em></td><td class="fieldArgDesc">list of losses on which to evaluate the validation set, first one is used to check, by default ["MSE"]</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">checks<wbr></wbr>_to<wbr></wbr>_stop:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code>, <em>optional</em></td><td class="fieldArgDesc">number of checks without a decrease in loss needed to stop training, by default 10</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">check<wbr></wbr>_frequency:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code>, <em>optional</em></td><td class="fieldArgDesc">how often to do a check in terms of epochs, by default 10</td></tr></table></div>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">estimator:</span><code>Estimator</code></td><td class="fieldArgDesc">estimator to use for evaluation and to notify when training has to be stopped</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">losses:</span><code><a href="https://docs.python.org/3/library/stdtypes.html#list" class="intersphinx-link">list</a>[<a href="https://docs.python.org/3/library/stdtypes.html#str" class="intersphinx-link">str</a>]</code>, <em>optional</em></td><td class="fieldArgDesc">list of losses on which to evaluate the validation set, first one is used to check, by default ["MSE"]</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">checks<wbr></wbr>_to<wbr></wbr>_stop:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code>, <em>optional</em></td><td class="fieldArgDesc">number of checks without a decrease in loss needed to stop training, by default 10</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">check<wbr></wbr>_frequency:</span><code><a href="https://docs.python.org/3/library/functions.html#int" class="intersphinx-link">int</a></code>, <em>optional</em></td><td class="fieldArgDesc">how often to do a check in terms of epochs, by default 10</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">eps:</span><code><a href="https://docs.python.org/3/library/functions.html#float" class="intersphinx-link">float</a></code></td><td class="fieldArgDesc">tolerance for the decrease of the validation loss</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">verbose:</span><code><a href="https://docs.python.org/3/library/functions.html#bool" class="intersphinx-link">bool</a></code></td><td class="fieldArgDesc">if True adds some prints</td></tr></table></div>
   </div>
 </div><div class="basemethod">
   
@@ -568,7 +623,7 @@
   </a>
   <div class="functionHeader">
     
-    <span class="py-keyword">def</span> <span class="py-defname">set_validation_set</span>(self, validation_set):
+    <span class="py-keyword">def</span> <span class="py-defname">set_validation_set</span>(self, validation_set, training_set):
     
     <a class="headerLink" href="#set_validation_set" title="ddnn.validation.callback.EarlyStopping.set_validation_set">
       
@@ -579,7 +634,7 @@
   <div class="docstring functionBody">
     
     <div><p>method to set the validation set on which checks must be done, also resets the class</p>
-<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">validation<wbr></wbr>_set:</span><code>Dataset</code></td><td class="fieldArgDesc">dataset to use for checks</td></tr></table></div>
+<table class="fieldTable"><tr class="fieldStart"><td class="fieldName" colspan="2">Parameters</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">validation<wbr></wbr>_set:</span><code>Dataset</code></td><td class="fieldArgDesc">dataset to use for checks</td></tr><tr><td class="fieldArgContainer"><span class="fieldArg">training<wbr></wbr>_set:</span><code>Dataset</code></td><td class="fieldArgDesc">dataset currently used as training set</td></tr></table></div>
   </div>
 </div><div class="baseinstancevariable private">
   
@@ -728,6 +783,30 @@
 </div><div class="baseinstancevariable private">
   
   
+  <a name="ddnn.validation.callback.EarlyStopping._eps">
+    
+  </a>
+  <a name="_eps">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_eps</span> =
+    
+    <a class="headerLink" href="#_eps" title="ddnn.validation.callback.EarlyStopping._eps">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
   <a name="ddnn.validation.callback.EarlyStopping._estimator">
     
   </a>
@@ -800,6 +879,30 @@
 </div><div class="baseinstancevariable private">
   
   
+  <a name="ddnn.validation.callback.EarlyStopping._training_set">
+    
+  </a>
+  <a name="_training_set">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_training_set</span> =
+    
+    <a class="headerLink" href="#_training_set" title="ddnn.validation.callback.EarlyStopping._training_set">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
   <a name="ddnn.validation.callback.EarlyStopping._validation_set">
     
   </a>
@@ -811,6 +914,30 @@
     <span class="py-defname">_validation_set</span> =
     
     <a class="headerLink" href="#_validation_set" title="ddnn.validation.callback.EarlyStopping._validation_set">
+      
+      
+      ¶
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    <div><p class="undocumented">Undocumented</p></div>
+    
+  </div>
+</div><div class="baseinstancevariable private">
+  
+  
+  <a name="ddnn.validation.callback.EarlyStopping._verbose">
+    
+  </a>
+  <a name="_verbose">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">_verbose</span> =
+    
+    <a class="headerLink" href="#_verbose" title="ddnn.validation.callback.EarlyStopping._verbose">
       
       
       ¶
@@ -833,7 +960,7 @@
   <div class="container">
     <a href="index.html">API Documentation</a> for <a href="https://github.com/davideamadei/Machine-Learning-Project/ddnn/" class="projecthome">Machine-Learning-Project</a>,
   generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a>
-    22.9.1 at 2023-01-17 15:16:54.
+    22.9.1 at 2023-01-22 23:12:26.
   </div>
 
   <!-- Search related scripts needs to be loaded at the end of HTML 
